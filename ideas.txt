@@ -1,5 +1,11 @@
-Final Machine Learning Project Ideas (9/2/2023):
+Final Machine Learning Project Ideas (9/26/2023):
+
+(1) Auction Used-Car (Binary) Classification
+(2) International Foreign Exchange Rates Predictor
+(3) Book Recommendation System
+
+Draft: Machine Learning Project Ideas (9/2/2023):
 
 (1) Image and Object Detection
-(2) Movie Recommendation (or some type of recommendation system)
+(2) Movie Recommendation System (or some type of recommendation system)
 (3) Pathfinding
