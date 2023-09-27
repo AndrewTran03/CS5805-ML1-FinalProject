@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Book Recommender System</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/quarto.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="index_files/libs/quarto-html/anchor.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="index_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="index_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="index_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Book Recommender System</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="author-andrew-tran" class="level4">
+<h4 class="anchored" data-anchor-id="author-andrew-tran">Author: Andrew Tran</h4>
+<p>To complete this blog post, I used the following online sources as references for developing this blog post:</p>
+<p>[1] Book Recommendation Dataset:</p>
+<p>Möbius, “Book Recommendation Dataset”, Apr.-2023. [Online]. Available: https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset. [Accessed: 25-Sep.-2023].</p>
+<p>[2] Tutorial on Basics of ML Recommendation Systems:</p>
+<p>M. Ahammad, “Movie Recommender Systems Using Neural Network,” 2020. [Online]. Available: https://www. kaggle.com/code/mejbahahammad/movie-recommender-systems-using-neural-network. [Accessed: 25-Sep.-2023].</p>
+<p>[3] Tutorial on Sample Visualizations for ML Recommendation Systems:</p>
+<p>Great Learning Team, “Excerpts From a Masterclass on Movie Recommendation System,” 22-Aug.-2022. Available: https://www.mygreatlearning.com/blog/masterclass-on-movie-recommendation-system/. [Accessed: 26-Sep.2023].</p>
+</section>
+<section id="data-preprocessing---cleaning-and-analytics" class="level2">
+<h2 class="anchored" data-anchor-id="data-preprocessing---cleaning-and-analytics">Data Preprocessing - Cleaning and Analytics</h2>
+<div class="cell" data-execution_count="159">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> sns.color_palette()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> average_precision_score, roc_auc_score, precision_recall_fscore_support, confusion_matrix, classification_report</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Model</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Input, Embedding, Flatten, dot</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> Adam</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"fivethirtyeight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="160">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reading and displaying all of the initial datasets</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>books_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Books.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ratings_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Ratings.csv"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>users_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Users.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7572\2730945584.py:2: DtypeWarning: Columns (3) have mixed types. Specify dtype option on import or set low_memory=False.
+  books_df = pd.read_csv("datasets/Books.csv")</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="161">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Determining the shape of each of the initial datasets</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>books_df.shape, ratings_df.shape, users_df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="161">
+<pre><code>((271360, 8), (1149780, 3), (278858, 3))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="162">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting a sample of each of the initial datasets through the seeing the </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># first 10 entries completely in each dataset</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>books_df.info(), ratings_df.info(), users_df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 271360 entries, 0 to 271359
+Data columns (total 8 columns):
+ #   Column               Non-Null Count   Dtype 
+---  ------               --------------   ----- 
+ 0   ISBN                 271360 non-null  object
+ 1   Book-Title           271360 non-null  object
+ 2   Book-Author          271359 non-null  object
+ 3   Year-Of-Publication  271360 non-null  object
+ 4   Publisher            271358 non-null  object
+ 5   Image-URL-S          271360 non-null  object
+ 6   Image-URL-M          271360 non-null  object
+ 7   Image-URL-L          271357 non-null  object
+dtypes: object(8)
+memory usage: 16.6+ MB
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 1149780 entries, 0 to 1149779
+Data columns (total 3 columns):
+ #   Column       Non-Null Count    Dtype 
+---  ------       --------------    ----- 
+ 0   User-ID      1149780 non-null  int64 
+ 1   ISBN         1149780 non-null  object
+ 2   Book-Rating  1149780 non-null  int64 
+dtypes: int64(2), object(1)
+memory usage: 26.3+ MB
+&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 278858 entries, 0 to 278857
+Data columns (total 3 columns):
+ #   Column    Non-Null Count   Dtype  
+---  ------    --------------   -----  
+ 0   User-ID   278858 non-null  int64  
+ 1   Location  278858 non-null  object 
+ 2   Age       168096 non-null  float64
+dtypes: float64(1), int64(1), object(1)
+memory usage: 6.4+ MB</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="162">
+<pre><code>(None, None, None)</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="163">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seeing each of the dataframes individually</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>books_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="163">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ISBN</th>
+<th data-quarto-table-cell-role="th">Book-Title</th>
+<th data-quarto-table-cell-role="th">Book-Author</th>
+<th data-quarto-table-cell-role="th">Year-Of-Publication</th>
+<th data-quarto-table-cell-role="th">Publisher</th>
+<th data-quarto-table-cell-role="th">Image-URL-S</th>
+<th data-quarto-table-cell-role="th">Image-URL-M</th>
+<th data-quarto-table-cell-role="th">Image-URL-L</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0195153448</td>
+<td>Classical Mythology</td>
+<td>Mark P. O. Morford</td>
+<td>2002</td>
+<td>Oxford University Press</td>
+<td>http://images.amazon.com/images/P/0195153448.0...</td>
+<td>http://images.amazon.com/images/P/0195153448.0...</td>
+<td>http://images.amazon.com/images/P/0195153448.0...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0002005018</td>
+<td>Clara Callan</td>
+<td>Richard Bruce Wright</td>
+<td>2001</td>
+<td>HarperFlamingo Canada</td>
+<td>http://images.amazon.com/images/P/0002005018.0...</td>
+<td>http://images.amazon.com/images/P/0002005018.0...</td>
+<td>http://images.amazon.com/images/P/0002005018.0...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0060973129</td>
+<td>Decision in Normandy</td>
+<td>Carlo D'Este</td>
+<td>1991</td>
+<td>HarperPerennial</td>
+<td>http://images.amazon.com/images/P/0060973129.0...</td>
+<td>http://images.amazon.com/images/P/0060973129.0...</td>
+<td>http://images.amazon.com/images/P/0060973129.0...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>0374157065</td>
+<td>Flu: The Story of the Great Influenza Pandemic...</td>
+<td>Gina Bari Kolata</td>
+<td>1999</td>
+<td>Farrar Straus Giroux</td>
+<td>http://images.amazon.com/images/P/0374157065.0...</td>
+<td>http://images.amazon.com/images/P/0374157065.0...</td>
+<td>http://images.amazon.com/images/P/0374157065.0...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0393045218</td>
+<td>The Mummies of Urumchi</td>
+<td>E. J. W. Barber</td>
+<td>1999</td>
+<td>W. W. Norton &amp;amp; Company</td>
+<td>http://images.amazon.com/images/P/0393045218.0...</td>
+<td>http://images.amazon.com/images/P/0393045218.0...</td>
+<td>http://images.amazon.com/images/P/0393045218.0...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">271355</td>
+<td>0440400988</td>
+<td>There's a Bat in Bunk Five</td>
+<td>Paula Danziger</td>
+<td>1988</td>
+<td>Random House Childrens Pub (Mm)</td>
+<td>http://images.amazon.com/images/P/0440400988.0...</td>
+<td>http://images.amazon.com/images/P/0440400988.0...</td>
+<td>http://images.amazon.com/images/P/0440400988.0...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">271356</td>
+<td>0525447644</td>
+<td>From One to One Hundred</td>
+<td>Teri Sloat</td>
+<td>1991</td>
+<td>Dutton Books</td>
+<td>http://images.amazon.com/images/P/0525447644.0...</td>
+<td>http://images.amazon.com/images/P/0525447644.0...</td>
+<td>http://images.amazon.com/images/P/0525447644.0...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">271357</td>
+<td>006008667X</td>
+<td>Lily Dale : The True Story of the Town that Ta...</td>
+<td>Christine Wicker</td>
+<td>2004</td>
+<td>HarperSanFrancisco</td>
+<td>http://images.amazon.com/images/P/006008667X.0...</td>
+<td>http://images.amazon.com/images/P/006008667X.0...</td>
+<td>http://images.amazon.com/images/P/006008667X.0...</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">271358</td>
+<td>0192126040</td>
+<td>Republic (World's Classics)</td>
+<td>Plato</td>
+<td>1996</td>
+<td>Oxford University Press</td>
+<td>http://images.amazon.com/images/P/0192126040.0...</td>
+<td>http://images.amazon.com/images/P/0192126040.0...</td>
+<td>http://images.amazon.com/images/P/0192126040.0...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">271359</td>
+<td>0767409752</td>
+<td>A Guided Tour of Rene Descartes' Meditations o...</td>
+<td>Christopher Biffle</td>
+<td>2000</td>
+<td>McGraw-Hill Humanities/Social Sciences/Languages</td>
+<td>http://images.amazon.com/images/P/0767409752.0...</td>
+<td>http://images.amazon.com/images/P/0767409752.0...</td>
+<td>http://images.amazon.com/images/P/0767409752.0...</td>
+</tr>
+</tbody>
+</table>
+
+<p>271360 rows × 8 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="164">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ratings_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="164">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">User-ID</th>
+<th data-quarto-table-cell-role="th">ISBN</th>
+<th data-quarto-table-cell-role="th">Book-Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>276725</td>
+<td>034545104X</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>276726</td>
+<td>0155061224</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>276727</td>
+<td>0446520802</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>276729</td>
+<td>052165615X</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>276729</td>
+<td>0521795028</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1149775</td>
+<td>276704</td>
+<td>1563526298</td>
+<td>9</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1149776</td>
+<td>276706</td>
+<td>0679447156</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1149777</td>
+<td>276709</td>
+<td>0515107662</td>
+<td>10</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1149778</td>
+<td>276721</td>
+<td>0590442449</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1149779</td>
+<td>276723</td>
+<td>05162443314</td>
+<td>8</td>
+</tr>
+</tbody>
+</table>
+
+<p>1149780 rows × 3 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="165">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>users_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="165">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">User-ID</th>
+<th data-quarto-table-cell-role="th">Location</th>
+<th data-quarto-table-cell-role="th">Age</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>nyc, new york, usa</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>stockton, california, usa</td>
+<td>18.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>moscow, yukon territory, russia</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>porto, v.n.gaia, portugal</td>
+<td>17.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>farnborough, hants, united kingdom</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">278853</td>
+<td>278854</td>
+<td>portland, oregon, usa</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">278854</td>
+<td>278855</td>
+<td>tacoma, washington, united kingdom</td>
+<td>50.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">278855</td>
+<td>278856</td>
+<td>brampton, ontario, canada</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">278856</td>
+<td>278857</td>
+<td>knoxville, tennessee, usa</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">278857</td>
+<td>278858</td>
+<td>dublin, n/a, ireland</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+<p>278858 rows × 3 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="166">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove unnecessary columns (before merging)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>books_df.drop(columns<span class="op">=</span>[<span class="st">"Image-URL-S"</span>, <span class="st">"Image-URL-M"</span>, <span class="st">"Image-URL-L"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>books_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="166">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ISBN</th>
+<th data-quarto-table-cell-role="th">Book-Title</th>
+<th data-quarto-table-cell-role="th">Book-Author</th>
+<th data-quarto-table-cell-role="th">Year-Of-Publication</th>
+<th data-quarto-table-cell-role="th">Publisher</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0195153448</td>
+<td>Classical Mythology</td>
+<td>Mark P. O. Morford</td>
+<td>2002</td>
+<td>Oxford University Press</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0002005018</td>
+<td>Clara Callan</td>
+<td>Richard Bruce Wright</td>
+<td>2001</td>
+<td>HarperFlamingo Canada</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0060973129</td>
+<td>Decision in Normandy</td>
+<td>Carlo D'Este</td>
+<td>1991</td>
+<td>HarperPerennial</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>0374157065</td>
+<td>Flu: The Story of the Great Influenza Pandemic...</td>
+<td>Gina Bari Kolata</td>
+<td>1999</td>
+<td>Farrar Straus Giroux</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0393045218</td>
+<td>The Mummies of Urumchi</td>
+<td>E. J. W. Barber</td>
+<td>1999</td>
+<td>W. W. Norton &amp;amp; Company</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">271355</td>
+<td>0440400988</td>
+<td>There's a Bat in Bunk Five</td>
+<td>Paula Danziger</td>
+<td>1988</td>
+<td>Random House Childrens Pub (Mm)</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">271356</td>
+<td>0525447644</td>
+<td>From One to One Hundred</td>
+<td>Teri Sloat</td>
+<td>1991</td>
+<td>Dutton Books</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">271357</td>
+<td>006008667X</td>
+<td>Lily Dale : The True Story of the Town that Ta...</td>
+<td>Christine Wicker</td>
+<td>2004</td>
+<td>HarperSanFrancisco</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">271358</td>
+<td>0192126040</td>
+<td>Republic (World's Classics)</td>
+<td>Plato</td>
+<td>1996</td>
+<td>Oxford University Press</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">271359</td>
+<td>0767409752</td>
+<td>A Guided Tour of Rene Descartes' Meditations o...</td>
+<td>Christopher Biffle</td>
+<td>2000</td>
+<td>McGraw-Hill Humanities/Social Sciences/Languages</td>
+</tr>
+</tbody>
+</table>
+
+<p>271360 rows × 5 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="167">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge the books and ratings dataframes to have one, inclusive dataframe</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># with all book, user, and rating information</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.merge(books_df, ratings_df, on<span class="op">=</span><span class="st">"ISBN"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="167">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ISBN</th>
+<th data-quarto-table-cell-role="th">Book-Title</th>
+<th data-quarto-table-cell-role="th">Book-Author</th>
+<th data-quarto-table-cell-role="th">Year-Of-Publication</th>
+<th data-quarto-table-cell-role="th">Publisher</th>
+<th data-quarto-table-cell-role="th">User-ID</th>
+<th data-quarto-table-cell-role="th">Book-Rating</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0195153448</td>
+<td>Classical Mythology</td>
+<td>Mark P. O. Morford</td>
+<td>2002</td>
+<td>Oxford University Press</td>
+<td>2</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0002005018</td>
+<td>Clara Callan</td>
+<td>Richard Bruce Wright</td>
+<td>2001</td>
+<td>HarperFlamingo Canada</td>
+<td>8</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0002005018</td>
+<td>Clara Callan</td>
+<td>Richard Bruce Wright</td>
+<td>2001</td>
+<td>HarperFlamingo Canada</td>
+<td>11400</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>0002005018</td>
+<td>Clara Callan</td>
+<td>Richard Bruce Wright</td>
+<td>2001</td>
+<td>HarperFlamingo Canada</td>
+<td>11676</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0002005018</td>
+<td>Clara Callan</td>
+<td>Richard Bruce Wright</td>
+<td>2001</td>
+<td>HarperFlamingo Canada</td>
+<td>41385</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1031131</td>
+<td>0440400988</td>
+<td>There's a Bat in Bunk Five</td>
+<td>Paula Danziger</td>
+<td>1988</td>
+<td>Random House Childrens Pub (Mm)</td>
+<td>276463</td>
+<td>7</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1031132</td>
+<td>0525447644</td>
+<td>From One to One Hundred</td>
+<td>Teri Sloat</td>
+<td>1991</td>
+<td>Dutton Books</td>
+<td>276579</td>
+<td>4</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1031133</td>
+<td>006008667X</td>
+<td>Lily Dale : The True Story of the Town that Ta...</td>
+<td>Christine Wicker</td>
+<td>2004</td>
+<td>HarperSanFrancisco</td>
+<td>276680</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1031134</td>
+<td>0192126040</td>
+<td>Republic (World's Classics)</td>
+<td>Plato</td>
+<td>1996</td>
+<td>Oxford University Press</td>
+<td>276680</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1031135</td>
+<td>0767409752</td>
+<td>A Guided Tour of Rene Descartes' Meditations o...</td>
+<td>Christopher Biffle</td>
+<td>2000</td>
+<td>McGraw-Hill Humanities/Social Sciences/Languages</td>
+<td>276680</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>1031136 rows × 7 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="168">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of duplicated elements in the dataset</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (could be problematic if not resolved)</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df.duplicated().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="168">
+<pre><code>0</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="169">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of 'null'/'NaN' elements in the dataset </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (if NaN filling is needed or not)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>(df.isnull().<span class="bu">sum</span>() <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="169">
+<pre><code>ISBN                   0.000000
+Book-Title             0.000000
+Book-Author            0.000097
+Year-Of-Publication    0.000000
+Publisher              0.000194
+User-ID                0.000000
+Book-Rating            0.000000
+dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="170">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill unknown and unformatted values with proper ones for readability and to</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># improve data accuracy and relevance </span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Change types of columns to allow an easier time to parse</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].<span class="bu">map</span>(<span class="kw">lambda</span> entry: entry <span class="cf">if</span> entry.isnumeric() <span class="cf">else</span> df[<span class="st">"Year-Of-Publication"</span>].mode()[<span class="dv">0</span>])</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].astype(<span class="st">"int64"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Author"</span>].fillna(<span class="st">"N/A"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Publisher"</span>].fillna(<span class="st">"N/A"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Title"</span>] <span class="op">=</span> df[<span class="st">"Book-Title"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Author"</span>] <span class="op">=</span> df[<span class="st">"Book-Author"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ISBN"</span>] <span class="op">=</span> df[<span class="st">"ISBN"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Publisher"</span>] <span class="op">=</span> df[<span class="st">"Publisher"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting basic information about the dataset</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+Int64Index: 1031136 entries, 0 to 1031135
+Data columns (total 7 columns):
+ #   Column               Non-Null Count    Dtype 
+---  ------               --------------    ----- 
+ 0   ISBN                 1031136 non-null  object
+ 1   Book-Title           1031136 non-null  object
+ 2   Book-Author          1031136 non-null  object
+ 3   Year-Of-Publication  1031136 non-null  int64 
+ 4   Publisher            1031136 non-null  object
+ 5   User-ID              1031136 non-null  int64 
+ 6   Book-Rating          1031136 non-null  int64 
+dtypes: int64(3), object(4)
+memory usage: 62.9+ MB</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="171">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> report_basic_stats(dataframe: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> n_users, n_books</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    n_users <span class="op">=</span> dataframe[<span class="st">"User-ID"</span>].unique().shape[<span class="dv">0</span>]</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    n_books <span class="op">=</span> dataframe[<span class="st">"ISBN"</span>].unique().shape[<span class="dv">0</span>]</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    n_ratings <span class="op">=</span> <span class="bu">len</span>(dataframe[<span class="st">"Book-Rating"</span>])</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    avg_num_ratings_per_user <span class="op">=</span> n_ratings <span class="op">/</span> n_users</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Unique Book Users in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_users)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Unique Book Titles / ISBNs in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_books)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Total Ratings in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_ratings)</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Average Number of Book Ratings per User in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), <span class="bu">round</span>(avg_num_ratings_per_user, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="172">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>report_basic_stats(df, <span class="st">"Regular"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of Unique Book Users in This Dataset (Regular): 92106
+Number of Unique Book Titles / ISBNs in This Dataset (Regular): 270151
+Number of Total Ratings in This Dataset (Regular): 1031136
+Average Number of Book Ratings per User in This Dataset (Regular): 11.195</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="173">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the first 3000 Book-ISBNs in Dataset (keeps the data from</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># becoming too long to visualize and compute within the ML model)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>book_isbn_index <span class="op">=</span> df.groupby(<span class="st">"ISBN"</span>).count().sort_values(by<span class="op">=</span><span class="st">"Book-Rating"</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>:<span class="dv">3000</span>].index</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df[df[<span class="st">"ISBN"</span>].isin(book_isbn_index)]</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>df2.count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="173">
+<pre><code>ISBN                   271456
+Book-Title             271456
+Book-Author            271456
+Year-Of-Publication    271456
+Publisher              271456
+User-ID                271456
+Book-Rating            271456
+dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="174">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the first 3000 Book-Users in Dataset (keeps the data from</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># becoming too long to visualize and compute within the ML model)</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>book_users_index <span class="op">=</span> df2.groupby(<span class="st">"User-ID"</span>).count().sort_values(by<span class="op">=</span><span class="st">"Book-Rating"</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>:<span class="dv">3000</span>].index</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>df3 <span class="op">=</span> df2[df2[<span class="st">"User-ID"</span>].isin(book_users_index)]</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>df3.count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="174">
+<pre><code>ISBN                   172071
+Book-Title             172071
+Book-Author            172071
+Year-Of-Publication    172071
+Publisher              172071
+User-ID                172071
+Book-Rating            172071
+dtype: int64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="175">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a separate dataframe for unique Book-ISBNs</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>book_isbns <span class="op">=</span> df3[<span class="st">"ISBN"</span>].unique()</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>isbn_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>book_isbns, columns<span class="op">=</span>[<span class="st">"Original-ISBN"</span>])</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>isbn_df[<span class="st">"New-ISBN"</span>] <span class="op">=</span> isbn_df.index <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="176">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a separate dataframe for unique Book-Users (indicated by their IDs)</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>book_users <span class="op">=</span> df3[<span class="st">"User-ID"</span>].unique()</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>users_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>book_users, columns<span class="op">=</span>[<span class="st">"Original-User-ID"</span>])</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>users_df[<span class="st">"New-User-ID"</span>] <span class="op">=</span> users_df.index <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="177">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge in new indices for Book-ISBN and Book-User-IDs that are modified</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from 1 to 3000 (accounts for scaling down of data)</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>cleaned_df <span class="op">=</span> df3.merge(isbn_df, left_on<span class="op">=</span><span class="st">"ISBN"</span>, right_on<span class="op">=</span><span class="st">"Original-ISBN"</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>cleaned_df.drop(columns<span class="op">=</span>[<span class="st">"Original-ISBN"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>cleaned_df <span class="op">=</span> cleaned_df.merge(users_df, left_on<span class="op">=</span><span class="st">"User-ID"</span>, right_on<span class="op">=</span><span class="st">"Original-User-ID"</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>cleaned_df.drop(columns<span class="op">=</span>[<span class="st">"Original-User-ID"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>cleaned_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="177">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ISBN</th>
+<th data-quarto-table-cell-role="th">Book-Title</th>
+<th data-quarto-table-cell-role="th">Book-Author</th>
+<th data-quarto-table-cell-role="th">Year-Of-Publication</th>
+<th data-quarto-table-cell-role="th">Publisher</th>
+<th data-quarto-table-cell-role="th">User-ID</th>
+<th data-quarto-table-cell-role="th">Book-Rating</th>
+<th data-quarto-table-cell-role="th">New-ISBN</th>
+<th data-quarto-table-cell-role="th">New-User-ID</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>0440234743</td>
+<td>The Testament</td>
+<td>John Grisham</td>
+<td>1999</td>
+<td>Dell</td>
+<td>277478</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>0971880107</td>
+<td>Wild Animus</td>
+<td>Rich Shapero</td>
+<td>2004</td>
+<td>Too Far</td>
+<td>277478</td>
+<td>0</td>
+<td>3</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0671888587</td>
+<td>I'll Be Seeing You</td>
+<td>Mary Higgins Clark</td>
+<td>1994</td>
+<td>Pocket</td>
+<td>277478</td>
+<td>0</td>
+<td>9</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>0440225701</td>
+<td>The Street Lawyer</td>
+<td>JOHN GRISHAM</td>
+<td>1999</td>
+<td>Dell</td>
+<td>277478</td>
+<td>0</td>
+<td>15</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>0786868716</td>
+<td>The Five People You Meet in Heaven</td>
+<td>Mitch Albom</td>
+<td>2003</td>
+<td>Hyperion</td>
+<td>277478</td>
+<td>0</td>
+<td>30</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">172066</td>
+<td>0767908171</td>
+<td>A Short History of Nearly Everything</td>
+<td>Bill Bryson</td>
+<td>2003</td>
+<td>Broadway</td>
+<td>70999</td>
+<td>0</td>
+<td>2798</td>
+<td>3000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">172067</td>
+<td>0385234104</td>
+<td>Fatherhood</td>
+<td>Bill Cosby</td>
+<td>1986</td>
+<td>Bantam Dell Pub Group</td>
+<td>70999</td>
+<td>0</td>
+<td>2857</td>
+<td>3000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">172068</td>
+<td>0425190641</td>
+<td>Fire Ice: A Novel from the Numa Files (Kurt Au...</td>
+<td>Clive Cussler</td>
+<td>2003</td>
+<td>Berkley Publishing Group</td>
+<td>70999</td>
+<td>0</td>
+<td>2874</td>
+<td>3000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">172069</td>
+<td>0553584375</td>
+<td>No One to Trust</td>
+<td>IRIS JOHANSEN</td>
+<td>2003</td>
+<td>Bantam</td>
+<td>70999</td>
+<td>0</td>
+<td>2880</td>
+<td>3000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">172070</td>
+<td>044023512X</td>
+<td>City of Light</td>
+<td>Lauren Belfer</td>
+<td>2000</td>
+<td>Island</td>
+<td>70999</td>
+<td>0</td>
+<td>2941</td>
+<td>3000</td>
+</tr>
+</tbody>
+</table>
+
+<p>172071 rows × 9 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="178">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends <span class="op">=</span> cleaned_df.copy()</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends.drop(labels<span class="op">=</span>[<span class="st">"ISBN"</span>, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Book-Author"</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Year-Of-Publication"</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Publisher"</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"User-ID"</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"New-ISBN"</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"New-User-ID"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends_copy <span class="op">=</span> cleaned_df_condensed_trends.copy()</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends <span class="op">=</span> pd.DataFrame(cleaned_df_condensed_trends_copy</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>                                           .groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>]</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>                                           .mean())</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends[<span class="st">"Total-Num-Of-Ratings"</span>] <span class="op">=</span> pd.DataFrame(cleaned_df_condensed_trends_copy</span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>                                                                   .groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>]</span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>                                                                   .count())</span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="178">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Book-Rating</th>
+<th data-quarto-table-cell-role="th">Total-Num-Of-Ratings</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Book-Title</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">10 Lb. Penalty</td>
+<td>1.911765</td>
+<td>34</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">16 Lighthouse Road</td>
+<td>1.276596</td>
+<td>47</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1984</td>
+<td>3.817460</td>
+<td>126</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1st to Die: A Novel</td>
+<td>2.893891</td>
+<td>311</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2010: Odyssey Two</td>
+<td>2.086207</td>
+<td>58</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="179">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a bar graph describing number of reviews for first 30 books</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>ax<span class="op">=</span>plt.subplot()</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>ax.bar(cleaned_df_condensed_trends.head(<span class="dv">30</span>).index,</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>       cleaned_df_condensed_trends[<span class="st">"Total-Num-Of-Ratings"</span>].head(<span class="dv">30</span>), </span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>       color<span class="op">=</span><span class="st">"b"</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(cleaned_df_condensed_trends.index,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                   rotation<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>                   fontsize<span class="op">=</span><span class="st">"12"</span>,</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                   horizontalalignment<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Total Number of Reviews For Each Book"</span>)</span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7572\177655821.py:7: UserWarning: FixedFormatter should only be used together with FixedLocator
+  ax.set_xticklabels(cleaned_df_condensed_trends.index,</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="180">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean rating of all movies</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the popular, high-rating books (top-50) and unpopular, low-rating books (bottom-50)</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>cleaned_df_sorted_mean_rating <span class="op">=</span> cleaned_df.copy().groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- Sorted by Mean On Average: ---------</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- TOP 50: ---------</span><span class="ch">\n</span><span class="st">"</span>, cleaned_df_sorted_mean_rating.head(<span class="dv">50</span>), <span class="st">"</span><span class="ch">\n\n</span><span class="st">--------- BOTTOM 50: ---------</span><span class="ch">\n</span><span class="st">"</span>, cleaned_df_sorted_mean_rating.tail(<span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>--------- Sorted by Mean On Average: ---------
+
+--------- TOP 50: ---------
+ Book-Title
+Generation Golf. Eine Inspektion                                                                          9.000000
+Novocento, Un Monologo                                                                                    9.000000
+Io Non Ho Paura                                                                                           8.000000
+Herr Lehmann.                                                                                             7.500000
+L'Etranger (Collection Folio, 2)                                                                          6.777778
+Griffin &amp;amp; Sabine: An Extraordinary Correspondence                                                     6.000000
+The Darwin Awards: Evolution in Action                                                                    5.653846
+Harry Potter and the Sorcerer's Stone (Book 1)                                                            5.651613
+My Sister's Keeper : A Novel (Picoult, Jodi)                                                              5.515152
+Harry Potter and the Prisoner of Azkaban (Book 3)                                                         5.465116
+Harry Potter and the Goblet of Fire (Book 4)                                                              5.445415
+The Stand (The Complete and Uncut Edition)                                                                5.433333
+Balzac and the Little Chinese Seamstress                                                                  5.379310
+Harry Potter and the Chamber of Secrets Postcard Book                                                     5.363636
+The Lone Ranger and Tonto Fistfight in Heaven                                                             5.333333
+Harry Potter and the Order of the Phoenix (Book 5)                                                        5.277228
+Hamlet                                                                                                    5.241379
+The Lunatic Cafe (Anita Blake Vampire Hunter (Paperback))                                                 5.230769
+The Little Prince                                                                                         5.210526
+Wiener Dog Art                                                                                            5.157895
+Weirdos From Another Planet!                                                                              5.147059
+Killing Dance (Anita Blake Vampire Hunter (Paperback))                                                    5.142857
+The Secret Garden                                                                                         5.133333
+Wicca: A Guide for the Solitary Practitioner                                                              5.120000
+Sabine's Notebook: In Which the Extraordinary Correspondence of Griffin &amp;amp; Sabine Continues            5.105263
+The Metamorphosis (Bantam Classics)                                                                       5.062500
+The Grapes of Wrath (20th Century Classics)                                                               5.031250
+The Lion, the Witch, and the Wardrobe (The Chronicles of Narnia, Book 2)                                  4.978723
+Green Eggs and Ham (I Can Read It All by Myself Beginner Books)                                           4.931034
+Harry Potter and the Chamber of Secrets (Book 2)                                                          4.924092
+The Cat in the Hat                                                                                        4.903226
+GREAT GATSBY (REISSUE)                                                                                    4.800000
+Ender's Game (Ender Wiggins Saga (Paperback))                                                             4.793478
+The Vagina Monologues: The V-Day Edition                                                                  4.793103
+The Godfather                                                                                             4.783784
+All I Need to Know I Learned from My Cat                                                                  4.769231
+Hyperion                                                                                                  4.764706
+Sister of My Heart                                                                                        4.743590
+Sense and Sensibility (Penguin Popular Classics)                                                          4.733333
+On the Banks of Plum Creek                                                                                4.718750
+Rich Dad, Poor Dad: What the Rich Teach Their Kids About Money--That the Poor and Middle Class Do Not!    4.717949
+The Lord of the Rings (Movie Art Cover)                                                                   4.714286
+Needful Things: The Last Castle Rock Story                                                                4.681818
+The Jungle (Bantam Classics)                                                                              4.652174
+Memoirs of a Geisha                                                                                       4.638298
+Pride &amp;amp; Prejudice (Wordsworth Classics)                                                               4.631579
+The Spirit Catches You and You Fall Down                                                                  4.600000
+Anthem                                                                                                    4.590909
+JITTERBUG PERFUME                                                                                         4.571429
+The Curious Incident of the Dog in the Night-Time (Vintage Contemporaries)                                4.571429
+Name: Book-Rating, dtype: float64 
+
+--------- BOTTOM 50: ---------
+ Book-Title
+Silent Honor                                                                                                               0.735294
+Vernon God Little: A 21st Century Comedy in the Presence of Death                                                          0.727273
+Ruthless.Com (Tom Clancy's Power Plays (Paperback))                                                                        0.725806
+The Blooding                                                                                                               0.722222
+Where You Belong                                                                                                           0.720930
+The Matarese Countdown                                                                                                     0.717949
+Pleading Guilty                                                                                                            0.716049
+Family Pictures                                                                                                            0.714286
+Fortune's Hand                                                                                                             0.708333
+Passion's Promise                                                                                                          0.705882
+Ssn                                                                                                                        0.700000
+The Icarus Agenda                                                                                                          0.700000
+Legacy of Silence                                                                                                          0.696970
+Confessions of a Sociopathic Social Climber : The Katya Livingston Chronicles (Katya Livingston Chronicles (Hardcover))    0.695652
+The Blue Last: A Richard Jury Mystery (Richard Jury Mysteries (Paperback))                                                 0.695652
+Subterranean                                                                                                               0.695652
+The Legend of Bagger Vance                                                                                                 0.692308
+State of Siege (Tom Clancy's Op-Center, 6)                                                                                 0.680851
+Man From St Petersburg                                                                                                     0.659091
+Master of the Game                                                                                                         0.658537
+Rosehaven                                                                                                                  0.656250
+The X-Files: Goblins                                                                                                       0.640000
+Welcome to Dead House (Goosebumps, No 1)                                                                                   0.638889
+Ground Zero and Beyond                                                                                                     0.629032
+Los Alamos: A Novel                                                                                                        0.620690
+Treasures                                                                                                                  0.617647
+Whirlwind                                                                                                                  0.606061
+If Tomorrow Comes                                                                                                          0.605263
+WEB OF DREAMS (Casteel Saga (Paperback))                                                                                   0.604651
+Starting Over                                                                                                              0.600000
+Hurricane Bay                                                                                                              0.600000
+Montana                                                                                                                    0.595238
+Wild Animus                                                                                                                0.582865
+People of the River (The First North Americans series, Book 4)                                                             0.571429
+Honor Among Thieves                                                                                                        0.568182
+The Cat Who Went into the Closet                                                                                           0.566038
+After the Fire                                                                                                             0.564103
+Yesterday                                                                                                                  0.531250
+Monster Blood (Goosebumps, No 3)                                                                                           0.466667
+Women in His Life                                                                                                          0.452381
+Long, Lean, and Lethal                                                                                                     0.451613
+Dating Game                                                                                                                0.400000
+Billy Straight: A Novel                                                                                                    0.375000
+McNally's Luck (Archy McNally Novels (Paperback))                                                                          0.365854
+Final Flight                                                                                                               0.333333
+Stay Out of the Basement (Goosebumps, No 2)                                                                                0.285714
+Say Cheese and Die! (Goosebumps, No 4)                                                                                     0.275862
+Long Time No See                                                                                                           0.161290
+The Sculptress                                                                                                             0.000000
+Der Vorleser                                                                                                               0.000000
+Name: Book-Rating, dtype: float64</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="181">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(pd.DataFrame(cleaned_df_sorted_mean_rating)[<span class="st">"Book-Rating"</span>], color<span class="op">=</span><span class="st">"r"</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Histogram - Distribution of Book-Ratings Across All Books in the Dataset"</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-24-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<div class="cell" data-execution_count="182">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>report_basic_stats(cleaned_df, <span class="st">"Reduced"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of Unique Book Users in This Dataset (Reduced): 3000
+Number of Unique Book Titles / ISBNs in This Dataset (Reduced): 3000
+Number of Total Ratings in This Dataset (Reduced): 172071
+Average Number of Book Ratings per User in This Dataset (Reduced): 57.357</code></pre>
+</div>
+</div>
+</section>
+<section id="machine-learning---model-training-and-evaluation" class="level2">
+<h2 class="anchored" data-anchor-id="machine-learning---model-training-and-evaluation">Machine Learning - Model Training and Evaluation</h2>
+<div class="cell" data-execution_count="183">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuring the ML Tensorflow Model by splitting the data 90% for testing,</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5% for validation, and 5% for testing</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>X_train, X_test <span class="op">=</span> train_test_split(cleaned_df, test_size<span class="op">=</span><span class="fl">0.10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">2018</span>)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>X_val, X_test <span class="op">=</span> train_test_split(X_test, test_size<span class="op">=</span><span class="fl">0.50</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">2018</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="184">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Outputting the shape of the new datasets</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Training Set:"</span>, X_train.shape, <span class="st">"and Size of Training Set:"</span>, X_train.size)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Validation Set:"</span>, X_val.shape, <span class="st">"and Size of Validation Set:"</span>, X_val.size)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Test Set:"</span>, X_test.shape, <span class="st">"and Size of Testing Set:"</span>, X_test.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Shape of Training Set: (154863, 9) and Size of Training Set: 1393767
+Shape of Validation Set: (8604, 9) and Size of Validation Set: 77436
+Shape of Test Set: (8604, 9) and Size of Testing Set: 77436</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="185">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>X_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="185">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">ISBN</th>
+<th data-quarto-table-cell-role="th">Book-Title</th>
+<th data-quarto-table-cell-role="th">Book-Author</th>
+<th data-quarto-table-cell-role="th">Year-Of-Publication</th>
+<th data-quarto-table-cell-role="th">Publisher</th>
+<th data-quarto-table-cell-role="th">User-ID</th>
+<th data-quarto-table-cell-role="th">Book-Rating</th>
+<th data-quarto-table-cell-role="th">New-ISBN</th>
+<th data-quarto-table-cell-role="th">New-User-ID</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">159718</td>
+<td>0515111279</td>
+<td>The Cat Who Wasn't There</td>
+<td>Lilian Jackson Braun</td>
+<td>1994</td>
+<td>Jove Books</td>
+<td>254899</td>
+<td>0</td>
+<td>548</td>
+<td>2474</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">33289</td>
+<td>068480087X</td>
+<td>POSTCARDS</td>
+<td>Annie Proulx</td>
+<td>1994</td>
+<td>Scribner</td>
+<td>273979</td>
+<td>0</td>
+<td>1043</td>
+<td>235</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">47405</td>
+<td>0451176464</td>
+<td>Gerald's Game</td>
+<td>Stephen King</td>
+<td>2001</td>
+<td>Signet Book</td>
+<td>31826</td>
+<td>10</td>
+<td>1517</td>
+<td>393</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">86465</td>
+<td>0871136791</td>
+<td>Cold Mountain</td>
+<td>Charles Frazier</td>
+<td>1997</td>
+<td>Atlantic Monthly Press</td>
+<td>55548</td>
+<td>0</td>
+<td>1186</td>
+<td>949</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">130007</td>
+<td>0553279378</td>
+<td>I Know Why the Caged Bird Sings</td>
+<td>MAYA ANGELOU</td>
+<td>1983</td>
+<td>Bantam</td>
+<td>275922</td>
+<td>7</td>
+<td>1380</td>
+<td>1646</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">115605</td>
+<td>0679751602</td>
+<td>Mama Makes Up Her Mind: And Other Dangers of S...</td>
+<td>Bailey White</td>
+<td>1994</td>
+<td>Vintage Books USA</td>
+<td>8067</td>
+<td>0</td>
+<td>803</td>
+<td>1383</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">84745</td>
+<td>0316284955</td>
+<td>White Oleander : A Novel (Oprah's Book Club)</td>
+<td>Janet Fitch</td>
+<td>2000</td>
+<td>Back Bay Books</td>
+<td>266865</td>
+<td>9</td>
+<td>957</td>
+<td>924</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">80098</td>
+<td>0446608955</td>
+<td>A Walk to Remember</td>
+<td>Nicholas Sparks</td>
+<td>2000</td>
+<td>Warner Books</td>
+<td>236283</td>
+<td>10</td>
+<td>1164</td>
+<td>846</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">60006</td>
+<td>0446532452</td>
+<td>The Wedding</td>
+<td>Nicholas Sparks</td>
+<td>2003</td>
+<td>Warner Books</td>
+<td>103811</td>
+<td>0</td>
+<td>1656</td>
+<td>563</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">107770</td>
+<td>0804114609</td>
+<td>Patty Jane's House of Curl</td>
+<td>Lorna Landvik</td>
+<td>1999</td>
+<td>Ivy Books</td>
+<td>220240</td>
+<td>0</td>
+<td>1426</td>
+<td>1249</td>
+</tr>
+</tbody>
+</table>
+
+<p>154863 rows × 9 columns</p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="186">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define my cost function (mean-squared error) for each dataset before the</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># invokation of the ML algorithm</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>df_ratings_train <span class="op">=</span> np.zeros((n_users, n_books))</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_train.itertuples():</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    df_ratings_train[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>df_ratings_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="186">
+<pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       ...,
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="187">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>df_ratings_validation <span class="op">=</span> np.zeros((n_users, n_books))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_val.itertuples():</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    df_ratings_validation[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_ratings_validation.shape)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>df_ratings_validation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(3000, 3000)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="187">
+<pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       ...,
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="188">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df_ratings_test <span class="op">=</span> np.zeros((n_users, n_books))</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_test.itertuples():</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    df_ratings_test[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>df_ratings_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="188">
+<pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       ...,
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="189">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_sparsity_stats(df: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-------------- Sparsity Stats for </span><span class="sc">{}</span><span class="st">: --------------"</span>.<span class="bu">format</span>(<span class="bu">type</span>))</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">=</span> <span class="bu">float</span>(<span class="bu">len</span>(df.nonzero()[<span class="dv">0</span>]))</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">/=</span> (df.shape[<span class="dv">0</span>] <span class="op">*</span> df.shape[<span class="dv">1</span>])</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">*=</span> <span class="dv">100</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Sparsity: </span><span class="sc">{:4.2f}</span><span class="st">%'</span>.<span class="bu">format</span>(df_sparsity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="190">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_train, <span class="st">"Train"</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_validation, <span class="st">"Validation"</span>)</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_test, <span class="st">"Test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>-------------- Sparsity Stats for Train: --------------
+Sparsity: 0.53%
+-------------- Sparsity Stats for Validation: --------------
+Sparsity: 0.03%
+-------------- Sparsity Stats for Test: --------------
+Sparsity: 0.03%</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="191">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>actual_validation <span class="op">=</span> X_val[df_ratings_validation.nonzero()].flatten()</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>pred_validation <span class="op">=</span> df_ratings_validation[df_ratings_validation.nonzero()].flatten()</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print(actual_validation.shape, pred_validation.shape)</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill the empty values with the mean (match size)</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: -------</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_validation = np.zeros((len(X_val),1))</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_validation[pred_validation==1] = 3.5</span></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="co"># print(pred_validation)</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Mean Squared Error is : ", mean_squared_error(pred_validation, actual_validation))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>InvalidIndexError: (array([   3,    4,    5, ..., 2977, 2995, 2997], dtype=int64), array([ 123, 2332,   46, ..., 2279,  594, 2935], dtype=int64))</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>n_latent_fact <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>user_input <span class="op">=</span> Input(shape<span class="op">=</span>[<span class="dv">1</span>], name<span class="op">=</span><span class="st">"User"</span>)</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>user_embedding <span class="op">=</span> Embedding(input_dim<span class="op">=</span>n_users <span class="op">+</span> <span class="dv">1</span>, </span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                           output_dim<span class="op">=</span>n_latent_fact, </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>                           name<span class="op">=</span><span class="st">"User_Embedding"</span>)(user_input)</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>user_vec <span class="op">=</span> Flatten(name<span class="op">=</span><span class="st">"Flatten_Users"</span>)(user_embedding)</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>book_input <span class="op">=</span> Input(shape<span class="op">=</span>[<span class="dv">1</span>], name<span class="op">=</span><span class="st">"Book"</span>)</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>book_embedding <span class="op">=</span> Embedding(input_dim<span class="op">=</span>n_books <span class="op">+</span> <span class="dv">1</span>, </span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>                           output_dim<span class="op">=</span>n_latent_fact, </span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>                           name<span class="op">=</span><span class="st">"Book_Embedding"</span>)(book_input)</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>book_vec <span class="op">=</span> Flatten(name<span class="op">=</span><span class="st">"Flatten_Movies"</span>)(book_embedding)</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>dot_product <span class="op">=</span> dot([book_vec, user_vec], axes<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Model(inputs<span class="op">=</span>[user_input, book_input], outputs<span class="op">=</span>dot_product)</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">"mse"</span>,</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>Adam(learning_rate<span class="op">=</span><span class="fl">0.0001</span>),</span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mean_absolute_error"</span>])</span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>book_rec_history <span class="op">=</span> model.fit(x<span class="op">=</span>(X_train[<span class="st">"New-User-ID"</span>], X_train[<span class="st">"New-ISBN"</span>]), </span>
+<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>                             y<span class="op">=</span>X_train[<span class="st">"Book-Rating"</span>],</span>
+<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>                             epochs<span class="op">=</span><span class="dv">150</span>,</span>
+<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a>                             validation_data<span class="op">=</span>([X_val[<span class="st">"New-User-ID"</span>], X_val[<span class="st">"New-ISBN"</span>]], X_val[<span class="st">"Book-Rating"</span>]),</span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>                             use_multiprocessing<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>pd.Series(book_rec_history.history[<span class="st">"val_loss"</span>][<span class="dv">15</span>:]).plot(logy<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">"gold"</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Epoch"</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Validation Error"</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Minimum MSE:"</span>, <span class="bu">min</span>(book_rec_history.history[<span class="st">"val_loss"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: MAY REMOVE</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>book_users_interaction_matrix <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>[n_users, n_books])</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>sns.heatmap(book_users_interaction_matrix, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Book User-Item Interaction HeatMap"</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>predicted_ratings <span class="op">=</span> model.predict(x<span class="op">=</span>(X_test[<span class="st">"New-User-ID"</span>], X_test[<span class="st">"New-ISBN"</span>])).flatten()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>book_rec_history_model_loss, book_rec_history_model_accuracy <span class="op">=</span> model.evaluate(x<span class="op">=</span>(X_test[<span class="st">"New-User-ID"</span>], X_test[<span class="st">"New-ISBN"</span>]), y<span class="op">=</span>X_test[<span class="st">"Book-Rating"</span>])</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>book_rec_history_model_accuracy <span class="op">/=</span> <span class="dv">10</span></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Threshold the predicted ratings to binary recommendations (e.g., using a threshold of &gt;= 5 for recommending book)</span></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>predicted_labels_bin_classify <span class="op">=</span> (predicted_ratings.copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>actual_labels_bin_classify <span class="op">=</span> (X_test[<span class="st">"Book-Rating"</span>].copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>actual_ratings_str <span class="op">=</span> predicted_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>predicted_ratings_str <span class="op">=</span> actual_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>actual_ratings_str, y_pred<span class="op">=</span>predicted_ratings_str, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>y_test_book_rating <span class="op">=</span> predicted_labels_bin_classify</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>y_pred_book_rating <span class="op">=</span> actual_labels_bin_classify</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train Result:</span><span class="ch">\n</span><span class="st">================================================"</span>)</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Lost Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Average Precision Score (When Compared to Test Set): </span><span class="sc">{</span>average_precision_score(y_true<span class="op">=</span>actual_labels_bin_classify, y_score<span class="op">=</span>predicted_labels_bin_classify)<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_accuracy<span class="sc">:.4f}</span><span class="ss">"</span>, <span class="ss">f"(as a percentage: </span><span class="sc">{</span>book_rec_history_model_accuracy <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test_book_rating, y_pred_book_rating) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb58-27"><a href="#cb58-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Confusion Matrix: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>confusion_matrix(y_test_book_rating, y_pred_book_rating)<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
+<span id="cb58-28"><a href="#cb58-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-29"><a href="#cb58-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Precision, Recall, and F1-score</span></span>
+<span id="cb58-30"><a href="#cb58-30" aria-hidden="true" tabindex="-1"></a>precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>actual_labels_bin_classify, y_pred<span class="op">=</span>predicted_labels_bin_classify, average<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb58-31"><a href="#cb58-31" aria-hidden="true" tabindex="-1"></a>model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
+<span id="cb58-32"><a href="#cb58-32" aria-hidden="true" tabindex="-1"></a>model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
+<span id="cb58-33"><a href="#cb58-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-34"><a href="#cb58-34" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb58-35"><a href="#cb58-35" aria-hidden="true" tabindex="-1"></a>plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">'blue'</span>, <span class="st">'green'</span>, <span class="st">'orange'</span>])</span>
+<span id="cb58-36"><a href="#cb58-36" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Metrics'</span>)</span>
+<span id="cb58-37"><a href="#cb58-37" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Score'</span>)</span>
+<span id="cb58-38"><a href="#cb58-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Recommendation Model Evaluation Metrics'</span>)</span>
+<span id="cb58-39"><a href="#cb58-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb58-40"><a href="#cb58-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-41"><a href="#cb58-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the confusion matrix</span></span>
+<span id="cb58-42"><a href="#cb58-42" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="op">=</span> confusion_matrix(y_test_book_rating, y_pred_book_rating)</span>
+<span id="cb58-43"><a href="#cb58-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-44"><a href="#cb58-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the confusion matrix</span></span>
+<span id="cb58-45"><a href="#cb58-45" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb58-46"><a href="#cb58-46" aria-hidden="true" tabindex="-1"></a>sns.heatmap(conf_matrix, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
+<span id="cb58-47"><a href="#cb58-47" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Predicted Label'</span>)</span>
+<span id="cb58-48"><a href="#cb58-48" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Actual Label'</span>)</span>
+<span id="cb58-49"><a href="#cb58-49" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Confusion Matrix'</span>)</span>
+<span id="cb58-50"><a href="#cb58-50" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
