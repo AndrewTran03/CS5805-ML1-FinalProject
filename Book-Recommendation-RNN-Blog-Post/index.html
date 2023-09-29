@@ -99,55 +99,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="author-andrew-tran" class="level4">
 <h4 class="anchored" data-anchor-id="author-andrew-tran">Author: Andrew Tran</h4>
-<p>To complete this blog post, I used the following online sources as references for developing this blog post:</p>
-<p>[1] Book Recommendation Dataset:</p>
-<p>Möbius, “Book Recommendation Dataset”, Apr.-2023. [Online]. Available: https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset. [Accessed: 25-Sep.-2023].</p>
-<p>[2] Tutorial on Basics of ML Recommendation Systems:</p>
-<p>M. Ahammad, “Movie Recommender Systems Using Neural Network,” 2020. [Online]. Available: https://www. kaggle.com/code/mejbahahammad/movie-recommender-systems-using-neural-network. [Accessed: 25-Sep.-2023].</p>
-<p>[3] Tutorial on Sample Visualizations for ML Recommendation Systems:</p>
-<p>Great Learning Team, “Excerpts From a Masterclass on Movie Recommendation System,” 22-Aug.-2022. Available: https://www.mygreatlearning.com/blog/masterclass-on-movie-recommendation-system/. [Accessed: 26-Sep.2023].</p>
+</section>
+<section id="blog-post-inspiration-and-objectives" class="level2">
+<h2 class="anchored" data-anchor-id="blog-post-inspiration-and-objectives">Blog Post Inspiration and Objectives</h2>
+<p>In this blog post, I was hoping to take on the classic beginner/intermediate challenge of creating a simple Machine Learning recommendation system, imitating ones used at Big-Tech companies such as Netflix. Additionally, with so many examples online about Machine Learning movie recommendation systems, I decided to look to establish this system on another area which has always piqued my interest: books. With that said, let’s try to analyze and create this system with some Machine Learning:</p>
 </section>
 <section id="data-preprocessing---cleaning-and-analytics" class="level2">
 <h2 class="anchored" data-anchor-id="data-preprocessing---cleaning-and-analytics">Data Preprocessing - Cleaning and Analytics</h2>
-<div class="cell" data-execution_count="159">
+<div class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> sns.color_palette()</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> average_precision_score, roc_auc_score, precision_recall_fscore_support, confusion_matrix, classification_report</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Model</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Input, Embedding, Flatten, dot</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> Adam</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"fivethirtyeight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> sns.color_palette()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> average_precision_score, roc_auc_score, precision_recall_fscore_support, confusion_matrix, classification_report</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, pairwise_distances</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Model</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Input, Embedding, Flatten, dot</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> Adam</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"fivethirtyeight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="160">
+<p>First, we will read and display all of the initial datasets in our file system for this blog post, downloaded from Kaggle. These datasets contains loads of valuable information such as Book-ISBNS, user-ids for the (anonymous) users/reviewers, book ratings, etc.</p>
+<div class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reading and displaying all of the initial datasets</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>books_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Books.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ratings_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Ratings.csv"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>users_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Users.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7572\2730945584.py:2: DtypeWarning: Columns (3) have mixed types. Specify dtype option on import or set low_memory=False.
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7880\2730945584.py:2: DtypeWarning: Columns (3) have mixed types. Specify dtype option on import or set low_memory=False.
   books_df = pd.read_csv("datasets/Books.csv")</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="161">
+<p>For clarity on the constraints and parameters of the working datasets, I went to find high-level exploratory statistics on all of the datasets: shape, information about all of the entries, etc.</p>
+<div class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Determining the shape of each of the initial datasets</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>books_df.shape, ratings_df.shape, users_df.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="161">
+<div class="cell-output cell-output-display" data-execution_count="3">
 <pre><code>((271360, 8), (1149780, 3), (278858, 3))</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="162">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting a sample of each of the initial datasets through the seeing the </span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># first 10 entries completely in each dataset</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>books_df.info(), ratings_df.info(), users_df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out all of the columns (and their names) available for me to use in the dataset</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>books_df.columns, ratings_df.columns, users_df.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<pre><code>(Index(['ISBN', 'Book-Title', 'Book-Author', 'Year-Of-Publication', 'Publisher',
+        'Image-URL-S', 'Image-URL-M', 'Image-URL-L'],
+       dtype='object'),
+ Index(['User-ID', 'ISBN', 'Book-Rating'], dtype='object'),
+ Index(['User-ID', 'Location', 'Age'], dtype='object'))</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting basic information about the all of the datasets</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>books_df.info(), ratings_df.info(), users_df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 RangeIndex: 271360 entries, 0 to 271359
@@ -185,14 +191,14 @@ Data columns (total 3 columns):
 dtypes: float64(1), int64(1), object(1)
 memory usage: 6.4+ MB</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="162">
+<div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>(None, None, None)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="163">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seeing each of the dataframes individually</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>books_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="163">
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Seeing each of the dataframes individually</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>books_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
 <div>
 
 
@@ -339,9 +345,9 @@ memory usage: 6.4+ MB</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="164">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ratings_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="164">
+<div class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ratings_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 
 
@@ -428,9 +434,9 @@ memory usage: 6.4+ MB</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="165">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>users_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="165">
+<div class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>users_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
@@ -517,11 +523,12 @@ memory usage: 6.4+ MB</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="166">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove unnecessary columns (before merging)</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>books_df.drop(columns<span class="op">=</span>[<span class="st">"Image-URL-S"</span>, <span class="st">"Image-URL-M"</span>, <span class="st">"Image-URL-L"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>books_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="166">
+<p>Before I can pass the datasets over to the Machine Learning model for training and prediction, I had to consolidate all of my datasets into one so that it would be more easier and convenient to analyze.</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove any unnecessary columns (before merging)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>books_df.drop(columns<span class="op">=</span>[<span class="st">"Image-URL-S"</span>, <span class="st">"Image-URL-M"</span>, <span class="st">"Image-URL-L"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>books_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
 
@@ -632,12 +639,12 @@ memory usage: 6.4+ MB</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="167">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge the books and ratings dataframes to have one, inclusive dataframe</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># with all book, user, and rating information</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.merge(books_df, ratings_df, on<span class="op">=</span><span class="st">"ISBN"</span>)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="167">
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge the books and ratings dataframes to have one &amp; inclusive dataframe, </span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># combining all book, user, and rating information</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.merge(books_df, ratings_df, on<span class="op">=</span><span class="st">"ISBN"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
 <div>
 
 
@@ -772,19 +779,20 @@ memory usage: 6.4+ MB</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="168">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of duplicated elements in the dataset</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (could be problematic if not resolved)</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>df.duplicated().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="168">
+<p>Additionally, before handing my combined Book dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN vales, fixing types of columns, filling invalid values with suitable alternatives, etc. Fortunately, the data inherited from Kaggle here is in a preferable format already, so there does not need to be extensive amount of data cleaning here.</p>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of duplicated elements in the dataset (could be </span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># problematic if not resolved)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>df.duplicated().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>0</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="169">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of 'null'/'NaN' elements in the dataset </span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (if NaN filling is needed or not)</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>(df.isnull().<span class="bu">sum</span>() <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="169">
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of 'null'/'NaN' elements in the dataset (if NaN </span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filling is needed or not)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>(df.isnull().<span class="bu">sum</span>() <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>ISBN                   0.000000
 Book-Title             0.000000
 Book-Author            0.000097
@@ -795,24 +803,24 @@ Book-Rating            0.000000
 dtype: float64</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="170">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill unknown and unformatted values with proper ones for readability and to</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># improve data accuracy and relevance </span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Change types of columns to allow an easier time to parse</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].astype(<span class="bu">str</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].<span class="bu">map</span>(<span class="kw">lambda</span> entry: entry <span class="cf">if</span> entry.isnumeric() <span class="cf">else</span> df[<span class="st">"Year-Of-Publication"</span>].mode()[<span class="dv">0</span>])</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].astype(<span class="st">"int64"</span>)</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Author"</span>].fillna(<span class="st">"N/A"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Publisher"</span>].fillna(<span class="st">"N/A"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Title"</span>] <span class="op">=</span> df[<span class="st">"Book-Title"</span>].astype(<span class="bu">str</span>)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Author"</span>] <span class="op">=</span> df[<span class="st">"Book-Author"</span>].astype(<span class="bu">str</span>)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ISBN"</span>] <span class="op">=</span> df[<span class="st">"ISBN"</span>].astype(<span class="bu">str</span>)</span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Publisher"</span>] <span class="op">=</span> df[<span class="st">"Publisher"</span>].astype(<span class="bu">str</span>)</span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting basic information about the dataset</span></span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill unknown and unformatted values with proper ones for readability and to</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># improve data accuracy and relevance </span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Author"</span>].fillna(<span class="st">"N/A"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Publisher"</span>].fillna(<span class="st">"N/A"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].<span class="bu">map</span>(<span class="kw">lambda</span> entry: entry <span class="cf">if</span> entry.isnumeric() <span class="cf">else</span> df[<span class="st">"Year-Of-Publication"</span>].mode()[<span class="dv">0</span>])</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Year-Of-Publication"</span>] <span class="op">=</span> df[<span class="st">"Year-Of-Publication"</span>].astype(<span class="st">"int64"</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Change types of columns to allow an easier time to parse</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Title"</span>] <span class="op">=</span> df[<span class="st">"Book-Title"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Book-Author"</span>] <span class="op">=</span> df[<span class="st">"Book-Author"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ISBN"</span>] <span class="op">=</span> df[<span class="st">"ISBN"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"Publisher"</span>] <span class="op">=</span> df[<span class="st">"Publisher"</span>].astype(<span class="bu">str</span>)</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Getting basic information about the dataset (once again)</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>df.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
 Int64Index: 1031136 entries, 0 to 1031135
@@ -830,21 +838,23 @@ dtypes: int64(3), object(4)
 memory usage: 62.9+ MB</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="171">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> report_basic_stats(dataframe: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> n_users, n_books</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    n_users <span class="op">=</span> dataframe[<span class="st">"User-ID"</span>].unique().shape[<span class="dv">0</span>]</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    n_books <span class="op">=</span> dataframe[<span class="st">"ISBN"</span>].unique().shape[<span class="dv">0</span>]</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    n_ratings <span class="op">=</span> <span class="bu">len</span>(dataframe[<span class="st">"Book-Rating"</span>])</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    avg_num_ratings_per_user <span class="op">=</span> n_ratings <span class="op">/</span> n_users</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Unique Book Users in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_users)</span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Unique Book Titles / ISBNs in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_books)</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Total Ratings in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_ratings)</span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Average Number of Book Ratings per User in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), <span class="bu">round</span>(avg_num_ratings_per_user, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As defined in the code snippet below, with subsequent modifications and copies of the working dataset, there will be a need to quantify the status and real-life/applicable statistics out to you, the user. Thus, I designed a function to report needed information called <code>report_basic_stats</code>. From time to time, there will be calls to this function, giving up-to-date information about the state of the dataset currently modified.</p>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> report_basic_stats(dataframe: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">global</span> n_users, n_books</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    n_users <span class="op">=</span> dataframe[<span class="st">"User-ID"</span>].unique().shape[<span class="dv">0</span>]</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    n_books <span class="op">=</span> dataframe[<span class="st">"ISBN"</span>].unique().shape[<span class="dv">0</span>]</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    n_ratings <span class="op">=</span> <span class="bu">len</span>(dataframe[<span class="st">"Book-Rating"</span>])</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    avg_num_ratings_per_user <span class="op">=</span> n_ratings <span class="op">/</span> n_users</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Unique Book Users in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_users)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Unique Book Titles / ISBNs in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_books)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Number of Total Ratings in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), n_ratings)</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Average Number of Book Ratings per User in This Dataset (</span><span class="sc">{}</span><span class="st">):"</span>.<span class="bu">format</span>(<span class="bu">type</span>), <span class="bu">round</span>(avg_num_ratings_per_user, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="172">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>report_basic_stats(df, <span class="st">"Regular"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Alright, let’s begin by looking at the up-to-date information about the state of the original dataset using the <code>report_basic_stats</code> function:</p>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>report_basic_stats(df, <span class="st">"Regular"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of Unique Book Users in This Dataset (Regular): 92106
 Number of Unique Book Titles / ISBNs in This Dataset (Regular): 270151
@@ -852,13 +862,13 @@ Number of Total Ratings in This Dataset (Regular): 1031136
 Average Number of Book Ratings per User in This Dataset (Regular): 11.195</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="173">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the first 3000 Book-ISBNs in Dataset (keeps the data from</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># becoming too long to visualize and compute within the ML model)</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>book_isbn_index <span class="op">=</span> df.groupby(<span class="st">"ISBN"</span>).count().sort_values(by<span class="op">=</span><span class="st">"Book-Rating"</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>:<span class="dv">3000</span>].index</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df[df[<span class="st">"ISBN"</span>].isin(book_isbn_index)]</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>df2.count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="173">
+<p>At this point, the data has been cleaned. However, there are some modifications that I have considered in this case such as limiting the amount of Book-ISBNs and Book-Users displayed (up to 3000 in this case). This is intentional to keep the dataset from becoming too long to visualize and compute within the Machine Learning model.</p>
+<div class="cell" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the first 3000 Book-ISBNs in Dataset</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>book_isbn_index <span class="op">=</span> df.groupby(<span class="st">"ISBN"</span>).count().sort_values(by<span class="op">=</span><span class="st">"Book-Rating"</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>:<span class="dv">3000</span>].index</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>df2 <span class="op">=</span> df[df[<span class="st">"ISBN"</span>].isin(book_isbn_index)]</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>df2.count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>ISBN                   271456
 Book-Title             271456
 Book-Author            271456
@@ -869,13 +879,12 @@ Book-Rating            271456
 dtype: int64</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="174">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the first 3000 Book-Users in Dataset (keeps the data from</span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># becoming too long to visualize and compute within the ML model)</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>book_users_index <span class="op">=</span> df2.groupby(<span class="st">"User-ID"</span>).count().sort_values(by<span class="op">=</span><span class="st">"Book-Rating"</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>:<span class="dv">3000</span>].index</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>df3 <span class="op">=</span> df2[df2[<span class="st">"User-ID"</span>].isin(book_users_index)]</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>df3.count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="174">
+<div class="cell" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the first 3000 Book-Users in Dataset</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>book_users_index <span class="op">=</span> df2.groupby(<span class="st">"User-ID"</span>).count().sort_values(by<span class="op">=</span><span class="st">"Book-Rating"</span>, ascending<span class="op">=</span><span class="va">False</span>)[<span class="dv">0</span>:<span class="dv">3000</span>].index</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>df3 <span class="op">=</span> df2[df2[<span class="st">"User-ID"</span>].isin(book_users_index)]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>df3.count()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
 <pre><code>ISBN                   172071
 Book-Title             172071
 Book-Author            172071
@@ -886,28 +895,29 @@ Book-Rating            172071
 dtype: int64</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="175">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a separate dataframe for unique Book-ISBNs</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>book_isbns <span class="op">=</span> df3[<span class="st">"ISBN"</span>].unique()</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>isbn_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>book_isbns, columns<span class="op">=</span>[<span class="st">"Original-ISBN"</span>])</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>isbn_df[<span class="st">"New-ISBN"</span>] <span class="op">=</span> isbn_df.index <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Since I had to cut down to 3000 Book-entries maximum in the dataset, I had to reindex the unique Book-ISBNs and Book User-IDs to account for this filtering. Thus, I removed all entries that were not part of this subset to maintain data consistency and integrity.</p>
+<div class="cell" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a separate dataframe for unique Book-ISBNs</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>book_isbns <span class="op">=</span> df3[<span class="st">"ISBN"</span>].unique()</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>isbn_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>book_isbns, columns<span class="op">=</span>[<span class="st">"Original-ISBN"</span>])</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>isbn_df[<span class="st">"New-ISBN"</span>] <span class="op">=</span> isbn_df.index <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="176">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a separate dataframe for unique Book-Users (indicated by their IDs)</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>book_users <span class="op">=</span> df3[<span class="st">"User-ID"</span>].unique()</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>users_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>book_users, columns<span class="op">=</span>[<span class="st">"Original-User-ID"</span>])</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>users_df[<span class="st">"New-User-ID"</span>] <span class="op">=</span> users_df.index <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a separate dataframe for unique Book-Users (indicated by their IDs)</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>book_users <span class="op">=</span> df3[<span class="st">"User-ID"</span>].unique()</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>users_df <span class="op">=</span> pd.DataFrame(data<span class="op">=</span>book_users, columns<span class="op">=</span>[<span class="st">"Original-User-ID"</span>])</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>users_df[<span class="st">"New-User-ID"</span>] <span class="op">=</span> users_df.index <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="177">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge in new indices for Book-ISBN and Book-User-IDs that are modified</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from 1 to 3000 (accounts for scaling down of data)</span></span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>cleaned_df <span class="op">=</span> df3.merge(isbn_df, left_on<span class="op">=</span><span class="st">"ISBN"</span>, right_on<span class="op">=</span><span class="st">"Original-ISBN"</span>)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>cleaned_df.drop(columns<span class="op">=</span>[<span class="st">"Original-ISBN"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>cleaned_df <span class="op">=</span> cleaned_df.merge(users_df, left_on<span class="op">=</span><span class="st">"User-ID"</span>, right_on<span class="op">=</span><span class="st">"Original-User-ID"</span>)</span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>cleaned_df.drop(columns<span class="op">=</span>[<span class="st">"Original-User-ID"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>cleaned_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="177">
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge in new indices for Book-ISBN and Book-User-IDs that are modified</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># from 1 to 3000 (accounts for scaling down of data)</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>cleaned_df <span class="op">=</span> df3.merge(isbn_df, left_on<span class="op">=</span><span class="st">"ISBN"</span>, right_on<span class="op">=</span><span class="st">"Original-ISBN"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>cleaned_df.drop(columns<span class="op">=</span>[<span class="st">"Original-ISBN"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>cleaned_df <span class="op">=</span> cleaned_df.merge(users_df, left_on<span class="op">=</span><span class="st">"User-ID"</span>, right_on<span class="op">=</span><span class="st">"Original-User-ID"</span>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>cleaned_df.drop(columns<span class="op">=</span>[<span class="st">"Original-User-ID"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>cleaned_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
 
@@ -1066,24 +1076,30 @@ dtype: int64</code></pre>
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="178">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends <span class="op">=</span> cleaned_df.copy()</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends.drop(labels<span class="op">=</span>[<span class="st">"ISBN"</span>, </span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Book-Author"</span>,</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Year-Of-Publication"</span>,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Publisher"</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"User-ID"</span>,</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"New-ISBN"</span>,</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"New-User-ID"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends_copy <span class="op">=</span> cleaned_df_condensed_trends.copy()</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends <span class="op">=</span> pd.DataFrame(cleaned_df_condensed_trends_copy</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>                                           .groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>]</span>
-<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>                                           .mean())</span>
-<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends[<span class="st">"Total-Num-Of-Ratings"</span>] <span class="op">=</span> pd.DataFrame(cleaned_df_condensed_trends_copy</span>
-<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>                                                                   .groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>]</span>
-<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>                                                                   .count())</span>
-<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="178">
+<p>Here, I am trying to offer some visualizations of the cleaned dataset before we pass it over for Machine Learning training and prediction. The first visualization (below) describes about the total number of reviews given to each of the 3000 books in the dataset. Arbitrarily though, I set a maximum of 30 book titles visualized to save space as my editor could not plot more than that without it become illegible. The strategy there was grouping by Book-Titles and and counting number of Book-Rating entries for that particular Book entry.</p>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a copy of the cleaned dataframe</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends <span class="op">=</span> cleaned_df.copy()</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop unnecessary columns</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends.drop(labels<span class="op">=</span>[<span class="st">"ISBN"</span>, </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Book-Author"</span>,</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Year-Of-Publication"</span>,</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"Publisher"</span>,</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"User-ID"</span>,</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"New-ISBN"</span>,</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>                                         <span class="st">"New-User-ID"</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Used grouping and counting to gather book-review counts for each indexed title</span></span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends_copy <span class="op">=</span> cleaned_df_condensed_trends.copy()</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends <span class="op">=</span> pd.DataFrame(cleaned_df_condensed_trends_copy</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>                                           .groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>]</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>                                           .mean())</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends[<span class="st">"Total-Num-Of-Ratings"</span>] <span class="op">=</span> pd.DataFrame(cleaned_df_condensed_trends_copy</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>                                                                   .groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>]</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>                                                                   .count())</span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>cleaned_df_condensed_trends.head(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 
 
@@ -1126,39 +1142,66 @@ dtype: int64</code></pre>
 <td>2.086207</td>
 <td>58</td>
 </tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">204 Rosewood Lane</td>
+<td>1.581818</td>
+<td>55</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2061: Odyssey Three</td>
+<td>3.133333</td>
+<td>30</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">24 Hours</td>
+<td>1.454545</td>
+<td>44</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2nd Chance</td>
+<td>2.704167</td>
+<td>240</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">311 Pelican Court</td>
+<td>2.435897</td>
+<td>39</td>
+</tr>
 </tbody>
 </table>
 
 </div>
 </div>
 </div>
-<div class="cell" data-execution_count="179">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a bar graph describing number of reviews for first 30 books</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>ax<span class="op">=</span>plt.subplot()</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>ax.bar(cleaned_df_condensed_trends.head(<span class="dv">30</span>).index,</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>       cleaned_df_condensed_trends[<span class="st">"Total-Num-Of-Ratings"</span>].head(<span class="dv">30</span>), </span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>       color<span class="op">=</span><span class="st">"b"</span>)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(cleaned_df_condensed_trends.index,</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>                   rotation<span class="op">=</span><span class="dv">30</span>,</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>                   fontsize<span class="op">=</span><span class="st">"12"</span>,</span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>                   horizontalalignment<span class="op">=</span><span class="st">"right"</span>)</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Total Number of Reviews For Each Book"</span>)</span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a bar graph describing number of reviews for first 30 books</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>ax<span class="op">=</span>plt.subplot()</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>ax.bar(cleaned_df_condensed_trends.head(<span class="dv">30</span>).index,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>       cleaned_df_condensed_trends[<span class="st">"Total-Num-Of-Ratings"</span>].head(<span class="dv">30</span>), </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>       color<span class="op">=</span><span class="st">"b"</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(cleaned_df_condensed_trends.index,</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>                   rotation<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>                   fontsize<span class="op">=</span><span class="st">"12"</span>,</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>                   horizontalalignment<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Total Number of Reviews For Each Book"</span>)</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7572\177655821.py:7: UserWarning: FixedFormatter should only be used together with FixedLocator
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7880\177655821.py:7: UserWarning: FixedFormatter should only be used together with FixedLocator
   ax.set_xticklabels(cleaned_df_condensed_trends.index,</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-22-output-2.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-23-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="180">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean rating of all movies</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the popular, high-rating books (top-50) and unpopular, low-rating books (bottom-50)</span></span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>cleaned_df_sorted_mean_rating <span class="op">=</span> cleaned_df.copy().groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- Sorted by Mean On Average: ---------</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- TOP 50: ---------</span><span class="ch">\n</span><span class="st">"</span>, cleaned_df_sorted_mean_rating.head(<span class="dv">50</span>), <span class="st">"</span><span class="ch">\n\n</span><span class="st">--------- BOTTOM 50: ---------</span><span class="ch">\n</span><span class="st">"</span>, cleaned_df_sorted_mean_rating.tail(<span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Just to give an interesting statistic, I decided to make another copy of the working dataset, grouped by Book-Title but sorted by Book-Rating. This was intentional to output and report the most-popular (Top-50 rated books) and least-populat (Bottom-50 rated books) on average, which is an important piece of data for the user to know.</p>
+<div class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean rating of all books</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output the Top-50 and Bottom-50 rated books on average</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>cleaned_df_sorted_mean_rating <span class="op">=</span> cleaned_df.copy().groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- Sorted by Mean On Average: ---------</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- TOP 50: ---------</span><span class="ch">\n</span><span class="st">"</span>, cleaned_df_sorted_mean_rating.head(<span class="dv">50</span>))</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n\n</span><span class="st">--------- BOTTOM 50: ---------</span><span class="ch">\n</span><span class="st">"</span>, cleaned_df_sorted_mean_rating.tail(<span class="dv">50</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>--------- Sorted by Mean On Average: ---------
 
@@ -1214,7 +1257,8 @@ The Spirit Catches You and You Fall Down                                        
 Anthem                                                                                                    4.590909
 JITTERBUG PERFUME                                                                                         4.571429
 The Curious Incident of the Dog in the Night-Time (Vintage Contemporaries)                                4.571429
-Name: Book-Rating, dtype: float64 
+Name: Book-Rating, dtype: float64
+
 
 --------- BOTTOM 50: ---------
  Book-Title
@@ -1271,16 +1315,18 @@ Der Vorleser                                                                    
 Name: Book-Rating, dtype: float64</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="181">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(pd.DataFrame(cleaned_df_sorted_mean_rating)[<span class="st">"Book-Rating"</span>], color<span class="op">=</span><span class="st">"r"</span>)</span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Histogram - Distribution of Book-Ratings Across All Books in the Dataset"</span>)</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The second visualization gathers all of the numerical book-ratings across all books, contrasting how book reviewers score and evaluate these literature text sources generally. With this ranged data, it would seem most appropriate to display this visualization of statistical data within a histogram.</p>
+<div class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(pd.DataFrame(cleaned_df_sorted_mean_rating)[<span class="st">"Book-Rating"</span>], color<span class="op">=</span><span class="st">"r"</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Histogram - Distribution of Book-Ratings Across All Books in the Dataset"</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-24-output-1.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-25-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="182">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>report_basic_stats(cleaned_df, <span class="st">"Reduced"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As compared to earlier, let’s look at the up-to-date information about the state of the reduced (in-size) dataset using the <code>report_basic_stats</code> function.</p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>report_basic_stats(cleaned_df, <span class="st">"Reduced"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Number of Unique Book Users in This Dataset (Reduced): 3000
 Number of Unique Book Titles / ISBNs in This Dataset (Reduced): 3000
@@ -1291,211 +1337,38 @@ Average Number of Book Ratings per User in This Dataset (Reduced): 57.357</code>
 </section>
 <section id="machine-learning---model-training-and-evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="machine-learning---model-training-and-evaluation">Machine Learning - Model Training and Evaluation</h2>
-<div class="cell" data-execution_count="183">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuring the ML Tensorflow Model by splitting the data 90% for testing,</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5% for validation, and 5% for testing</span></span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>X_train, X_test <span class="op">=</span> train_test_split(cleaned_df, test_size<span class="op">=</span><span class="fl">0.10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">2018</span>)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>X_val, X_test <span class="op">=</span> train_test_split(X_test, test_size<span class="op">=</span><span class="fl">0.50</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">2018</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Great, now we are onto the Machine Learning part of the blog post!</p>
+<p>Since the dataframe is now properly cleaned by this point, I had split the respective dataframe into the train, test, and validation datasets for the Machine Learning model with 90% going to the training dataset, the next 5% going to the validation dataset, and the last 5% going to the test dataset. Fortunately, because order of the data sequentially does not matter here, I was able to utilize the <code>train_test_split</code> function for shuffling and randomization, making the future-generated Machine Learning model more unpredictable but also more objective in its returned model results.</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuring the Machine Learning Tensorflow Model by splitting the data 90% for testing,</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 5% for validation, and 5% for testing</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>X_train, X_test <span class="op">=</span> train_test_split(cleaned_df, test_size<span class="op">=</span><span class="fl">0.10</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">2018</span>)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>X_val, X_test <span class="op">=</span> train_test_split(X_test, test_size<span class="op">=</span><span class="fl">0.50</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">2018</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="184">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Outputting the shape of the new datasets</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Training Set:"</span>, X_train.shape, <span class="st">"and Size of Training Set:"</span>, X_train.size)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Validation Set:"</span>, X_val.shape, <span class="st">"and Size of Validation Set:"</span>, X_val.size)</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Test Set:"</span>, X_test.shape, <span class="st">"and Size of Testing Set:"</span>, X_test.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Outputting the shape of the new datasets</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Training Set:"</span>, X_train.shape, <span class="st">"and Size of Training Set:"</span>, X_train.size)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Validation Set:"</span>, X_val.shape, <span class="st">"and Size of Validation Set:"</span>, X_val.size)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Shape of Test Set:"</span>, X_test.shape, <span class="st">"and Size of Testing Set:"</span>, X_test.size)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Shape of Training Set: (154863, 9) and Size of Training Set: 1393767
 Shape of Validation Set: (8604, 9) and Size of Validation Set: 77436
 Shape of Test Set: (8604, 9) and Size of Testing Set: 77436</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="185">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>X_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="185">
-<div>
-
-
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">ISBN</th>
-<th data-quarto-table-cell-role="th">Book-Title</th>
-<th data-quarto-table-cell-role="th">Book-Author</th>
-<th data-quarto-table-cell-role="th">Year-Of-Publication</th>
-<th data-quarto-table-cell-role="th">Publisher</th>
-<th data-quarto-table-cell-role="th">User-ID</th>
-<th data-quarto-table-cell-role="th">Book-Rating</th>
-<th data-quarto-table-cell-role="th">New-ISBN</th>
-<th data-quarto-table-cell-role="th">New-User-ID</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">159718</td>
-<td>0515111279</td>
-<td>The Cat Who Wasn't There</td>
-<td>Lilian Jackson Braun</td>
-<td>1994</td>
-<td>Jove Books</td>
-<td>254899</td>
-<td>0</td>
-<td>548</td>
-<td>2474</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">33289</td>
-<td>068480087X</td>
-<td>POSTCARDS</td>
-<td>Annie Proulx</td>
-<td>1994</td>
-<td>Scribner</td>
-<td>273979</td>
-<td>0</td>
-<td>1043</td>
-<td>235</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">47405</td>
-<td>0451176464</td>
-<td>Gerald's Game</td>
-<td>Stephen King</td>
-<td>2001</td>
-<td>Signet Book</td>
-<td>31826</td>
-<td>10</td>
-<td>1517</td>
-<td>393</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">86465</td>
-<td>0871136791</td>
-<td>Cold Mountain</td>
-<td>Charles Frazier</td>
-<td>1997</td>
-<td>Atlantic Monthly Press</td>
-<td>55548</td>
-<td>0</td>
-<td>1186</td>
-<td>949</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">130007</td>
-<td>0553279378</td>
-<td>I Know Why the Caged Bird Sings</td>
-<td>MAYA ANGELOU</td>
-<td>1983</td>
-<td>Bantam</td>
-<td>275922</td>
-<td>7</td>
-<td>1380</td>
-<td>1646</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">115605</td>
-<td>0679751602</td>
-<td>Mama Makes Up Her Mind: And Other Dangers of S...</td>
-<td>Bailey White</td>
-<td>1994</td>
-<td>Vintage Books USA</td>
-<td>8067</td>
-<td>0</td>
-<td>803</td>
-<td>1383</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">84745</td>
-<td>0316284955</td>
-<td>White Oleander : A Novel (Oprah's Book Club)</td>
-<td>Janet Fitch</td>
-<td>2000</td>
-<td>Back Bay Books</td>
-<td>266865</td>
-<td>9</td>
-<td>957</td>
-<td>924</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">80098</td>
-<td>0446608955</td>
-<td>A Walk to Remember</td>
-<td>Nicholas Sparks</td>
-<td>2000</td>
-<td>Warner Books</td>
-<td>236283</td>
-<td>10</td>
-<td>1164</td>
-<td>846</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">60006</td>
-<td>0446532452</td>
-<td>The Wedding</td>
-<td>Nicholas Sparks</td>
-<td>2003</td>
-<td>Warner Books</td>
-<td>103811</td>
-<td>0</td>
-<td>1656</td>
-<td>563</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">107770</td>
-<td>0804114609</td>
-<td>Patty Jane's House of Curl</td>
-<td>Lorna Landvik</td>
-<td>1999</td>
-<td>Ivy Books</td>
-<td>220240</td>
-<td>0</td>
-<td>1426</td>
-<td>1249</td>
-</tr>
-</tbody>
-</table>
-
-<p>154863 rows × 9 columns</p>
-</div>
-</div>
-</div>
-<div class="cell" data-execution_count="186">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define my cost function (mean-squared error) for each dataset before the</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># invokation of the ML algorithm</span></span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>df_ratings_train <span class="op">=</span> np.zeros((n_users, n_books))</span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_train.itertuples():</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    df_ratings_train[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
-<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>df_ratings_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="186">
-<pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
-       [0., 0., 0., ..., 0., 0., 0.],
-       [0., 0., 0., ..., 0., 0., 0.],
-       ...,
-       [0., 0., 0., ..., 0., 0., 0.],
-       [0., 0., 0., ..., 0., 0., 0.],
-       [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
-</div>
-</div>
-<div class="cell" data-execution_count="187">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>df_ratings_validation <span class="op">=</span> np.zeros((n_users, n_books))</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_val.itertuples():</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    df_ratings_validation[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_ratings_validation.shape)</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>df_ratings_validation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>As recommended online for any Collaborative-Filtering Recommendation Systems, one suggestion was to manually check and compute the <code>mean_squared_error</code> for ratings in your dataset. Thus, I defined a cost function that utilizes a sparse <code>np.array</code> starting with all 0’s of dimension-size <code>n_users x n_books</code>. The entries at specified locations would be converted non-zero by utilizing every Book-ISBN and Book User-ID position to generate a computed rating. The objective with calculating the <code>mean_squared_error</code> is to check how close estimates are to actual, observed values found within the given dataset.</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define my cost function (mean-squared error) for each dataset before the</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co"># invokation of the Machine Learning algorithm</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>df_ratings_train <span class="op">=</span> np.zeros((n_users, n_books))</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_train.itertuples():</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    df_ratings_train[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_ratings_train.shape)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>df_ratings_train</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(3000, 3000)</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="187">
+<div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
        [0., 0., 0., ..., 0., 0., 0.],
        [0., 0., 0., ..., 0., 0., 0.],
@@ -1505,12 +1378,16 @@ Shape of Test Set: (8604, 9) and Size of Testing Set: 77436</code></pre>
        [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="188">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>df_ratings_test <span class="op">=</span> np.zeros((n_users, n_books))</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_test.itertuples():</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    df_ratings_test[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>df_ratings_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="188">
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>df_ratings_validation <span class="op">=</span> np.zeros((n_users, n_books))</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_val.itertuples():</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    df_ratings_validation[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_ratings_validation.shape)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>df_ratings_validation</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(3000, 3000)</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
        [0., 0., 0., ..., 0., 0., 0.],
        [0., 0., 0., ..., 0., 0., 0.],
@@ -1520,18 +1397,72 @@ Shape of Test Set: (8604, 9) and Size of Testing Set: 77436</code></pre>
        [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="189">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_sparsity_stats(df: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-------------- Sparsity Stats for </span><span class="sc">{}</span><span class="st">: --------------"</span>.<span class="bu">format</span>(<span class="bu">type</span>))</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">=</span> <span class="bu">float</span>(<span class="bu">len</span>(df.nonzero()[<span class="dv">0</span>]))</span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">/=</span> (df.shape[<span class="dv">0</span>] <span class="op">*</span> df.shape[<span class="dv">1</span>])</span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Sparsity: </span><span class="sc">{:4.2f}</span><span class="st">%'</span>.<span class="bu">format</span>(df_sparsity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>df_ratings_test <span class="op">=</span> np.zeros((n_users, n_books))</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> X_test.itertuples():</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    df_ratings_test[r[<span class="dv">9</span>] <span class="op">-</span> <span class="dv">1</span>, r[<span class="dv">8</span>] <span class="op">-</span> <span class="dv">1</span>] <span class="op">=</span> r[<span class="dv">7</span>]</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df_ratings_test.shape)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>df_ratings_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(3000, 3000)</code></pre>
 </div>
-<div class="cell" data-execution_count="190">
-<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_train, <span class="st">"Train"</span>)</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_validation, <span class="st">"Validation"</span>)</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_test, <span class="st">"Test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="30">
+<pre><code>array([[0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       ...,
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.],
+       [0., 0., 0., ..., 0., 0., 0.]])</code></pre>
+</div>
+</div>
+<p>After the dataframes had the cost function computed for all, I made 2 matrices - one for the book user-similiarity and one for the book item-similarity. The idea here is to account for relative difference in the ratings between several distinct Book-Users and Book-ISBNs (items) themselves. Statically proven, relative differences in ratings give more insight than the absolute rating values. As described on the CambridgeSpark reference below, the rating system could be skewed by human biases such as solid consistent ratings for good vs.&nbsp;bad books through cover inspection, ratings based on topic preference or thoughts on the user’s views rather than objective review, etc.</p>
+<p>Note that in the user-based similarity predictions that ratings as weights need to be normalized, so summation and average on top of a dot-product calcuation on the matrix is needed. This is to make sure the ratings stay within the expected range of 1.0 (worst) to 10.0 (best).</p>
+<p>At the end of the code cell below, a comparison on the prediction matrices with the <code>df_ratings_test</code> matrix using dimensionality reduction and the <code>mean_squared_error</code> function the <code>sklearn.metrics</code> module is computed to quantify the closeness of estimates to the actual dataset (as described previously).</p>
+<div class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>book_user_similarity <span class="op">=</span> pairwise_distances(df_ratings_train, metric<span class="op">=</span><span class="st">"cosine"</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>book_item_similarity <span class="op">=</span> pairwise_distances(df_ratings_train.T, metric<span class="op">=</span><span class="st">"cosine"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> perform_prediction_similarity_based(ratings, similiarity, pred_type<span class="op">=</span><span class="st">"user"</span>):</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pred_type <span class="op">==</span> <span class="st">"user"</span>:</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>        mean_user_rating <span class="op">=</span> ratings.mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># You use np.newaxis so that the user_rating has the same format as ratings</span></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        ratings_diff <span class="op">=</span> (ratings <span class="op">-</span> mean_user_rating[: np.newaxis])</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> mean_user_rating[: np.newaxis] <span class="op">+</span> (similiarity.dot(ratings_diff) <span class="op">/</span> np.array([np.<span class="bu">abs</span>(similiarity).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)]))</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> pred_type <span class="op">==</span> <span class="st">"item"</span>:</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> ratings.dot(similiarity) <span class="op">/</span> np.array([np.<span class="bu">abs</span>(similiarity).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)])</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pred</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>book_user_prediction <span class="op">=</span> perform_prediction_similarity_based(df_ratings_train, book_user_similarity, pred_type<span class="op">=</span><span class="st">"user"</span>)</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>book_item_prediction <span class="op">=</span> perform_prediction_similarity_based(df_ratings_train, book_item_similarity, pred_type<span class="op">=</span><span class="st">"item"</span>)</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_mean_square_error(predicted, actual):</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    predicted <span class="op">=</span> predicted[actual.nonzero()].flatten()</span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>    actual <span class="op">=</span> actual[actual.nonzero()].flatten()</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mean_squared_error(predicted, actual)</span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"For Collaborative Filtering:"</span>)</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Book User-Based Mean-Square-Error: </span><span class="sc">{</span>compute_mean_square_error(book_user_prediction, df_ratings_test)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Book Item-Based Mean-Square-Error: </span><span class="sc">{</span>compute_mean_square_error(book_item_prediction, df_ratings_test)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>For Collaborative Filtering:
+Book User-Based Mean-Square-Error: 63.272539998623145
+Book Item-Based Mean-Square-Error: 62.53832448961992</code></pre>
+</div>
+</div>
+<p>One other calculation that is beneficial to check with regards to these matrices includes matrix sparsity. With a less sparse matrix (through a lower-percentage return), I found that it was more beneficial to more efficient to use dense Machine Learning representations and algorithms optimized for dense data, which will done later while creating the Sequential layering of the model. After performing the calculations below, this seemed to be the case I was dealing with here.</p>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_sparsity_stats(df: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-------------- Sparsity Stats for </span><span class="sc">{}</span><span class="st">: --------------"</span>.<span class="bu">format</span>(<span class="bu">type</span>))</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">=</span> <span class="bu">float</span>(<span class="bu">len</span>(df.nonzero()[<span class="dv">0</span>]))</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">/=</span> (df.shape[<span class="dv">0</span>] <span class="op">*</span> df.shape[<span class="dv">1</span>])</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">*=</span> <span class="dv">100</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Sparsity: </span><span class="sc">{:4.2f}</span><span class="st">%'</span>.<span class="bu">format</span>(df_sparsity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_train, <span class="st">"Train"</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_validation, <span class="st">"Validation"</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_test, <span class="st">"Test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-------------- Sparsity Stats for Train: --------------
 Sparsity: 0.53%
@@ -1541,120 +1472,363 @@ Sparsity: 0.03%
 Sparsity: 0.03%</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="191">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>actual_validation <span class="op">=</span> X_val[df_ratings_validation.nonzero()].flatten()</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>pred_validation <span class="op">=</span> df_ratings_validation[df_ratings_validation.nonzero()].flatten()</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="co"># print(actual_validation.shape, pred_validation.shape)</span></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Fill the empty values with the mean (match size)</span></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: -------</span></span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_validation = np.zeros((len(X_val),1))</span></span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pred_validation[pred_validation==1] = 3.5</span></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="co"># print(pred_validation)</span></span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a><span class="co"># print("Mean Squared Error is : ", mean_squared_error(pred_validation, actual_validation))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-error">
-<pre><code>InvalidIndexError: (array([   3,    4,    5, ..., 2977, 2995, 2997], dtype=int64), array([ 123, 2332,   46, ..., 2279,  594, 2935], dtype=int64))</code></pre>
+<p>Now, I began to configure the Machine Learning model. We added Sequential layers of Input: incorporated an Input layer 1 by 1 because I only had 1 <code>np.array</code> as Input for Book-Users and another one as Input for Book-Items themselves, utilize a Embedding as recommended for each of the Input layers for models like these, and I followed up with flattening for dimensionality-reduction of both embeddings with input. Combining it with the dot-product of the two vector embeddings with input to make the initial model, we compiled it, utilzing the <code>mean_square_error</code> as our minimizing loss function, using the <code>Adam</code> optimizer, and comparing our trained model against our data with the <code>mean_absolute_error</code> metric. Lastly, I fitted our model, utilzing both of our X_train datasets and the Y_train dataset for fitting with validation from both of our X_val datasets and the Y_val dataset at 100 epochs.</p>
+<div class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the Input, Embeddings, and Dot Product on the Model</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>n_latent_fact <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>user_input <span class="op">=</span> Input(shape<span class="op">=</span>[<span class="dv">1</span>], name<span class="op">=</span><span class="st">"User"</span>)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>user_embedding <span class="op">=</span> Embedding(input_dim<span class="op">=</span>n_users <span class="op">+</span> <span class="dv">1</span>, </span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>                           output_dim<span class="op">=</span>n_latent_fact, </span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>                           name<span class="op">=</span><span class="st">"User_Embedding"</span>)(user_input)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>user_vec <span class="op">=</span> Flatten(name<span class="op">=</span><span class="st">"Flatten_Users"</span>)(user_embedding)</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>book_input <span class="op">=</span> Input(shape<span class="op">=</span>[<span class="dv">1</span>], name<span class="op">=</span><span class="st">"Book"</span>)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>book_embedding <span class="op">=</span> Embedding(input_dim<span class="op">=</span>n_books <span class="op">+</span> <span class="dv">1</span>, </span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>                           output_dim<span class="op">=</span>n_latent_fact, </span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>                           name<span class="op">=</span><span class="st">"Book_Embedding"</span>)(book_input)</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>book_vec <span class="op">=</span> Flatten(name<span class="op">=</span><span class="st">"Flatten_Movies"</span>)(book_embedding)</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>dot_product <span class="op">=</span> dot([book_vec, user_vec], axes<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Model(inputs<span class="op">=</span>[user_input, book_input], outputs<span class="op">=</span>dot_product)</span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Compile the model and fit the datasets to it</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">"mse"</span>,</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>Adam(learning_rate<span class="op">=</span><span class="fl">0.001</span>),</span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mean_absolute_error"</span>])</span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>book_rec_history <span class="op">=</span> model.fit(x<span class="op">=</span>(X_train[<span class="st">"New-User-ID"</span>], X_train[<span class="st">"New-ISBN"</span>]), </span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a>                             y<span class="op">=</span>X_train[<span class="st">"Book-Rating"</span>],</span>
+<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a>                             epochs<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>                             validation_data<span class="op">=</span>([X_val[<span class="st">"New-User-ID"</span>], X_val[<span class="st">"New-ISBN"</span>]], X_val[<span class="st">"Book-Rating"</span>]),</span>
+<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a>                             use_multiprocessing<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Epoch 1/100
+4840/4840 [==============================] - 8s 1ms/step - loss: 19.9551 - mean_absolute_error: 2.4209 - val_loss: 19.6552 - val_mean_absolute_error: 2.4027
+Epoch 2/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 19.3750 - mean_absolute_error: 2.4419 - val_loss: 18.6760 - val_mean_absolute_error: 2.4445
+Epoch 3/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 18.1293 - mean_absolute_error: 2.4874 - val_loss: 17.3686 - val_mean_absolute_error: 2.5010
+Epoch 4/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 16.7393 - mean_absolute_error: 2.5333 - val_loss: 16.1366 - val_mean_absolute_error: 2.5539
+Epoch 5/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 15.4796 - mean_absolute_error: 2.5681 - val_loss: 15.1081 - val_mean_absolute_error: 2.5938
+Epoch 6/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 14.4270 - mean_absolute_error: 2.5851 - val_loss: 14.2828 - val_mean_absolute_error: 2.6190
+Epoch 7/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 13.5713 - mean_absolute_error: 2.5904 - val_loss: 13.6287 - val_mean_absolute_error: 2.6315
+Epoch 8/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 12.8907 - mean_absolute_error: 2.5865 - val_loss: 13.1184 - val_mean_absolute_error: 2.6345
+Epoch 9/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 12.3554 - mean_absolute_error: 2.5763 - val_loss: 12.7195 - val_mean_absolute_error: 2.6323
+Epoch 10/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 11.9377 - mean_absolute_error: 2.5634 - val_loss: 12.4135 - val_mean_absolute_error: 2.6284
+Epoch 11/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 11.6136 - mean_absolute_error: 2.5515 - val_loss: 12.1788 - val_mean_absolute_error: 2.6224
+Epoch 12/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 11.3626 - mean_absolute_error: 2.5393 - val_loss: 11.9995 - val_mean_absolute_error: 2.6160
+Epoch 13/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 11.1686 - mean_absolute_error: 2.5275 - val_loss: 11.8625 - val_mean_absolute_error: 2.6099
+Epoch 14/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 11.0204 - mean_absolute_error: 2.5182 - val_loss: 11.7559 - val_mean_absolute_error: 2.6039
+Epoch 15/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.9062 - mean_absolute_error: 2.5079 - val_loss: 11.6769 - val_mean_absolute_error: 2.5991
+Epoch 16/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.8185 - mean_absolute_error: 2.5007 - val_loss: 11.6162 - val_mean_absolute_error: 2.5955
+Epoch 17/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.7506 - mean_absolute_error: 2.4947 - val_loss: 11.5723 - val_mean_absolute_error: 2.5916
+Epoch 18/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.6983 - mean_absolute_error: 2.4885 - val_loss: 11.5417 - val_mean_absolute_error: 2.5891
+Epoch 19/100
+4840/4840 [==============================] - 9s 2ms/step - loss: 10.6575 - mean_absolute_error: 2.4854 - val_loss: 11.5182 - val_mean_absolute_error: 2.5868
+Epoch 20/100
+4840/4840 [==============================] - 19s 4ms/step - loss: 10.6263 - mean_absolute_error: 2.4819 - val_loss: 11.5015 - val_mean_absolute_error: 2.5850
+Epoch 21/100
+4840/4840 [==============================] - 16s 3ms/step - loss: 10.6019 - mean_absolute_error: 2.4776 - val_loss: 11.4874 - val_mean_absolute_error: 2.5836
+Epoch 22/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5823 - mean_absolute_error: 2.4753 - val_loss: 11.4817 - val_mean_absolute_error: 2.5837
+Epoch 23/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5671 - mean_absolute_error: 2.4734 - val_loss: 11.4771 - val_mean_absolute_error: 2.5832
+Epoch 24/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5551 - mean_absolute_error: 2.4724 - val_loss: 11.4728 - val_mean_absolute_error: 2.5824
+Epoch 25/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5451 - mean_absolute_error: 2.4713 - val_loss: 11.4684 - val_mean_absolute_error: 2.5814
+Epoch 26/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5374 - mean_absolute_error: 2.4702 - val_loss: 11.4669 - val_mean_absolute_error: 2.5806
+Epoch 27/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5323 - mean_absolute_error: 2.4675 - val_loss: 11.4670 - val_mean_absolute_error: 2.5806
+Epoch 28/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5271 - mean_absolute_error: 2.4674 - val_loss: 11.4662 - val_mean_absolute_error: 2.5810
+Epoch 29/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5217 - mean_absolute_error: 2.4671 - val_loss: 11.4637 - val_mean_absolute_error: 2.5803
+Epoch 30/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5194 - mean_absolute_error: 2.4657 - val_loss: 11.4639 - val_mean_absolute_error: 2.5808
+Epoch 31/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5163 - mean_absolute_error: 2.4672 - val_loss: 11.4659 - val_mean_absolute_error: 2.5795
+Epoch 32/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5140 - mean_absolute_error: 2.4651 - val_loss: 11.4672 - val_mean_absolute_error: 2.5803
+Epoch 33/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5122 - mean_absolute_error: 2.4647 - val_loss: 11.4685 - val_mean_absolute_error: 2.5801
+Epoch 34/100
+4840/4840 [==============================] - 18s 4ms/step - loss: 10.5110 - mean_absolute_error: 2.4642 - val_loss: 11.4730 - val_mean_absolute_error: 2.5809
+Epoch 35/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5097 - mean_absolute_error: 2.4645 - val_loss: 11.4743 - val_mean_absolute_error: 2.5801
+Epoch 36/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5084 - mean_absolute_error: 2.4643 - val_loss: 11.4746 - val_mean_absolute_error: 2.5803
+Epoch 37/100
+4840/4840 [==============================] - 19s 4ms/step - loss: 10.5074 - mean_absolute_error: 2.4629 - val_loss: 11.4773 - val_mean_absolute_error: 2.5809
+Epoch 38/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5066 - mean_absolute_error: 2.4635 - val_loss: 11.4802 - val_mean_absolute_error: 2.5813
+Epoch 39/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5058 - mean_absolute_error: 2.4640 - val_loss: 11.4792 - val_mean_absolute_error: 2.5812
+Epoch 40/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5065 - mean_absolute_error: 2.4626 - val_loss: 11.4789 - val_mean_absolute_error: 2.5808
+Epoch 41/100
+4840/4840 [==============================] - 8s 2ms/step - loss: 10.5048 - mean_absolute_error: 2.4639 - val_loss: 11.4800 - val_mean_absolute_error: 2.5809
+Epoch 42/100
+4840/4840 [==============================] - 7s 2ms/step - loss: 10.5050 - mean_absolute_error: 2.4628 - val_loss: 11.4804 - val_mean_absolute_error: 2.5809
+Epoch 43/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5049 - mean_absolute_error: 2.4619 - val_loss: 11.4816 - val_mean_absolute_error: 2.5811
+Epoch 44/100
+4840/4840 [==============================] - 14s 3ms/step - loss: 10.5038 - mean_absolute_error: 2.4628 - val_loss: 11.4815 - val_mean_absolute_error: 2.5808
+Epoch 45/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5042 - mean_absolute_error: 2.4624 - val_loss: 11.4844 - val_mean_absolute_error: 2.5816
+Epoch 46/100
+4840/4840 [==============================] - 14s 3ms/step - loss: 10.5038 - mean_absolute_error: 2.4626 - val_loss: 11.4859 - val_mean_absolute_error: 2.5817
+Epoch 47/100
+4840/4840 [==============================] - 9s 2ms/step - loss: 10.5040 - mean_absolute_error: 2.4633 - val_loss: 11.4860 - val_mean_absolute_error: 2.5803
+Epoch 48/100
+4840/4840 [==============================] - 13s 3ms/step - loss: 10.5043 - mean_absolute_error: 2.4611 - val_loss: 11.4846 - val_mean_absolute_error: 2.5803
+Epoch 49/100
+4840/4840 [==============================] - 8s 2ms/step - loss: 10.5034 - mean_absolute_error: 2.4620 - val_loss: 11.4822 - val_mean_absolute_error: 2.5801
+Epoch 50/100
+4840/4840 [==============================] - 12s 3ms/step - loss: 10.5036 - mean_absolute_error: 2.4621 - val_loss: 11.4911 - val_mean_absolute_error: 2.5819
+Epoch 51/100
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5024 - mean_absolute_error: 2.4628 - val_loss: 11.4901 - val_mean_absolute_error: 2.5813
+Epoch 52/100
+4840/4840 [==============================] - 8s 2ms/step - loss: 10.5030 - mean_absolute_error: 2.4617 - val_loss: 11.4920 - val_mean_absolute_error: 2.5820
+Epoch 53/100
+4840/4840 [==============================] - 7s 1ms/step - loss: 10.5031 - mean_absolute_error: 2.4616 - val_loss: 11.4928 - val_mean_absolute_error: 2.5822
+Epoch 54/100
+4840/4840 [==============================] - 8s 2ms/step - loss: 10.5028 - mean_absolute_error: 2.4633 - val_loss: 11.4911 - val_mean_absolute_error: 2.5807
+Epoch 55/100
+4840/4840 [==============================] - 9s 2ms/step - loss: 10.5038 - mean_absolute_error: 2.4608 - val_loss: 11.4946 - val_mean_absolute_error: 2.5813
+Epoch 56/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5034 - mean_absolute_error: 2.4612 - val_loss: 11.4954 - val_mean_absolute_error: 2.5821
+Epoch 57/100
+4840/4840 [==============================] - 11s 2ms/step - loss: 10.5029 - mean_absolute_error: 2.4620 - val_loss: 11.4952 - val_mean_absolute_error: 2.5821
+Epoch 58/100
+4840/4840 [==============================] - 7s 2ms/step - loss: 10.5029 - mean_absolute_error: 2.4618 - val_loss: 11.4905 - val_mean_absolute_error: 2.5812
+Epoch 59/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5029 - mean_absolute_error: 2.4620 - val_loss: 11.4908 - val_mean_absolute_error: 2.5813
+Epoch 60/100
+4840/4840 [==============================] - 7s 1ms/step - loss: 10.5033 - mean_absolute_error: 2.4617 - val_loss: 11.4942 - val_mean_absolute_error: 2.5807
+Epoch 61/100
+4840/4840 [==============================] - 7s 1ms/step - loss: 10.5032 - mean_absolute_error: 2.4614 - val_loss: 11.4948 - val_mean_absolute_error: 2.5805
+Epoch 62/100
+4840/4840 [==============================] - 7s 1ms/step - loss: 10.5032 - mean_absolute_error: 2.4605 - val_loss: 11.4940 - val_mean_absolute_error: 2.5811
+Epoch 63/100
+4840/4840 [==============================] - 8s 2ms/step - loss: 10.5024 - mean_absolute_error: 2.4613 - val_loss: 11.4948 - val_mean_absolute_error: 2.5813
+Epoch 64/100
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5030 - mean_absolute_error: 2.4611 - val_loss: 11.4967 - val_mean_absolute_error: 2.5821
+Epoch 65/100
+4840/4840 [==============================] - 13s 3ms/step - loss: 10.5030 - mean_absolute_error: 2.4627 - val_loss: 11.4951 - val_mean_absolute_error: 2.5804
+Epoch 66/100
+4840/4840 [==============================] - 18s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4619 - val_loss: 11.4955 - val_mean_absolute_error: 2.5803
+Epoch 67/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4610 - val_loss: 11.4942 - val_mean_absolute_error: 2.5807
+Epoch 68/100
+4840/4840 [==============================] - 10s 2ms/step - loss: 10.5032 - mean_absolute_error: 2.4614 - val_loss: 11.4967 - val_mean_absolute_error: 2.5811
+Epoch 69/100
+4840/4840 [==============================] - 8s 2ms/step - loss: 10.5030 - mean_absolute_error: 2.4620 - val_loss: 11.4979 - val_mean_absolute_error: 2.5809
+Epoch 70/100
+4840/4840 [==============================] - 19s 4ms/step - loss: 10.5028 - mean_absolute_error: 2.4618 - val_loss: 11.4979 - val_mean_absolute_error: 2.5808
+Epoch 71/100
+4840/4840 [==============================] - 13s 3ms/step - loss: 10.5026 - mean_absolute_error: 2.4617 - val_loss: 11.4966 - val_mean_absolute_error: 2.5808
+Epoch 72/100
+4840/4840 [==============================] - 11s 2ms/step - loss: 10.5028 - mean_absolute_error: 2.4612 - val_loss: 11.4988 - val_mean_absolute_error: 2.5812
+Epoch 73/100
+4840/4840 [==============================] - 16s 3ms/step - loss: 10.5028 - mean_absolute_error: 2.4613 - val_loss: 11.4957 - val_mean_absolute_error: 2.5814
+Epoch 74/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5028 - mean_absolute_error: 2.4613 - val_loss: 11.4969 - val_mean_absolute_error: 2.5813
+Epoch 75/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5025 - mean_absolute_error: 2.4622 - val_loss: 11.4947 - val_mean_absolute_error: 2.5804
+Epoch 76/100
+4840/4840 [==============================] - 18s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4615 - val_loss: 11.4961 - val_mean_absolute_error: 2.5804
+Epoch 77/100
+4840/4840 [==============================] - 21s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4612 - val_loss: 11.4964 - val_mean_absolute_error: 2.5811
+Epoch 78/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4617 - val_loss: 11.4925 - val_mean_absolute_error: 2.5802
+Epoch 79/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5033 - mean_absolute_error: 2.4613 - val_loss: 11.4949 - val_mean_absolute_error: 2.5807
+Epoch 80/100
+4840/4840 [==============================] - 19s 4ms/step - loss: 10.5031 - mean_absolute_error: 2.4617 - val_loss: 11.4970 - val_mean_absolute_error: 2.5807
+Epoch 81/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5026 - mean_absolute_error: 2.4619 - val_loss: 11.4956 - val_mean_absolute_error: 2.5805
+Epoch 82/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5026 - mean_absolute_error: 2.4617 - val_loss: 11.4944 - val_mean_absolute_error: 2.5803
+Epoch 83/100
+4840/4840 [==============================] - 12s 2ms/step - loss: 10.5033 - mean_absolute_error: 2.4615 - val_loss: 11.4938 - val_mean_absolute_error: 2.5800
+Epoch 84/100
+4840/4840 [==============================] - 17s 4ms/step - loss: 10.5033 - mean_absolute_error: 2.4611 - val_loss: 11.4948 - val_mean_absolute_error: 2.5802
+Epoch 85/100
+4840/4840 [==============================] - 21s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4609 - val_loss: 11.4947 - val_mean_absolute_error: 2.5809
+Epoch 86/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5036 - mean_absolute_error: 2.4611 - val_loss: 11.4933 - val_mean_absolute_error: 2.5803
+Epoch 87/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5032 - mean_absolute_error: 2.4610 - val_loss: 11.4922 - val_mean_absolute_error: 2.5805
+Epoch 88/100
+4840/4840 [==============================] - 17s 3ms/step - loss: 10.5036 - mean_absolute_error: 2.4607 - val_loss: 11.4971 - val_mean_absolute_error: 2.5808
+Epoch 89/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4615 - val_loss: 11.4988 - val_mean_absolute_error: 2.5811
+Epoch 90/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5036 - mean_absolute_error: 2.4606 - val_loss: 11.4951 - val_mean_absolute_error: 2.5802
+Epoch 91/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5034 - mean_absolute_error: 2.4605 - val_loss: 11.4964 - val_mean_absolute_error: 2.5811
+Epoch 92/100
+4840/4840 [==============================] - 18s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4618 - val_loss: 11.4968 - val_mean_absolute_error: 2.5813
+Epoch 93/100
+4840/4840 [==============================] - 14s 3ms/step - loss: 10.5034 - mean_absolute_error: 2.4612 - val_loss: 11.4989 - val_mean_absolute_error: 2.5809
+Epoch 94/100
+4840/4840 [==============================] - 19s 4ms/step - loss: 10.5033 - mean_absolute_error: 2.4613 - val_loss: 11.4981 - val_mean_absolute_error: 2.5808
+Epoch 95/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4613 - val_loss: 11.4971 - val_mean_absolute_error: 2.5808
+Epoch 96/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5028 - mean_absolute_error: 2.4607 - val_loss: 11.4959 - val_mean_absolute_error: 2.5816
+Epoch 97/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5035 - mean_absolute_error: 2.4622 - val_loss: 11.4934 - val_mean_absolute_error: 2.5805
+Epoch 98/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5027 - mean_absolute_error: 2.4619 - val_loss: 11.4938 - val_mean_absolute_error: 2.5810
+Epoch 99/100
+4840/4840 [==============================] - 15s 3ms/step - loss: 10.5025 - mean_absolute_error: 2.4619 - val_loss: 11.4962 - val_mean_absolute_error: 2.5804
+Epoch 100/100
+4840/4840 [==============================] - 20s 4ms/step - loss: 10.5030 - mean_absolute_error: 2.4611 - val_loss: 11.4978 - val_mean_absolute_error: 2.5811</code></pre>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>n_latent_fact <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>user_input <span class="op">=</span> Input(shape<span class="op">=</span>[<span class="dv">1</span>], name<span class="op">=</span><span class="st">"User"</span>)</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>user_embedding <span class="op">=</span> Embedding(input_dim<span class="op">=</span>n_users <span class="op">+</span> <span class="dv">1</span>, </span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                           output_dim<span class="op">=</span>n_latent_fact, </span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>                           name<span class="op">=</span><span class="st">"User_Embedding"</span>)(user_input)</span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>user_vec <span class="op">=</span> Flatten(name<span class="op">=</span><span class="st">"Flatten_Users"</span>)(user_embedding)</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>book_input <span class="op">=</span> Input(shape<span class="op">=</span>[<span class="dv">1</span>], name<span class="op">=</span><span class="st">"Book"</span>)</span>
-<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>book_embedding <span class="op">=</span> Embedding(input_dim<span class="op">=</span>n_books <span class="op">+</span> <span class="dv">1</span>, </span>
-<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>                           output_dim<span class="op">=</span>n_latent_fact, </span>
-<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>                           name<span class="op">=</span><span class="st">"Book_Embedding"</span>)(book_input)</span>
-<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>book_vec <span class="op">=</span> Flatten(name<span class="op">=</span><span class="st">"Flatten_Movies"</span>)(book_embedding)</span>
-<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>dot_product <span class="op">=</span> dot([book_vec, user_vec], axes<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> Model(inputs<span class="op">=</span>[user_input, book_input], outputs<span class="op">=</span>dot_product)</span>
-<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(loss<span class="op">=</span><span class="st">"mse"</span>,</span>
-<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a>              optimizer<span class="op">=</span>Adam(learning_rate<span class="op">=</span><span class="fl">0.0001</span>),</span>
-<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a>              metrics<span class="op">=</span>[<span class="st">"mean_absolute_error"</span>])</span>
-<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>book_rec_history <span class="op">=</span> model.fit(x<span class="op">=</span>(X_train[<span class="st">"New-User-ID"</span>], X_train[<span class="st">"New-ISBN"</span>]), </span>
-<span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>                             y<span class="op">=</span>X_train[<span class="st">"Book-Rating"</span>],</span>
-<span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a>                             epochs<span class="op">=</span><span class="dv">150</span>,</span>
-<span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a>                             validation_data<span class="op">=</span>([X_val[<span class="st">"New-User-ID"</span>], X_val[<span class="st">"New-ISBN"</span>]], X_val[<span class="st">"Book-Rating"</span>]),</span>
-<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>                             use_multiprocessing<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To measure the change in the <code>mean_absolute_error</code> statistic within my epochs (or run through the datasets) during the attempt to fit the Machine Learning model above as they were being completed, I made a line-graph visualization to see the fluctuation in the error as shown below.</p>
+<div class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the Validation Mean Absolute Error throughout the fitting of the model across epochs</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>pd.Series(book_rec_history.history[<span class="st">"val_loss"</span>][<span class="dv">15</span>:]).plot(logy<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">"gold"</span>)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Epoch"</span>)</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Validation Error"</span>)</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Change in Validation Mean Absolute Error Across Epochs"</span>)</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Minimum MSE:"</span>, <span class="bu">min</span>(book_rec_history.history[<span class="st">"val_loss"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-36-output-1.png" class="img-fluid"></p>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>pd.Series(book_rec_history.history[<span class="st">"val_loss"</span>][<span class="dv">15</span>:]).plot(logy<span class="op">=</span><span class="va">False</span>, color<span class="op">=</span><span class="st">"gold"</span>)</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Epoch"</span>)</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Validation Error"</span>)</span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Minimum MSE:"</span>, <span class="bu">min</span>(book_rec_history.history[<span class="st">"val_loss"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Minimum MSE: 11.463703155517578</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: MAY REMOVE</span></span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>book_users_interaction_matrix <span class="op">=</span> np.random.randint(<span class="dv">0</span>, <span class="dv">2</span>, size<span class="op">=</span>[n_users, n_books])</span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>sns.heatmap(book_users_interaction_matrix, cmap<span class="op">=</span><span class="st">"viridis"</span>)</span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Book User-Item Interaction HeatMap"</span>)</span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>predicted_ratings <span class="op">=</span> model.predict(x<span class="op">=</span>(X_test[<span class="st">"New-User-ID"</span>], X_test[<span class="st">"New-ISBN"</span>])).flatten()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>With the Machine Learning model fitted, it would be a good time to evaluate the effectiveness of my model. Thus, I will calculate metrics (as shown below) such as <code>Precision Score</code>, <code>ROC-AUC (Receiver Operating Characteristic (Curve) - Area Under the Curve) Score</code>, <code>F1 Score</code>, <code>Recall Score</code>, and the <code>Confusion Matrix</code>. For the classification metrics, I applied a threshold rating of 5.0 or above to indicate as an acceptable rating to recommend a book, based on the logic that there would be more positive than negative reviews for that book-title, on average. All of the calcuations are shown in the following code snippet as well as its corresponding visualizations.</p>
+<div class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>predicted_ratings <span class="op">=</span> model.predict(x<span class="op">=</span>(X_test[<span class="st">"New-User-ID"</span>], X_test[<span class="st">"New-ISBN"</span>])).flatten()</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>book_rec_history_model_loss, book_rec_history_model_accuracy <span class="op">=</span> model.evaluate(x<span class="op">=</span>(X_test[<span class="st">"New-User-ID"</span>], X_test[<span class="st">"New-ISBN"</span>]), y<span class="op">=</span>X_test[<span class="st">"Book-Rating"</span>])</span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>book_rec_history_model_accuracy <span class="op">/=</span> <span class="dv">10</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Threshold the predicted ratings to binary-classified recommendations (e.g., using a threshold of &gt;= 5 for recommending book)</span></span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>predicted_labels_bin_classify <span class="op">=</span> (predicted_ratings.copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>actual_labels_bin_classify <span class="op">=</span> (X_test[<span class="st">"Book-Rating"</span>].copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>actual_ratings_str <span class="op">=</span> predicted_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>predicted_ratings_str <span class="op">=</span> actual_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>actual_ratings_str, y_pred<span class="op">=</span>predicted_ratings_str, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>y_test_book_rating <span class="op">=</span> predicted_labels_bin_classify</span>
+<span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>y_pred_book_rating <span class="op">=</span> actual_labels_bin_classify</span>
+<span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>avg_precision_score <span class="op">=</span> average_precision_score(y_true<span class="op">=</span>actual_labels_bin_classify, y_score<span class="op">=</span>predicted_labels_bin_classify)</span>
+<span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Output statistics for Average Precision, Accuracy, and ROC AUC scores as well as the classifcation &amp; confusion matrix reports</span></span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test Results:</span><span class="ch">\n</span><span class="st">================================================"</span>)</span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Average Precision Score (When Compared to Test Set): </span><span class="sc">{</span>avg_precision_score <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_accuracy <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test_book_rating, y_pred_book_rating) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Confusion Matrix: </span><span class="ch">\n</span><span class="sc">{</span>confusion_matrix(y_test_book_rating, y_pred_book_rating)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Precision, Recall, and F1-score</span></span>
+<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a>precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>actual_labels_bin_classify, y_pred<span class="op">=</span>predicted_labels_bin_classify, average<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a>model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
+<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a>model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
+<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a>plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">'blue'</span>, <span class="st">'green'</span>, <span class="st">'orange'</span>])</span>
+<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Metrics'</span>)</span>
+<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Score'</span>)</span>
+<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Recommendation Model Evaluation Metrics'</span>)</span>
+<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the confusion matrix</span></span>
+<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="op">=</span> confusion_matrix(y_test_book_rating, y_pred_book_rating)</span>
+<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the confusion matrix</span></span>
+<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>sns.heatmap(conf_matrix, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
+<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Predicted Label'</span>)</span>
+<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Actual Label'</span>)</span>
+<span id="cb61-52"><a href="#cb61-52" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Confusion Matrix'</span>)</span>
+<span id="cb61-53"><a href="#cb61-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>269/269 [==============================] - 0s 936us/step
+269/269 [==============================] - 0s 1ms/step - loss: 11.4806 - mean_absolute_error: 2.5759
+Test Results:
+================================================
+Average Precision Score (When Compared to Test Set): 39.60%
+_______________________________________________
+Accuracy Score (When Compared to Test Set): 25.76%)
+_______________________________________________
+ROC AUC Score: 72.25%
+_______________________________________________
+CLASSIFICATION REPORT:
+                     0           1  accuracy    macro avg  weighted avg
+precision     0.952672    0.253937  0.746397     0.603304      0.876983
+recall        0.752998    0.692060  0.746397     0.722529      0.746397
+f1-score      0.841147    0.371544  0.746397     0.606346      0.790279
+support    7672.000000  932.000000  0.746397  8604.000000   8604.000000
+_______________________________________________
+Confusion Matrix: 
+[[5777 1895]
+ [ 287  645]]</code></pre>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>book_rec_history_model_loss, book_rec_history_model_accuracy <span class="op">=</span> model.evaluate(x<span class="op">=</span>(X_test[<span class="st">"New-User-ID"</span>], X_test[<span class="st">"New-ISBN"</span>]), y<span class="op">=</span>X_test[<span class="st">"Book-Rating"</span>])</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>book_rec_history_model_accuracy <span class="op">/=</span> <span class="dv">10</span></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Threshold the predicted ratings to binary recommendations (e.g., using a threshold of &gt;= 5 for recommending book)</span></span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>threshold <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>predicted_labels_bin_classify <span class="op">=</span> (predicted_ratings.copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>actual_labels_bin_classify <span class="op">=</span> (X_test[<span class="st">"Book-Rating"</span>].copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>actual_ratings_str <span class="op">=</span> predicted_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>predicted_ratings_str <span class="op">=</span> actual_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
-<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>actual_ratings_str, y_pred<span class="op">=</span>predicted_ratings_str, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>y_test_book_rating <span class="op">=</span> predicted_labels_bin_classify</span>
-<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>y_pred_book_rating <span class="op">=</span> actual_labels_bin_classify</span>
-<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Train Result:</span><span class="ch">\n</span><span class="st">================================================"</span>)</span>
-<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Lost Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_loss<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Average Precision Score (When Compared to Test Set): </span><span class="sc">{</span>average_precision_score(y_true<span class="op">=</span>actual_labels_bin_classify, y_score<span class="op">=</span>predicted_labels_bin_classify)<span class="sc">:.4f}</span><span class="ss">"</span>)</span>
-<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_accuracy<span class="sc">:.4f}</span><span class="ss">"</span>, <span class="ss">f"(as a percentage: </span><span class="sc">{</span>book_rec_history_model_accuracy <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
-<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test_book_rating, y_pred_book_rating) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb58-27"><a href="#cb58-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Confusion Matrix: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>confusion_matrix(y_test_book_rating, y_pred_book_rating)<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
-<span id="cb58-28"><a href="#cb58-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-29"><a href="#cb58-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Precision, Recall, and F1-score</span></span>
-<span id="cb58-30"><a href="#cb58-30" aria-hidden="true" tabindex="-1"></a>precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>actual_labels_bin_classify, y_pred<span class="op">=</span>predicted_labels_bin_classify, average<span class="op">=</span><span class="st">'binary'</span>)</span>
-<span id="cb58-31"><a href="#cb58-31" aria-hidden="true" tabindex="-1"></a>model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
-<span id="cb58-32"><a href="#cb58-32" aria-hidden="true" tabindex="-1"></a>model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
-<span id="cb58-33"><a href="#cb58-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-34"><a href="#cb58-34" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb58-35"><a href="#cb58-35" aria-hidden="true" tabindex="-1"></a>plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">'blue'</span>, <span class="st">'green'</span>, <span class="st">'orange'</span>])</span>
-<span id="cb58-36"><a href="#cb58-36" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Metrics'</span>)</span>
-<span id="cb58-37"><a href="#cb58-37" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Score'</span>)</span>
-<span id="cb58-38"><a href="#cb58-38" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Recommendation Model Evaluation Metrics'</span>)</span>
-<span id="cb58-39"><a href="#cb58-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb58-40"><a href="#cb58-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-41"><a href="#cb58-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the confusion matrix</span></span>
-<span id="cb58-42"><a href="#cb58-42" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="op">=</span> confusion_matrix(y_test_book_rating, y_pred_book_rating)</span>
-<span id="cb58-43"><a href="#cb58-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-44"><a href="#cb58-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the confusion matrix</span></span>
-<span id="cb58-45"><a href="#cb58-45" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb58-46"><a href="#cb58-46" aria-hidden="true" tabindex="-1"></a>sns.heatmap(conf_matrix, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
-<span id="cb58-47"><a href="#cb58-47" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Predicted Label'</span>)</span>
-<span id="cb58-48"><a href="#cb58-48" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Actual Label'</span>)</span>
-<span id="cb58-49"><a href="#cb58-49" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Confusion Matrix'</span>)</span>
-<span id="cb58-50"><a href="#cb58-50" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-37-output-2.png" class="img-fluid"></p>
 </div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-37-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
+<ul>
+<li><ol type="1">
+<li></li>
+</ol></li>
+<li><ol start="2" type="1">
+<li></li>
+</ol></li>
+<li><ol start="3" type="1">
+<li></li>
+</ol></li>
+</ul>
+</section>
+<section id="reference-sources-and-citations-ieee-format" class="level2">
+<h2 class="anchored" data-anchor-id="reference-sources-and-citations-ieee-format">Reference Sources and Citations (IEEE Format)</h2>
+<p>To complete this blog post, I used the following online sources as references for developing this:</p>
+<p>[1] Book Recommendation Dataset:</p>
+<p>Möbius, “Book Recommendation Dataset”, Apr.-2023. [Online]. Available: https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset. [Accessed: 25-Sep.-2023].</p>
+<p>[2] Tutorial on Basics of Machine Learning Recommendation Systems:</p>
+<p>M. Ahammad, “Movie Recommender Systems Using Neural Network,” 2020. [Online]. Available: https://www.kaggle.com/code/mejbahahammad/movie-recommender-systems-using-neural-network. [Accessed: 25-Sep.-2023].</p>
+<p>[3] Tutorial on Sample Visualizations for Machine Learning Recommendation Systems:</p>
+<p>Great Learning Team, “Excerpts From a Masterclass on Movie Recommendation System,” 22-Aug.-2022. Available: https://www.mygreatlearning.com/blog/masterclass-on-movie-recommendation-system/. [Accessed: 26-Sep.2023].</p>
+<p>[4] Tutorial on Evaluating Machine Learning Recommendation Systems:</p>
+<p>A. Johannsdottir, “Implementing Your Own Recommmender Systems in Python”, 28-Nov.-2019. Available: https://www.cambridgespark.com/info/recommender-systems-in-python. [Accessed: 27-Sep.2023].</p>
 </section>
 
 </main>
