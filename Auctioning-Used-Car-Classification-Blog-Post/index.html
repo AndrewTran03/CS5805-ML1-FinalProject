@@ -117,7 +117,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, roc_auc_score, confusion_matrix, classification_report</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, roc_auc_score, confusion_matrix, classification_report, precision_recall_fscore_support</span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
@@ -129,11 +129,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/car_prices.csv"</span>, error_bad_lines<span class="op">=</span><span class="va">False</span>, warn_bad_lines<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_28284\331717344.py:2: FutureWarning: The error_bad_lines argument has been deprecated and will be removed in a future version. Use on_bad_lines in the future.
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_13416\331717344.py:2: FutureWarning: The error_bad_lines argument has been deprecated and will be removed in a future version. Use on_bad_lines in the future.
 
 
   df = pd.read_csv("datasets/car_prices.csv", error_bad_lines=False, warn_bad_lines=False)
-C:\Users\andre\AppData\Local\Temp\ipykernel_28284\331717344.py:2: FutureWarning: The warn_bad_lines argument has been deprecated and will be removed in a future version. Use on_bad_lines in the future.
+C:\Users\andre\AppData\Local\Temp\ipykernel_13416\331717344.py:2: FutureWarning: The warn_bad_lines argument has been deprecated and will be removed in a future version. Use on_bad_lines in the future.
 
 
   df = pd.read_csv("datasets/car_prices.csv", error_bad_lines=False, warn_bad_lines=False)</code></pre>
@@ -522,8 +522,9 @@ C:\Users\andre\AppData\Local\Temp\ipykernel_28284\331717344.py:2: FutureWarning:
 </div>
 </div>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out all of the columns (and their names) available for me to use in the dataset</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out all of the columns (and their names) available for me to use in </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># the dataset</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <pre><code>Index(['year', 'make', 'model', 'trim', 'body', 'transmission', 'vin', 'state',
        'condition', 'odometer', 'color', 'interior', 'seller', 'mmr',
@@ -562,8 +563,8 @@ memory usage: 68.2+ MB</code></pre>
 </div>
 <p>Additionally, before handing my combined Book dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN vales, fixing types of columns, filling invalid values with suitable alternatives, etc.</p>
 <div class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of duplicated elements in the dataset</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (could be problematic if not resolved)</span></span>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of duplicated elements in the dataset (could be </span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># problematic if not resolved)</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>df.duplicated().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>0</code></pre>
@@ -823,8 +824,8 @@ memory usage: 68.2+ MB</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of 'null'/'NaN' elements in the dataset </span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (if NaN filling is needed or not)</span></span>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figuring out the number of 'null'/'NaN' elements in the dataset (i.e. if NaN </span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># filling is needed or not)</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.isnull().<span class="bu">sum</span>())</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>(df.isnull().<span class="bu">sum</span>() <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -1151,7 +1152,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 <div class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check to make sure if all NaN and also unpreferred/unformatted values</span></span>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check to make sure if all NaN and also any unpreferred / unformatted values</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># are resolved now</span></span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.isnull().<span class="bu">sum</span>())</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>(df.isnull().<span class="bu">sum</span>() <span class="op">/</span> df.shape[<span class="dv">0</span>]) <span class="op">*</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1983,7 +1984,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 </div>
-<p>Temp</p>
+<p>In the following 2 code snippets, I tried to filter out the number of entries in the dataset such that to make the data more skewed toward the present, giving us the ability to make conclusions that are relevant to the modern day, but also to avoid issues of utilizing vehicle entries with a (subjectively insignificant) numerical quantity toward future visualizations and future Machine Learning model training.</p>
 <div class="cell" data-execution_count="15">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop all entries to only include entries sold between 2005 - 2015</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (making the dataset easier to train Machine Learning models and visualize)</span></span>
@@ -2545,13 +2546,16 @@ dtype: float64</code></pre>
 </section>
 <section id="machine-learning---model-training-and-evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="machine-learning---model-training-and-evaluation">Machine Learning - Model Training and Evaluation</h2>
+<p>Great, now we are onto the Machine Learning part of the blog post!</p>
+<p>As seen while cleaning the dataset above, this dataset was more used for data science applications. However, as mentioned above, I found a way to convert this into a Machine-Learning related study. Through seeing the profit made by selling the car compared to its market-valued price, determining the return-of-investment (ROI) made on the vehicle introduces the concept of binary classification here. Thus, to account for the ROI calcuation in my dataframe, I created a new column (as shown below) by subtracting the <code>Selling Price</code> columns and the <code>MMR (Manheim Market Report)</code> columns.</p>
 <div class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert this into a binary classification problem by separating cars based on</span></span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="co"># if each car entry (row) made a profit or not</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># First we are calculating the price sold when compared to the average MMR </span></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (Manheim Market Report)</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ROI"</span>] <span class="op">=</span> df[<span class="st">"Selling Price"</span>] <span class="op">-</span> df[<span class="st">"MMR"</span>]</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co"># First we are calculating the price sold when compared to the average MMR </span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># (Manheim Market Report)</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ROI"</span>] <span class="op">=</span> df[<span class="st">"Selling Price"</span>] <span class="op">-</span> df[<span class="st">"MMR"</span>]</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 
@@ -2814,8 +2818,9 @@ dtype: float64</code></pre>
 </div>
 </div>
 </div>
+<p>As I was curious about the range of the ROI calcuation data, I created a histogram to illustrate the ROI spread across all car models and years currently in my working dataset.</p>
 <div class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram Plot Illustrating the ROI Across All of the Cars</span></span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram plot illustrating the ROI across all of the cars</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(df[<span class="st">"ROI"</span>])</span>
 <span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">"font.size"</span>] <span class="op">=</span> <span class="dv">7</span></span>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Histogram ROI Comparison (Against MMR) Across All Auctioning Used-Cars in the Dataset (2005-2015)"</span>)</span>
@@ -2826,11 +2831,13 @@ dtype: float64</code></pre>
 <p><img src="index_files/figure-html/cell-20-output-1.png" class="img-fluid"></p>
 </div>
 </div>
+<p>Because many of the Machine Learning algoritm functions can only take in numerical, standardized input, I decided to standardized it using True/False (for now), indiciating whether a profit was made or not. Ultimately, it does not matter what the ROI price was for each car but rather if it made a profit (positive ROI) or loss (negative or 0 ROI) at the moment of the sale. Later, I will convert the True/False values to its binary equivalent, 0 and 1.</p>
 <div class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now, to the binary classification, reordering the ROI column to binary 0 or 1</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># False (failure) and # True (Success)</span></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ROI"</span>] <span class="op">=</span> ((df[<span class="st">"Selling Price"</span>] <span class="op">-</span> df[<span class="st">"MMR"</span>]) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting to the binary classification, slowly reordering the ROI column to </span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="co"># binary 0 or 1</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Now: False (failure) and True (Success)</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"ROI"</span>] <span class="op">=</span> ((df[<span class="st">"Selling Price"</span>] <span class="op">-</span> df[<span class="st">"MMR"</span>]) <span class="op">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
@@ -3093,6 +3100,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 </div>
+<p>Once more, before I pass my dataset over to the Machine Learning algorithms, I would like to sort all of the working car entries in my dataframe by all of its important categorical features in a hierarchy for visual reasons using the <code>sort_values</code> function - <code>Sale Date</code>, <code>Condition</code>, <code>Year</code>, <code>Make</code>, <code>ROI</code>, and <code>Odometer</code> - so that I can have a better organized picture of the final dataframe I will be working with prior to imposing any Machine Learning onto this.</p>
 <div class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sort values in the table in order by column to show a hierarchy of </span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="co"># importance between comparable attributes of Auctioning Used-Cars</span></span>
@@ -3361,6 +3369,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 </div>
+<p>With all of the entries sorted into its final positions in the dataframe, I found no need for certain categorical columns to be considered in the Machine Learning algorithms: <code>Seller</code>, <code>MMR</code>, <code>Selling Price</code>, <code>Trim</code>, <code>State</code>, <code>Model</code>, and <code>Sale Date</code>. Thus, I dropped them from my working dataframe to consolidate the dataset to those columns that I found relevant for car entry evaluation.</p>
 <div class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop these purely categorical columns (not needed in Machine Learning algorithms</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># which require only numerical input)</span></span>
@@ -3538,6 +3547,7 @@ dtype: float64</code></pre>
 </div>
 </div>
 </div>
+<p>As described before, the Machine Learning algoritm functions can only take in numerical, standardized input, so I decided to standardized the all of the rest of the categorical columns used in the evaluation of these used-car entries - <code>ROI</code>, <code>Transmission</code>, <code>Exterior Color</code>, <code>Matching Colors for Car Exterior and Interior</code>, <code>Make</code>, and <code>Body</code> - to numerical inputs using standard index mapping assignment in Python.</p>
 <div class="cell" data-execution_count="23">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert all necessary columns to an associated numerical value so that</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co"># they may be accepted as quantiative input to train the Machine Learning model</span></span>
@@ -3723,103 +3733,152 @@ dtype: float64</code></pre>
 </div>
 </div>
 </div>
+<p>As all of the data in the working dataframe are now numerical, I wanted to preliminary-wise see the quantifiable correlation between the <code>ROI</code> columns and the rest in the dataset. Thus, using the <code>corr</code> function for dataframes with the <code>ROI</code> column, I created a heatmap and bar-graph visualizing the constrast between each car entries’ attribute columns and its ROI value.</p>
 <div class="cell" data-execution_count="24">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation heatmap to quantify relationships between auctioning used-car</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="co"># attributes</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>sns.heatmap(df.corr(), annot<span class="op">=</span><span class="va">True</span>, linewidths<span class="op">=</span><span class="fl">0.5</span>)</span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Correlation Heatmap Between All Auctioning Used-Cars Quantiative Factors (2005-2015)"</span>)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation bar graph between ROI and all other auctioning used-car</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="co"># attributes</span></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>target_corr <span class="op">=</span> df.corr()[<span class="st">"ROI"</span>].<span class="bu">abs</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span>target_corr.index[<span class="dv">1</span>:], y<span class="op">=</span>target_corr.values[<span class="dv">1</span>:])</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Auctioned Car Features"</span>)</span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Correlation with ROI"</span>)</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Correlation between ROI and Other Auctioned Car Features When Comparing Across All Auctioning Used-Cars in the Dataset (2005-2015)"</span>)</span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-25-output-1.png" class="img-fluid"></p>
 </div>
-</div>
-<div class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Correlation bar graph between ROI and all other auctioning used-car</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># attributes</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>target_corr <span class="op">=</span> df.corr()[<span class="st">"ROI"</span>].<span class="bu">abs</span>().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span>target_corr.index[<span class="dv">1</span>:], y<span class="op">=</span>target_corr.values[<span class="dv">1</span>:])</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>)</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Auctioned Car Features"</span>)</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Correlation with ROI"</span>)</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Correlation between ROI and Other Auctioned Car Features When Comparing Across All Auctioning Used-Cars in the Dataset (2005-2015)"</span>)</span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-26-output-1.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-25-output-2.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuring the Machine Learning Tensorflow Model by placing all other columns into the x</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co"># axis and ROI column into the y-axis</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop([<span class="st">"ROI"</span>], axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"ROI"</span>]</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"X Shape: "</span> <span class="op">+</span> <span class="bu">str</span>(X.shape))</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Y Shape: "</span> <span class="op">+</span> <span class="bu">str</span>(y.shape))</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([</span>
-<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"min_max_scaler"</span>, MinMaxScaler()),</span>
-<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"std_scaler"</span>, StandardScaler())</span>
-<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>])</span>
-<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>X_train_copy <span class="op">=</span> X_train.copy()</span>
-<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> pipeline.fit_transform(X_train)</span>
-<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> pipeline.transform(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Since the dataframe is now properly cleaned, sorted, and integer-mapped by this point, I had split the respective dataframe into the train and test datasets for the Machine Learning model with 80% going to the training dataset and the last 20% going to the test dataset. Fortunately, because order of the data sequentially does not matter here, I was able to utilize the <code>train_test_split</code> function for shuffling and randomization, making the future-generated Machine Learning model more unpredictable but also more objective in its returned model results.</p>
+<p>Note that here I also used a <code>Pipeline</code> object from the <code>scikit-learn</code> package as well as the <code>MinMaxScaler</code> and the <code>StandardScaler</code> classes. On on hand, the <code>MinMaxScaler</code> class is useful for scaling columns to a specific range, usually between [0, 1], to maintain consistency. On the other hand, the <code>StandardScaler</code> class is useful for apply Z-score normaization/transformation on the data to avoid sensivite-prone Machine Learning algorithms which require appropriate scaling of the features within its trained dataset. As I learned from online, this <code>Pipeline</code> object is necesary to ensure appropriate preprocessing just before the dataset is passed to the Machine Learning model for training and later evaluation.</p>
+<div class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Configuring the Machine Learning Tensorflow Model by placing all other columns into the x</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># axis and ROI column into the y-axis</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop([<span class="st">"ROI"</span>], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"ROI"</span>]</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"X Shape:"</span>, X.shape)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Y Shape:"</span>, y.shape)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>pipeline <span class="op">=</span> Pipeline([</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"min_max_scaler"</span>, MinMaxScaler()),</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>    (<span class="st">"std_scaler"</span>, StandardScaler())</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, shuffle<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>X_train_copy <span class="op">=</span> X_train.copy()</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> pipeline.fit_transform(X_train)</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> pipeline.transform(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>X Shape: (375113, 8)
 Y Shape: (375113,)</code></pre>
 </div>
 </div>
-<div class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_score(clf, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>):</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> train:</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> clf.predict(X_train)</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>        clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_train, pred, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Train Result:</span><span class="ch">\n</span><span class="st">================================================"</span>)</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Accuracy Score: </span><span class="sc">{</span>accuracy_score(y_train, pred) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_train, y_train_prob) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Confusion Matrix: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>confusion_matrix(y_train, pred)<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
-<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>        sns.heatmap(confusion_matrix(y_train, pred), annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
-<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">"Predicted Label"</span>)</span>
-<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">"True Label"</span>)</span>
-<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">"Confusion Matrix for Training Data"</span>)</span>
-<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
-<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> train<span class="op">==</span><span class="va">False</span>:</span>
-<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> clf.predict(X_test)</span>
-<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>        clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_test, pred, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
-<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Test Result:</span><span class="ch">\n</span><span class="st">================================================"</span>)        </span>
-<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Accuracy Score: </span><span class="sc">{</span>accuracy_score(y_test, pred) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test, y_test_prob) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Confusion Matrix: </span><span class="ch">\n</span><span class="ss"> </span><span class="sc">{</span>confusion_matrix(y_test, pred)<span class="sc">}</span><span class="ch">\n</span><span class="ss">"</span>)</span>
-<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>        sns.heatmap(confusion_matrix(y_test, pred), annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
-<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">"Predicted Label"</span>)</span>
-<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">"True Label"</span>)</span>
-<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">"Confusion Matrix for Testing Data"</span>)</span>
-<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a>        plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Whenever the Machine Learning model is fitted, it would be a good time to evaluate the effectiveness of my model. Thus, I will calculate metrics (as shown below) such as <code>Precision Score</code>, <code>ROC-AUC (Receiver Operating Characteristic (Curve) - Area Under the Curve) Score</code>, <code>Precision Score</code>, <code>F1 Score</code>, <code>Recall Score</code>, and the <code>Confusion Matrix</code>. Thus, in the following code snippet, I have written a function called <code>print_score</code> to print out these statistics as well as a corresponding visualization of the confusion matrix. This function will be invoked after each type of classification model has been discussed to evaluate each one’s effectiveness objectively.</p>
+<div class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_score(model, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>):</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> train <span class="op">==</span> <span class="va">True</span>:</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        y_pred <span class="op">=</span> model.predict(X_train)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>        clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>y_train, y_pred<span class="op">=</span>y_pred, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute and output statistics for Precision, Accuracy, and ROC AUC Scores as well as the Classifcation Report</span></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Train Result:</span><span class="ch">\n</span><span class="st">================================================"</span>)</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Accuracy Score: </span><span class="sc">{</span>accuracy_score(y_train, y_pred) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_train, y_train_prob) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate and output Precision, Recall, F1-Score, and Confusion Matrix</span></span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>        precision, recall, f1_score <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>        precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>y_train, y_pred<span class="op">=</span>y_pred, average<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>        model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>        model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Precision Score: </span><span class="sc">{</span>precision <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Recall Score: </span><span class="sc">{</span>recall <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"F1 Score: </span><span class="sc">{</span>f1_score <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Confusion Matrix:</span><span class="ch">\n</span><span class="sc">{</span>confusion_matrix(y_train, y_pred)<span class="sc">}</span><span class="ss">"</span>) </span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>        plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"orange"</span>])</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">"Metrics"</span>)</span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">"Score"</span>)</span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">"Recommendation Model Evaluation Metrics -- Training Data"</span>)</span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a>        sns.heatmap(confusion_matrix(y_train, y_pred), annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">"Predicted Label"</span>)</span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">"True Label"</span>)</span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">"Confusion Matrix for Training Data"</span>)</span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a>        plt.show()</span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> train <span class="op">==</span> <span class="va">False</span>:</span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a>        y_pred <span class="op">=</span> model.predict(X_test)</span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>        clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>y_test, y_pred<span class="op">=</span>y_pred, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Compute and output statistics for Precision, Accuracy, and ROC AUC Scores as well as the Classifcation Report</span></span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"Test Result:</span><span class="ch">\n</span><span class="st">================================================"</span>)        </span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Accuracy Score: </span><span class="sc">{</span>accuracy_score(y_test, y_pred) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test, y_test_prob) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a>        <span class="co"># Calculate and output Precision, Recall, F1-Score, and Confusion Matrix</span></span>
+<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a>        precision, recall, f1_score <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a>        precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>y_test, y_pred<span class="op">=</span>y_pred, average<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a>        model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
+<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a>        model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
+<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Precision Score: </span><span class="sc">{</span>precision <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Recall Score: </span><span class="sc">{</span>recall <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"F1 Score: </span><span class="sc">{</span>f1_score <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"Confusion Matrix:</span><span class="ch">\n</span><span class="sc">{</span>confusion_matrix(y_test, y_pred)<span class="sc">}</span><span class="ss">"</span>)  </span>
+<span id="cb37-67"><a href="#cb37-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-68"><a href="#cb37-68" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb37-69"><a href="#cb37-69" aria-hidden="true" tabindex="-1"></a>        plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"orange"</span>])</span>
+<span id="cb37-70"><a href="#cb37-70" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">"Metrics"</span>)</span>
+<span id="cb37-71"><a href="#cb37-71" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">"Score"</span>)</span>
+<span id="cb37-72"><a href="#cb37-72" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">"Recommendation Model Evaluation Metrics -- Testing Data"</span>)</span>
+<span id="cb37-73"><a href="#cb37-73" aria-hidden="true" tabindex="-1"></a>        plt.show() </span>
+<span id="cb37-74"><a href="#cb37-74" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb37-75"><a href="#cb37-75" aria-hidden="true" tabindex="-1"></a>        plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb37-76"><a href="#cb37-76" aria-hidden="true" tabindex="-1"></a>        sns.heatmap(confusion_matrix(y_test, y_pred), annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
+<span id="cb37-77"><a href="#cb37-77" aria-hidden="true" tabindex="-1"></a>        plt.xlabel(<span class="st">"Predicted Label"</span>)</span>
+<span id="cb37-78"><a href="#cb37-78" aria-hidden="true" tabindex="-1"></a>        plt.ylabel(<span class="st">"True Label"</span>)</span>
+<span id="cb37-79"><a href="#cb37-79" aria-hidden="true" tabindex="-1"></a>        plt.title(<span class="st">"Confusion Matrix for Testing Data"</span>)</span>
+<span id="cb37-80"><a href="#cb37-80" aria-hidden="true" tabindex="-1"></a>        plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards LogisticRegression</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>log_reg <span class="op">=</span> LogisticRegression(random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>log_reg.fit(X_train, y_train)</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> log_reg.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> log_reg.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>print_score(log_reg, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>print_score(log_reg, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, we are finally at the Machine Learning classification portion. To reinforce my understanding of the different methodologies covered at the beginning of this course with regards to different ways of doing Machine-Learing classification, I am going to constrast all four of the main classification methods covered in this course: <code>LogisticRegression</code>, <code>KNeighborsClassifier</code>, <code>RandomForestClassifier</code>, and the <code>DecisionTreeClassifier</code>, comparing all of them against all of the following metrics evaluated in the <code>print_score</code> function to see which method is the most representative and encompassing of the most-accurately depicting my working dataset of Auctioned Used-Cars.</p>
+<p>First, I analyzed the <code>LogisticRegression</code> Classification algorithm by fitting, estimating the probability of the sample for each class in the model using the <code>predict_proba</code> function, and printing out the appropriate metrics and visualization of the confusion matrix using the <code>print_score</code> helper function created earlier in the code snippets above.</p>
+<div class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards LogisticRegression</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>log_reg <span class="op">=</span> LogisticRegression(random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>log_reg.fit(X_train, y_train)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> log_reg.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> log_reg.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>print_score(log_reg, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>print_score(log_reg, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Train Result:
 ================================================
@@ -3840,10 +3899,15 @@ recall          0.648752
 f1-score        0.648726  
 support    300090.000000  
 _______________________________________________
-Confusion Matrix: 
- [[107329  52534]
+Precision Score: 62.45%
+_______________________________________________
+Recall Score: 62.30%
+_______________________________________________
+F1 Score: 62.37%
+_______________________________________________
+Confusion Matrix:
+[[107329  52534]
  [ 52872  87355]]
-
 Test Result:
 ================================================
 Accuracy Score: 64.44%
@@ -3857,27 +3921,39 @@ recall         0.666417      0.619212  0.644376      0.642814      0.644376
 f1-score       0.666433      0.619194  0.644376      0.642814      0.644376
 support    39993.000000  35030.000000  0.644376  75023.000000  75023.000000
 _______________________________________________
-Confusion Matrix: 
- [[26652 13341]
- [13339 21691]]
-</code></pre>
+Precision Score: 61.92%
+_______________________________________________
+Recall Score: 61.92%
+_______________________________________________
+F1 Score: 61.92%
+_______________________________________________
+Confusion Matrix:
+[[26652 13341]
+ [13339 21691]]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-29-output-2.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-28-output-2.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-29-output-3.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-28-output-3.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-28-output-4.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-28-output-5.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards KNeighborsClassifier</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>knn_classifier <span class="op">=</span> KNeighborsClassifier()</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>knn_classifier.fit(X_train, y_train)</span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> knn_classifier.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> knn_classifier.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>print_score(knn_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>print_score(knn_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Second, I analyzed the <code>KNeighborsClassifier</code> Classification algorithm by fitting, estimating the probability of the sample for each class in the model using the <code>predict_proba</code> function, and printing out the appropriate metrics and visualization of the confusion matrix using the <code>print_score</code> helper function created earlier in the code snippets above.</p>
+<div class="cell" data-execution_count="28">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards KNeighborsClassifier</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>knn_classifier <span class="op">=</span> KNeighborsClassifier()</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>knn_classifier.fit(X_train, y_train)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> knn_classifier.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> knn_classifier.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>print_score(knn_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>print_score(knn_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Train Result:
 ================================================
@@ -3898,10 +3974,15 @@ recall          0.747666
 f1-score        0.747597  
 support    300090.000000  
 _______________________________________________
-Confusion Matrix: 
- [[122589  37274]
+Precision Score: 73.19%
+_______________________________________________
+Recall Score: 72.58%
+_______________________________________________
+F1 Score: 72.89%
+_______________________________________________
+Confusion Matrix:
+[[122589  37274]
  [ 38449 101778]]
-
 Test Result:
 ================================================
 Accuracy Score: 61.93%
@@ -3915,27 +3996,39 @@ recall         0.645438      0.589466  0.619303      0.617452      0.619303
 f1-score       0.643820      0.591162  0.619303      0.617491      0.619233
 support    39993.000000  35030.000000  0.619303  75023.000000  75023.000000
 _______________________________________________
-Confusion Matrix: 
- [[25813 14180]
- [14381 20649]]
-</code></pre>
+Precision Score: 59.29%
+_______________________________________________
+Recall Score: 58.95%
+_______________________________________________
+F1 Score: 59.12%
+_______________________________________________
+Confusion Matrix:
+[[25813 14180]
+ [14381 20649]]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-30-output-2.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-29-output-2.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-30-output-3.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-29-output-3.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-29-output-4.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-29-output-5.png" class="img-fluid"></p>
 </div>
 </div>
-<div class="cell" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards RandomForestClassifier</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>rf_classifier <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span> <span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>rf_classifier.fit(X_train, y_train)</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> rf_classifier.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> rf_classifier.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>print_score(rf_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>print_score(rf_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Third, I analyzed the <code>RandomForestClassifier</code> Classification algorithm by fitting, estimating the probability of the sample for each class in the model using the <code>predict_proba</code> function, and printing out the appropriate metrics and visualization of the confusion matrix using the <code>print_score</code> helper function created earlier in the code snippets above.</p>
+<div class="cell" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards RandomForestClassifier</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>rf_classifier <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span> <span class="dv">100</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>rf_classifier.fit(X_train, y_train)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> rf_classifier.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> rf_classifier.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>print_score(rf_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>print_score(rf_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Train Result:
 ================================================
@@ -3950,10 +4043,15 @@ recall          0.999856       0.999886   0.99987       0.999871       0.99987
 f1-score        0.999878       0.999861   0.99987       0.999869       0.99987
 support    159863.000000  140227.000000   0.99987  300090.000000  300090.00000
 _______________________________________________
-Confusion Matrix: 
- [[159840     23]
+Precision Score: 99.98%
+_______________________________________________
+Recall Score: 99.99%
+_______________________________________________
+F1 Score: 99.99%
+_______________________________________________
+Confusion Matrix:
+[[159840     23]
  [    16 140211]]
-
 Test Result:
 ================================================
 Accuracy Score: 62.19%
@@ -3967,40 +4065,53 @@ recall         0.654840      0.584385  0.621943      0.619612      0.621943
 f1-score       0.648716      0.590751  0.621943      0.619734      0.621651
 support    39993.000000  35030.000000  0.621943  75023.000000  75023.000000
 _______________________________________________
-Confusion Matrix: 
- [[26189 13804]
- [14559 20471]]
-</code></pre>
+Precision Score: 59.73%
+_______________________________________________
+Recall Score: 58.44%
+_______________________________________________
+F1 Score: 59.08%
+_______________________________________________
+Confusion Matrix:
+[[26189 13804]
+ [14559 20471]]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-31-output-2.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-30-output-2.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-31-output-3.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-30-output-3.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-30-output-4.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-30-output-5.png" class="img-fluid"></p>
 </div>
 </div>
+<p>For the Random-Forest Classification, I wanted to create an additional visualization seeing what categorical columns were most correlated in predicting the <code>ROI</code> column. Thus, I made a bar plot to illustrate and map each categorical relationship’s correlation as shown below.</p>
+<div class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates a visualization for the Random-Forest Classifier data</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>rf_visualization <span class="op">=</span> pd.Series(rf_classifier.feature_importances_, index<span class="op">=</span>df.columns.tolist()[<span class="dv">1</span>:]).sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span>rf_visualization, y<span class="op">=</span>rf_visualization.index)</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Feature Importance Score"</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>plt.yticks(rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>)</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Features"</span>)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Visualizing Important Features of Auctioning Used-Car Data After Random Forest Classification"</span>)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-31-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>Lastly, I analyzed the <code>DecisionTreeClassifier</code> Classification algorithm by fitting, estimating the probability of the sample for each class in the model using the <code>predict_proba</code> function, and printing out the appropriate metrics and visualization of the confusion matrix using the <code>print_score</code> helper function created earlier in the code snippets above.</p>
 <div class="cell" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates a visualization for the Random-Forest Classifier data</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>rf_visualization <span class="op">=</span> pd.Series(rf_classifier.feature_importances_, index<span class="op">=</span>df.columns.tolist()[<span class="dv">1</span>:]).sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>sns.barplot(x<span class="op">=</span>rf_visualization, y<span class="op">=</span>rf_visualization.index)</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Feature Importance Score"</span>)</span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>plt.yticks(rotation<span class="op">=</span><span class="dv">45</span>, ha<span class="op">=</span><span class="st">"right"</span>)</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Features"</span>)</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Visualizing Important Features of Auctioning Used-Car Data After Random Forest Classification"</span>)</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-32-output-1.png" class="img-fluid"></p>
-</div>
-</div>
-<div class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards DecisionTreeClassifier</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>dt_classifier <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>dt_classifier.fit(X_train, y_train)</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> dt_classifier.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> dt_classifier.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>print_score(dt_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>print_score(dt_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Utilize the X_train and X_test Datasets to apply it towards DecisionTreeClassifier</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>dt_classifier <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>dt_classifier.fit(X_train, y_train)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>y_train_prob <span class="op">=</span> dt_classifier.predict_proba(X_train)[:, <span class="dv">1</span>]</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>y_test_prob <span class="op">=</span> dt_classifier.predict_proba(X_test)[:, <span class="dv">1</span>]</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>print_score(dt_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>print_score(dt_classifier, X_train, y_train, X_test, y_test, y_train_prob, y_test_prob, train<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Train Result:
 ================================================
@@ -4021,10 +4132,15 @@ recall          0.640704
 f1-score        0.639456  
 support    300090.000000  
 _______________________________________________
-Confusion Matrix: 
- [[111121  48742]
+Precision Score: 62.47%
+_______________________________________________
+Recall Score: 57.87%
+_______________________________________________
+F1 Score: 60.08%
+_______________________________________________
+Confusion Matrix:
+[[111121  48742]
  [ 59079  81148]]
-
 Test Result:
 ================================================
 Accuracy Score: 63.80%
@@ -4038,42 +4154,50 @@ recall         0.691371      0.577020  0.637978      0.634195      0.637978
 f1-score       0.670628      0.598142  0.637978      0.634385      0.636783
 support    39993.000000  35030.000000  0.637978  75023.000000  75023.000000
 _______________________________________________
-Confusion Matrix: 
- [[27650 12343]
- [14817 20213]]
-</code></pre>
+Precision Score: 62.09%
+_______________________________________________
+Recall Score: 57.70%
+_______________________________________________
+F1 Score: 59.81%
+_______________________________________________
+Confusion Matrix:
+[[27650 12343]
+ [14817 20213]]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-33-output-2.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-32-output-2.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-33-output-3.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-32-output-3.png" class="img-fluid"></p>
 </div>
-</div>
-<div class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates a visualization for the Decision-Tree Classifier data</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>sk.tree.plot_tree(dt_classifier, feature_names<span class="op">=</span>df.columns.tolist()[<span class="dv">1</span>:], filled<span class="op">=</span><span class="va">True</span>, </span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>                  class_names<span class="op">=</span>[<span class="st">"Negative ROI - Loss Money"</span>, <span class="st">"Positive ROI - Gain Money / Profited"</span>])</span>
-<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Visualizing Selecting Important Features During Decision Tree Classification"</span>)</span>
-<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
-<p><img src="index_files/figure-html/cell-34-output-1.png" class="img-fluid"></p>
+<p><img src="index_files/figure-html/cell-32-output-4.png" class="img-fluid"></p>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-32-output-5.png" class="img-fluid"></p>
+</div>
+</div>
+<p>For the Random-Forest Classification, I wanted to create an additional visualization seeing what categorical columns were most correlated in predicting the <code>ROI</code> column. Thus, I made a bar plot to illustrate and map each categorical relationship’s correlation as shown below.</p>
+<p>Similar to the Random-Forest Classification, I wanted to create an additional visualization to illustrate a portion of the Decision-Tree using the <code>plot_tree</code> function as shown below.</p>
+<div class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Creates a visualization for the Decision-Tree Classifier data</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">18</span>))</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>sk.tree.plot_tree(dt_classifier, feature_names<span class="op">=</span>df.columns.tolist()[<span class="dv">1</span>:], filled<span class="op">=</span><span class="va">True</span>, </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>                  class_names<span class="op">=</span>[<span class="st">"Negative ROI - Loss Money"</span>, <span class="st">"Positive ROI - Gain Money / Profited"</span>])</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Visualizing Decision Tree Classification"</span>)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-33-output-1.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
 <section id="conclusions" class="level2">
 <h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
 <ul>
-<li><ol type="1">
-<li></li>
-</ol></li>
-<li><ol start="2" type="1">
-<li></li>
-</ol></li>
-<li><ol start="3" type="1">
-<li></li>
-</ol></li>
+<li><p>Based on the four methods of classification invoked here in this blog post, the best classification predictor for this problem out of all of the methods is the <code>LogisticRegression</code> Classifier with the highest accuracy score of 64.44% as well as the highest average and consistency of all of the classifier algorithms used here with across the board scoring 61.92%.</p></li>
+<li><p>After reviewing the heatmap called <code>Correlation Heatmap Between All Aunctioning Used-Cars Quantitative Fcctors (2005-2015)</code> and the bar graph called <code>Correlation between ROI and Other Auctioned Car Features When Comparing Across All Auctioning Used-Cars in the Dataset (2005-2015)</code> in the <code>Machine Learning - Model Training and Evaluation</code> section of this blog post, I was surprised to see that the <code>Condition</code> qualitative column most correlated with the <code>ROI</code> computed column (through the subtraction of the <code>Selling Price</code> and the <code>MMR</code> (Manheim Market Report) columns) with about approximately <code>30%</code> correlation, higher than the 2nd-most correlated column - <code>Transmission</code> - by far at approximately <code>2.5%</code> correlation. In my opinion, I feel that this could be justified due to the fact that most younger-car buyers prefer a nice, asthetic interior and exterior as a primary selling-point considering to buy a used-car. Most people would take the general assumption that if the used-car to consider buying does not look at initial inspection, most prospective car-buyers would not invest any time further in looking into the performance specifics of the vehicle. This specific pattern could follow when investigating into the <code>Machine Learning</code> section that the <code>RandomForestClassifier</code> that the <code>Exterior Color</code> played a significant factor in this classification algorithm. However, this inference could be ultimately inconclusive due its described randomness.</p></li>
+<li><p>With careful experimentation in both the <code>Data Preprocessing - Cleaning and Analytics</code> and <code>Machine Learning - Model Training and Evaluation</code> sections of this blog post, it is of my opinion that the best factor that impacts <code>ROI</code> (and indirectly the classification of Used-Cars by human users) would be the <code>Condition</code> of the vehicle in-question at the time of sale.</p></li>
+<li><p>Ultimately, I learned a great deal from the blog post experience as I now better understand how to properly utilize different types of simple/basic Machine Learning classification through applying it to a practical, every-day dilemma in our society.</p></li>
 </ul>
 </section>
 <section id="reference-sources-and-citations-ieee-format" class="level2">
