@@ -107,19 +107,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-preprocessing---cleaning-and-analytics" class="level2">
 <h2 class="anchored" data-anchor-id="data-preprocessing---cleaning-and-analytics">Data Preprocessing - Cleaning and Analytics</h2>
 <div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> sns.color_palette()</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> average_precision_score, roc_auc_score, precision_recall_fscore_support, confusion_matrix, classification_report</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, pairwise_distances</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Model</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Input, Embedding, Flatten, dot</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> Adam</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"fivethirtyeight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import needed libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>color <span class="op">=</span> sns.color_palette()</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> average_precision_score, roc_auc_score, precision_recall_fscore_support, confusion_matrix, classification_report</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, pairwise_distances</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.models <span class="im">import</span> Model</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.layers <span class="im">import</span> Input, Embedding, Flatten, dot</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras.optimizers <span class="im">import</span> Adam</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>plt.style.use(<span class="st">"fivethirtyeight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>First, we will read and display all of the initial datasets in our file system for this blog post, downloaded from Kaggle. These datasets contains loads of valuable information such as Book-ISBNS, user-ids for the (anonymous) users/reviewers, book ratings, etc.</p>
 <div class="cell" data-execution_count="2">
@@ -128,7 +129,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ratings_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Ratings.csv"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>users_df <span class="op">=</span> pd.read_csv(<span class="st">"datasets/Users.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7880\2730945584.py:2: DtypeWarning: Columns (3) have mixed types. Specify dtype option on import or set low_memory=False.
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_13820\2730945584.py:2: DtypeWarning: Columns (3) have mixed types. Specify dtype option on import or set low_memory=False.
   books_df = pd.read_csv("datasets/Books.csv")</code></pre>
 </div>
 </div>
@@ -1187,7 +1188,7 @@ dtype: int64</code></pre>
 <span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Total Number of Reviews For Each Book"</span>)</span>
 <span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_7880\177655821.py:7: UserWarning: FixedFormatter should only be used together with FixedLocator
+<pre><code>C:\Users\andre\AppData\Local\Temp\ipykernel_13820\177655821.py:7: UserWarning: FixedFormatter should only be used together with FixedLocator
   ax.set_xticklabels(cleaned_df_condensed_trends.index,</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -1196,7 +1197,7 @@ dtype: int64</code></pre>
 </div>
 <p>Just to give an interesting statistic, I decided to make another copy of the working dataset, grouped by Book-Title but sorted by Book-Rating. This was intentional to output and report the most-popular (Top-50 rated books) and least-populat (Bottom-50 rated books) on average, which is an important piece of data for the user to know.</p>
 <div class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean rating of all books</span></span>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate mean rating of all books (copy of cleaned dataframe)</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Output the Top-50 and Bottom-50 rated books on average</span></span>
 <span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>cleaned_df_sorted_mean_rating <span class="op">=</span> cleaned_df.copy().groupby(<span class="st">"Book-Title"</span>)[<span class="st">"Book-Rating"</span>].mean().sort_values(ascending<span class="op">=</span><span class="va">False</span>)</span>
 <span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"--------- Sorted by Mean On Average: ---------</span><span class="ch">\n</span><span class="st">"</span>)</span>
@@ -1420,30 +1421,34 @@ Shape of Test Set: (8604, 9) and Size of Testing Set: 77436</code></pre>
 <p>Note that in the user-based similarity predictions that ratings as weights need to be normalized, so summation and average on top of a dot-product calcuation on the matrix is needed. This is to make sure the ratings stay within the expected range of 1.0 (worst) to 10.0 (best).</p>
 <p>At the end of the code cell below, a comparison on the prediction matrices with the <code>df_ratings_test</code> matrix using dimensionality reduction and the <code>mean_squared_error</code> function the <code>sklearn.metrics</code> module is computed to quantify the closeness of estimates to the actual dataset (as described previously).</p>
 <div class="cell" data-execution_count="31">
-<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>book_user_similarity <span class="op">=</span> pairwise_distances(df_ratings_train, metric<span class="op">=</span><span class="st">"cosine"</span>)</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>book_item_similarity <span class="op">=</span> pairwise_distances(df_ratings_train.T, metric<span class="op">=</span><span class="st">"cosine"</span>)</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> perform_prediction_similarity_based(ratings, similiarity, pred_type<span class="op">=</span><span class="st">"user"</span>):</span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pred_type <span class="op">==</span> <span class="st">"user"</span>:</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>        mean_user_rating <span class="op">=</span> ratings.mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>        <span class="co"># You use np.newaxis so that the user_rating has the same format as ratings</span></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        ratings_diff <span class="op">=</span> (ratings <span class="op">-</span> mean_user_rating[: np.newaxis])</span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> mean_user_rating[: np.newaxis] <span class="op">+</span> (similiarity.dot(ratings_diff) <span class="op">/</span> np.array([np.<span class="bu">abs</span>(similiarity).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)]))</span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> pred_type <span class="op">==</span> <span class="st">"item"</span>:</span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> ratings.dot(similiarity) <span class="op">/</span> np.array([np.<span class="bu">abs</span>(similiarity).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)])</span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pred</span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>book_user_prediction <span class="op">=</span> perform_prediction_similarity_based(df_ratings_train, book_user_similarity, pred_type<span class="op">=</span><span class="st">"user"</span>)</span>
-<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>book_item_prediction <span class="op">=</span> perform_prediction_similarity_based(df_ratings_train, book_item_similarity, pred_type<span class="op">=</span><span class="st">"item"</span>)</span>
-<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_mean_square_error(predicted, actual):</span>
-<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    predicted <span class="op">=</span> predicted[actual.nonzero()].flatten()</span>
-<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>    actual <span class="op">=</span> actual[actual.nonzero()].flatten()</span>
-<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mean_squared_error(predicted, actual)</span>
-<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"For Collaborative Filtering:"</span>)</span>
-<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Book User-Based Mean-Square-Error: </span><span class="sc">{</span>compute_mean_square_error(book_user_prediction, df_ratings_test)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Book Item-Based Mean-Square-Error: </span><span class="sc">{</span>compute_mean_square_error(book_item_prediction, df_ratings_test)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Computes the cosine similarity between all books using pairwise distancing</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>book_user_similarity <span class="op">=</span> pairwise_distances(df_ratings_train, metric<span class="op">=</span><span class="st">"cosine"</span>)</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>book_item_similarity <span class="op">=</span> pairwise_distances(df_ratings_train.T, metric<span class="op">=</span><span class="st">"cosine"</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculates prediction ratio for book_users and book_items</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> perform_prediction_similarity_based(ratings, similiarity, pred_type<span class="op">=</span><span class="st">"user"</span>):</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> pred_type <span class="op">==</span> <span class="st">"user"</span>:</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>        mean_user_rating <span class="op">=</span> ratings.mean(axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>        <span class="co"># You use np.newaxis so that the user_rating has the same format as ratings</span></span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>        ratings_diff <span class="op">=</span> (ratings <span class="op">-</span> mean_user_rating[: np.newaxis])</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> mean_user_rating[: np.newaxis] <span class="op">+</span> (similiarity.dot(ratings_diff) <span class="op">/</span> np.array([np.<span class="bu">abs</span>(similiarity).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)]))</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> pred_type <span class="op">==</span> <span class="st">"item"</span>:</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>        pred <span class="op">=</span> ratings.dot(similiarity) <span class="op">/</span> np.array([np.<span class="bu">abs</span>(similiarity).<span class="bu">sum</span>(axis<span class="op">=</span><span class="dv">1</span>)])</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pred</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>book_user_prediction <span class="op">=</span> perform_prediction_similarity_based(df_ratings_train, book_user_similarity, pred_type<span class="op">=</span><span class="st">"user"</span>)</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>book_item_prediction <span class="op">=</span> perform_prediction_similarity_based(df_ratings_train, book_item_similarity, pred_type<span class="op">=</span><span class="st">"item"</span>)</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Using predictions, calculates the mean squared error for each book_user and</span></span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a><span class="co"># book_item</span></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_mean_square_error(predicted, actual):</span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>    predicted <span class="op">=</span> predicted[actual.nonzero()].flatten()</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>    actual <span class="op">=</span> actual[actual.nonzero()].flatten()</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> mean_squared_error(predicted, actual)</span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"For Collaborative Filtering:"</span>)</span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Book User-Based Mean-Square-Error: </span><span class="sc">{</span>compute_mean_square_error(book_user_prediction, df_ratings_test)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Book Item-Based Mean-Square-Error: </span><span class="sc">{</span>compute_mean_square_error(book_item_prediction, df_ratings_test)<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>For Collaborative Filtering:
 Book User-Based Mean-Square-Error: 63.272539998623145
@@ -1452,17 +1457,19 @@ Book Item-Based Mean-Square-Error: 62.53832448961992</code></pre>
 </div>
 <p>One other calculation that is beneficial to check with regards to these matrices includes matrix sparsity. With a less sparse matrix (through a lower-percentage return), I found that it was more beneficial to more efficient to use dense Machine Learning representations and algorithms optimized for dense data, which will done later while creating the Sequential layering of the model. After performing the calculations below, this seemed to be the case I was dealing with here.</p>
 <div class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_sparsity_stats(df: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-------------- Sparsity Stats for </span><span class="sc">{}</span><span class="st">: --------------"</span>.<span class="bu">format</span>(<span class="bu">type</span>))</span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">=</span> <span class="bu">float</span>(<span class="bu">len</span>(df.nonzero()[<span class="dv">0</span>]))</span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">/=</span> (df.shape[<span class="dv">0</span>] <span class="op">*</span> df.shape[<span class="dv">1</span>])</span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">*=</span> <span class="dv">100</span></span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Sparsity: </span><span class="sc">{:4.2f}</span><span class="st">%'</span>.<span class="bu">format</span>(df_sparsity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Outputs the sparsity stats of a given dataframe</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_sparsity_stats(df: pd.DataFrame, <span class="bu">type</span>: <span class="bu">str</span>):</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"-------------- Sparsity Stats for </span><span class="sc">{}</span><span class="st">: --------------"</span>.<span class="bu">format</span>(<span class="bu">type</span>))</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">=</span> <span class="bu">float</span>(<span class="bu">len</span>(df.nonzero()[<span class="dv">0</span>]))</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">/=</span> (df.shape[<span class="dv">0</span>] <span class="op">*</span> df.shape[<span class="dv">1</span>])</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    df_sparsity <span class="op">*=</span> <span class="dv">100</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Sparsity: </span><span class="sc">{:4.2f}</span><span class="st">%'</span>.<span class="bu">format</span>(df_sparsity))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_train, <span class="st">"Train"</span>)</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_validation, <span class="st">"Validation"</span>)</span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_test, <span class="st">"Test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the sparsity stats of the ratings' train, validation, and test np.arrays</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_train, <span class="st">"Train"</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_validation, <span class="st">"Validation"</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>print_sparsity_stats(df_ratings_test, <span class="st">"Test"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>-------------- Sparsity Stats for Train: --------------
 Sparsity: 0.53%
@@ -1501,205 +1508,205 @@ Sparsity: 0.03%</code></pre>
 <span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a>                             use_multiprocessing<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/100
-4840/4840 [==============================] - 8s 1ms/step - loss: 19.9551 - mean_absolute_error: 2.4209 - val_loss: 19.6552 - val_mean_absolute_error: 2.4027
+4840/4840 [==============================] - 5s 940us/step - loss: 19.9729 - mean_absolute_error: 2.4204 - val_loss: 19.7407 - val_mean_absolute_error: 2.3997
 Epoch 2/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 19.3750 - mean_absolute_error: 2.4419 - val_loss: 18.6760 - val_mean_absolute_error: 2.4445
+4840/4840 [==============================] - 4s 881us/step - loss: 19.5738 - mean_absolute_error: 2.4355 - val_loss: 18.9418 - val_mean_absolute_error: 2.4339
 Epoch 3/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 18.1293 - mean_absolute_error: 2.4874 - val_loss: 17.3686 - val_mean_absolute_error: 2.5010
+4840/4840 [==============================] - 4s 874us/step - loss: 18.4422 - mean_absolute_error: 2.4776 - val_loss: 17.6733 - val_mean_absolute_error: 2.4896
 Epoch 4/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 16.7393 - mean_absolute_error: 2.5333 - val_loss: 16.1366 - val_mean_absolute_error: 2.5539
+4840/4840 [==============================] - 4s 855us/step - loss: 17.0683 - mean_absolute_error: 2.5257 - val_loss: 16.4167 - val_mean_absolute_error: 2.5444
 Epoch 5/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 15.4796 - mean_absolute_error: 2.5681 - val_loss: 15.1081 - val_mean_absolute_error: 2.5938
+4840/4840 [==============================] - 4s 862us/step - loss: 15.7799 - mean_absolute_error: 2.5641 - val_loss: 15.3513 - val_mean_absolute_error: 2.5877
 Epoch 6/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 14.4270 - mean_absolute_error: 2.5851 - val_loss: 14.2828 - val_mean_absolute_error: 2.6190
+4840/4840 [==============================] - 4s 854us/step - loss: 14.6797 - mean_absolute_error: 2.5859 - val_loss: 14.4793 - val_mean_absolute_error: 2.6156
 Epoch 7/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 13.5713 - mean_absolute_error: 2.5904 - val_loss: 13.6287 - val_mean_absolute_error: 2.6315
+4840/4840 [==============================] - 4s 856us/step - loss: 13.7774 - mean_absolute_error: 2.5932 - val_loss: 13.7852 - val_mean_absolute_error: 2.6306
 Epoch 8/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 12.8907 - mean_absolute_error: 2.5865 - val_loss: 13.1184 - val_mean_absolute_error: 2.6345
+4840/4840 [==============================] - 4s 911us/step - loss: 13.0517 - mean_absolute_error: 2.5897 - val_loss: 13.2372 - val_mean_absolute_error: 2.6361
 Epoch 9/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 12.3554 - mean_absolute_error: 2.5763 - val_loss: 12.7195 - val_mean_absolute_error: 2.6323
+4840/4840 [==============================] - 5s 998us/step - loss: 12.4793 - mean_absolute_error: 2.5808 - val_loss: 12.8129 - val_mean_absolute_error: 2.6350
 Epoch 10/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 11.9377 - mean_absolute_error: 2.5634 - val_loss: 12.4135 - val_mean_absolute_error: 2.6284
+4840/4840 [==============================] - 4s 907us/step - loss: 12.0329 - mean_absolute_error: 2.5672 - val_loss: 12.4859 - val_mean_absolute_error: 2.6313
 Epoch 11/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 11.6136 - mean_absolute_error: 2.5515 - val_loss: 12.1788 - val_mean_absolute_error: 2.6224
+4840/4840 [==============================] - 4s 879us/step - loss: 11.6871 - mean_absolute_error: 2.5561 - val_loss: 12.2335 - val_mean_absolute_error: 2.6250
 Epoch 12/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 11.3626 - mean_absolute_error: 2.5393 - val_loss: 11.9995 - val_mean_absolute_error: 2.6160
+4840/4840 [==============================] - 4s 849us/step - loss: 11.4192 - mean_absolute_error: 2.5425 - val_loss: 12.0427 - val_mean_absolute_error: 2.6181
 Epoch 13/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 11.1686 - mean_absolute_error: 2.5275 - val_loss: 11.8625 - val_mean_absolute_error: 2.6099
+4840/4840 [==============================] - 4s 857us/step - loss: 11.2130 - mean_absolute_error: 2.5301 - val_loss: 11.8955 - val_mean_absolute_error: 2.6118
 Epoch 14/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 11.0204 - mean_absolute_error: 2.5182 - val_loss: 11.7559 - val_mean_absolute_error: 2.6039
+4840/4840 [==============================] - 4s 845us/step - loss: 11.0537 - mean_absolute_error: 2.5199 - val_loss: 11.7839 - val_mean_absolute_error: 2.6059
 Epoch 15/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.9062 - mean_absolute_error: 2.5079 - val_loss: 11.6769 - val_mean_absolute_error: 2.5991
+4840/4840 [==============================] - 4s 850us/step - loss: 10.9310 - mean_absolute_error: 2.5115 - val_loss: 11.6999 - val_mean_absolute_error: 2.6005
 Epoch 16/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.8185 - mean_absolute_error: 2.5007 - val_loss: 11.6162 - val_mean_absolute_error: 2.5955
+4840/4840 [==============================] - 4s 858us/step - loss: 10.8380 - mean_absolute_error: 2.5020 - val_loss: 11.6331 - val_mean_absolute_error: 2.5967
 Epoch 17/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.7506 - mean_absolute_error: 2.4947 - val_loss: 11.5723 - val_mean_absolute_error: 2.5916
+4840/4840 [==============================] - 4s 858us/step - loss: 10.7655 - mean_absolute_error: 2.4959 - val_loss: 11.5856 - val_mean_absolute_error: 2.5929
 Epoch 18/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.6983 - mean_absolute_error: 2.4885 - val_loss: 11.5417 - val_mean_absolute_error: 2.5891
+4840/4840 [==============================] - 4s 861us/step - loss: 10.7100 - mean_absolute_error: 2.4911 - val_loss: 11.5492 - val_mean_absolute_error: 2.5893
 Epoch 19/100
-4840/4840 [==============================] - 9s 2ms/step - loss: 10.6575 - mean_absolute_error: 2.4854 - val_loss: 11.5182 - val_mean_absolute_error: 2.5868
+4840/4840 [==============================] - 4s 855us/step - loss: 10.6660 - mean_absolute_error: 2.4858 - val_loss: 11.5235 - val_mean_absolute_error: 2.5871
 Epoch 20/100
-4840/4840 [==============================] - 19s 4ms/step - loss: 10.6263 - mean_absolute_error: 2.4819 - val_loss: 11.5015 - val_mean_absolute_error: 2.5850
+4840/4840 [==============================] - 4s 864us/step - loss: 10.6325 - mean_absolute_error: 2.4821 - val_loss: 11.5046 - val_mean_absolute_error: 2.5854
 Epoch 21/100
-4840/4840 [==============================] - 16s 3ms/step - loss: 10.6019 - mean_absolute_error: 2.4776 - val_loss: 11.4874 - val_mean_absolute_error: 2.5836
+4840/4840 [==============================] - 4s 866us/step - loss: 10.6066 - mean_absolute_error: 2.4794 - val_loss: 11.4914 - val_mean_absolute_error: 2.5841
 Epoch 22/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5823 - mean_absolute_error: 2.4753 - val_loss: 11.4817 - val_mean_absolute_error: 2.5837
+4840/4840 [==============================] - 4s 867us/step - loss: 10.5868 - mean_absolute_error: 2.4762 - val_loss: 11.4789 - val_mean_absolute_error: 2.5832
 Epoch 23/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5671 - mean_absolute_error: 2.4734 - val_loss: 11.4771 - val_mean_absolute_error: 2.5832
+4840/4840 [==============================] - 4s 850us/step - loss: 10.5709 - mean_absolute_error: 2.4747 - val_loss: 11.4747 - val_mean_absolute_error: 2.5818
 Epoch 24/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5551 - mean_absolute_error: 2.4724 - val_loss: 11.4728 - val_mean_absolute_error: 2.5824
+4840/4840 [==============================] - 4s 854us/step - loss: 10.5579 - mean_absolute_error: 2.4732 - val_loss: 11.4745 - val_mean_absolute_error: 2.5815
 Epoch 25/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5451 - mean_absolute_error: 2.4713 - val_loss: 11.4684 - val_mean_absolute_error: 2.5814
+4840/4840 [==============================] - 4s 866us/step - loss: 10.5475 - mean_absolute_error: 2.4707 - val_loss: 11.4696 - val_mean_absolute_error: 2.5812
 Epoch 26/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5374 - mean_absolute_error: 2.4702 - val_loss: 11.4669 - val_mean_absolute_error: 2.5806
+4840/4840 [==============================] - 4s 862us/step - loss: 10.5394 - mean_absolute_error: 2.4703 - val_loss: 11.4671 - val_mean_absolute_error: 2.5800
 Epoch 27/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5323 - mean_absolute_error: 2.4675 - val_loss: 11.4670 - val_mean_absolute_error: 2.5806
+4840/4840 [==============================] - 4s 861us/step - loss: 10.5337 - mean_absolute_error: 2.4677 - val_loss: 11.4662 - val_mean_absolute_error: 2.5804
 Epoch 28/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5271 - mean_absolute_error: 2.4674 - val_loss: 11.4662 - val_mean_absolute_error: 2.5810
+4840/4840 [==============================] - 4s 873us/step - loss: 10.5283 - mean_absolute_error: 2.4675 - val_loss: 11.4678 - val_mean_absolute_error: 2.5806
 Epoch 29/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5217 - mean_absolute_error: 2.4671 - val_loss: 11.4637 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 844us/step - loss: 10.5240 - mean_absolute_error: 2.4669 - val_loss: 11.4666 - val_mean_absolute_error: 2.5804
 Epoch 30/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5194 - mean_absolute_error: 2.4657 - val_loss: 11.4639 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 846us/step - loss: 10.5198 - mean_absolute_error: 2.4671 - val_loss: 11.4657 - val_mean_absolute_error: 2.5801
 Epoch 31/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5163 - mean_absolute_error: 2.4672 - val_loss: 11.4659 - val_mean_absolute_error: 2.5795
+4840/4840 [==============================] - 4s 844us/step - loss: 10.5165 - mean_absolute_error: 2.4654 - val_loss: 11.4658 - val_mean_absolute_error: 2.5801
 Epoch 32/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5140 - mean_absolute_error: 2.4651 - val_loss: 11.4672 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 846us/step - loss: 10.5146 - mean_absolute_error: 2.4651 - val_loss: 11.4664 - val_mean_absolute_error: 2.5797
 Epoch 33/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5122 - mean_absolute_error: 2.4647 - val_loss: 11.4685 - val_mean_absolute_error: 2.5801
+4840/4840 [==============================] - 4s 863us/step - loss: 10.5130 - mean_absolute_error: 2.4645 - val_loss: 11.4700 - val_mean_absolute_error: 2.5809
 Epoch 34/100
-4840/4840 [==============================] - 18s 4ms/step - loss: 10.5110 - mean_absolute_error: 2.4642 - val_loss: 11.4730 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 4s 858us/step - loss: 10.5112 - mean_absolute_error: 2.4655 - val_loss: 11.4710 - val_mean_absolute_error: 2.5798
 Epoch 35/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5097 - mean_absolute_error: 2.4645 - val_loss: 11.4743 - val_mean_absolute_error: 2.5801
+4840/4840 [==============================] - 4s 864us/step - loss: 10.5098 - mean_absolute_error: 2.4643 - val_loss: 11.4720 - val_mean_absolute_error: 2.5799
 Epoch 36/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5084 - mean_absolute_error: 2.4643 - val_loss: 11.4746 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 850us/step - loss: 10.5089 - mean_absolute_error: 2.4641 - val_loss: 11.4744 - val_mean_absolute_error: 2.5808
 Epoch 37/100
-4840/4840 [==============================] - 19s 4ms/step - loss: 10.5074 - mean_absolute_error: 2.4629 - val_loss: 11.4773 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 4s 866us/step - loss: 10.5073 - mean_absolute_error: 2.4647 - val_loss: 11.4741 - val_mean_absolute_error: 2.5804
 Epoch 38/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5066 - mean_absolute_error: 2.4635 - val_loss: 11.4802 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 4s 886us/step - loss: 10.5074 - mean_absolute_error: 2.4634 - val_loss: 11.4794 - val_mean_absolute_error: 2.5805
 Epoch 39/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5058 - mean_absolute_error: 2.4640 - val_loss: 11.4792 - val_mean_absolute_error: 2.5812
+4840/4840 [==============================] - 4s 852us/step - loss: 10.5063 - mean_absolute_error: 2.4638 - val_loss: 11.4800 - val_mean_absolute_error: 2.5802
 Epoch 40/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5065 - mean_absolute_error: 2.4626 - val_loss: 11.4789 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 866us/step - loss: 10.5056 - mean_absolute_error: 2.4632 - val_loss: 11.4830 - val_mean_absolute_error: 2.5801
 Epoch 41/100
-4840/4840 [==============================] - 8s 2ms/step - loss: 10.5048 - mean_absolute_error: 2.4639 - val_loss: 11.4800 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 4s 865us/step - loss: 10.5056 - mean_absolute_error: 2.4631 - val_loss: 11.4883 - val_mean_absolute_error: 2.5806
 Epoch 42/100
-4840/4840 [==============================] - 7s 2ms/step - loss: 10.5050 - mean_absolute_error: 2.4628 - val_loss: 11.4804 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 4s 862us/step - loss: 10.5056 - mean_absolute_error: 2.4623 - val_loss: 11.4856 - val_mean_absolute_error: 2.5809
 Epoch 43/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5049 - mean_absolute_error: 2.4619 - val_loss: 11.4816 - val_mean_absolute_error: 2.5811
+4840/4840 [==============================] - 4s 859us/step - loss: 10.5049 - mean_absolute_error: 2.4628 - val_loss: 11.4863 - val_mean_absolute_error: 2.5808
 Epoch 44/100
-4840/4840 [==============================] - 14s 3ms/step - loss: 10.5038 - mean_absolute_error: 2.4628 - val_loss: 11.4815 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 864us/step - loss: 10.5046 - mean_absolute_error: 2.4637 - val_loss: 11.4874 - val_mean_absolute_error: 2.5803
 Epoch 45/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5042 - mean_absolute_error: 2.4624 - val_loss: 11.4844 - val_mean_absolute_error: 2.5816
+4840/4840 [==============================] - 4s 862us/step - loss: 10.5039 - mean_absolute_error: 2.4621 - val_loss: 11.4880 - val_mean_absolute_error: 2.5808
 Epoch 46/100
-4840/4840 [==============================] - 14s 3ms/step - loss: 10.5038 - mean_absolute_error: 2.4626 - val_loss: 11.4859 - val_mean_absolute_error: 2.5817
+4840/4840 [==============================] - 4s 854us/step - loss: 10.5040 - mean_absolute_error: 2.4622 - val_loss: 11.4891 - val_mean_absolute_error: 2.5806
 Epoch 47/100
-4840/4840 [==============================] - 9s 2ms/step - loss: 10.5040 - mean_absolute_error: 2.4633 - val_loss: 11.4860 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 865us/step - loss: 10.5039 - mean_absolute_error: 2.4616 - val_loss: 11.4900 - val_mean_absolute_error: 2.5808
 Epoch 48/100
-4840/4840 [==============================] - 13s 3ms/step - loss: 10.5043 - mean_absolute_error: 2.4611 - val_loss: 11.4846 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 849us/step - loss: 10.5036 - mean_absolute_error: 2.4628 - val_loss: 11.4871 - val_mean_absolute_error: 2.5806
 Epoch 49/100
-4840/4840 [==============================] - 8s 2ms/step - loss: 10.5034 - mean_absolute_error: 2.4620 - val_loss: 11.4822 - val_mean_absolute_error: 2.5801
+4840/4840 [==============================] - 4s 861us/step - loss: 10.5033 - mean_absolute_error: 2.4627 - val_loss: 11.4887 - val_mean_absolute_error: 2.5812
 Epoch 50/100
-4840/4840 [==============================] - 12s 3ms/step - loss: 10.5036 - mean_absolute_error: 2.4621 - val_loss: 11.4911 - val_mean_absolute_error: 2.5819
+4840/4840 [==============================] - 4s 871us/step - loss: 10.5039 - mean_absolute_error: 2.4626 - val_loss: 11.4867 - val_mean_absolute_error: 2.5802
 Epoch 51/100
-4840/4840 [==============================] - 5s 1ms/step - loss: 10.5024 - mean_absolute_error: 2.4628 - val_loss: 11.4901 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 4s 857us/step - loss: 10.5034 - mean_absolute_error: 2.4613 - val_loss: 11.4892 - val_mean_absolute_error: 2.5811
 Epoch 52/100
-4840/4840 [==============================] - 8s 2ms/step - loss: 10.5030 - mean_absolute_error: 2.4617 - val_loss: 11.4920 - val_mean_absolute_error: 2.5820
+4840/4840 [==============================] - 4s 858us/step - loss: 10.5030 - mean_absolute_error: 2.4627 - val_loss: 11.4870 - val_mean_absolute_error: 2.5803
 Epoch 53/100
-4840/4840 [==============================] - 7s 1ms/step - loss: 10.5031 - mean_absolute_error: 2.4616 - val_loss: 11.4928 - val_mean_absolute_error: 2.5822
+4840/4840 [==============================] - 4s 872us/step - loss: 10.5035 - mean_absolute_error: 2.4612 - val_loss: 11.4915 - val_mean_absolute_error: 2.5810
 Epoch 54/100
-4840/4840 [==============================] - 8s 2ms/step - loss: 10.5028 - mean_absolute_error: 2.4633 - val_loss: 11.4911 - val_mean_absolute_error: 2.5807
+4840/4840 [==============================] - 4s 869us/step - loss: 10.5034 - mean_absolute_error: 2.4623 - val_loss: 11.4928 - val_mean_absolute_error: 2.5807
 Epoch 55/100
-4840/4840 [==============================] - 9s 2ms/step - loss: 10.5038 - mean_absolute_error: 2.4608 - val_loss: 11.4946 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 4s 860us/step - loss: 10.5031 - mean_absolute_error: 2.4619 - val_loss: 11.4944 - val_mean_absolute_error: 2.5807
 Epoch 56/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5034 - mean_absolute_error: 2.4612 - val_loss: 11.4954 - val_mean_absolute_error: 2.5821
+4840/4840 [==============================] - 4s 851us/step - loss: 10.5029 - mean_absolute_error: 2.4616 - val_loss: 11.4938 - val_mean_absolute_error: 2.5809
 Epoch 57/100
-4840/4840 [==============================] - 11s 2ms/step - loss: 10.5029 - mean_absolute_error: 2.4620 - val_loss: 11.4952 - val_mean_absolute_error: 2.5821
+4840/4840 [==============================] - 4s 863us/step - loss: 10.5033 - mean_absolute_error: 2.4611 - val_loss: 11.4915 - val_mean_absolute_error: 2.5808
 Epoch 58/100
-4840/4840 [==============================] - 7s 2ms/step - loss: 10.5029 - mean_absolute_error: 2.4618 - val_loss: 11.4905 - val_mean_absolute_error: 2.5812
+4840/4840 [==============================] - 4s 876us/step - loss: 10.5031 - mean_absolute_error: 2.4613 - val_loss: 11.4906 - val_mean_absolute_error: 2.5810
 Epoch 59/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5029 - mean_absolute_error: 2.4620 - val_loss: 11.4908 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 4s 865us/step - loss: 10.5028 - mean_absolute_error: 2.4626 - val_loss: 11.4870 - val_mean_absolute_error: 2.5796
 Epoch 60/100
-4840/4840 [==============================] - 7s 1ms/step - loss: 10.5033 - mean_absolute_error: 2.4617 - val_loss: 11.4942 - val_mean_absolute_error: 2.5807
+4840/4840 [==============================] - 4s 859us/step - loss: 10.5033 - mean_absolute_error: 2.4605 - val_loss: 11.4872 - val_mean_absolute_error: 2.5800
 Epoch 61/100
-4840/4840 [==============================] - 7s 1ms/step - loss: 10.5032 - mean_absolute_error: 2.4614 - val_loss: 11.4948 - val_mean_absolute_error: 2.5805
+4840/4840 [==============================] - 4s 854us/step - loss: 10.5031 - mean_absolute_error: 2.4618 - val_loss: 11.4881 - val_mean_absolute_error: 2.5801
 Epoch 62/100
-4840/4840 [==============================] - 7s 1ms/step - loss: 10.5032 - mean_absolute_error: 2.4605 - val_loss: 11.4940 - val_mean_absolute_error: 2.5811
+4840/4840 [==============================] - 4s 848us/step - loss: 10.5028 - mean_absolute_error: 2.4620 - val_loss: 11.4900 - val_mean_absolute_error: 2.5800
 Epoch 63/100
-4840/4840 [==============================] - 8s 2ms/step - loss: 10.5024 - mean_absolute_error: 2.4613 - val_loss: 11.4948 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 4s 850us/step - loss: 10.5025 - mean_absolute_error: 2.4624 - val_loss: 11.4919 - val_mean_absolute_error: 2.5799
 Epoch 64/100
-4840/4840 [==============================] - 6s 1ms/step - loss: 10.5030 - mean_absolute_error: 2.4611 - val_loss: 11.4967 - val_mean_absolute_error: 2.5821
+4840/4840 [==============================] - 4s 848us/step - loss: 10.5026 - mean_absolute_error: 2.4612 - val_loss: 11.4951 - val_mean_absolute_error: 2.5811
 Epoch 65/100
-4840/4840 [==============================] - 13s 3ms/step - loss: 10.5030 - mean_absolute_error: 2.4627 - val_loss: 11.4951 - val_mean_absolute_error: 2.5804
+4840/4840 [==============================] - 4s 847us/step - loss: 10.5031 - mean_absolute_error: 2.4621 - val_loss: 11.4952 - val_mean_absolute_error: 2.5809
 Epoch 66/100
-4840/4840 [==============================] - 18s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4619 - val_loss: 11.4955 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 863us/step - loss: 10.5039 - mean_absolute_error: 2.4611 - val_loss: 11.4953 - val_mean_absolute_error: 2.5808
 Epoch 67/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4610 - val_loss: 11.4942 - val_mean_absolute_error: 2.5807
+4840/4840 [==============================] - 4s 855us/step - loss: 10.5024 - mean_absolute_error: 2.4616 - val_loss: 11.4952 - val_mean_absolute_error: 2.5810
 Epoch 68/100
-4840/4840 [==============================] - 10s 2ms/step - loss: 10.5032 - mean_absolute_error: 2.4614 - val_loss: 11.4967 - val_mean_absolute_error: 2.5811
+4840/4840 [==============================] - 4s 859us/step - loss: 10.5029 - mean_absolute_error: 2.4611 - val_loss: 11.4970 - val_mean_absolute_error: 2.5815
 Epoch 69/100
-4840/4840 [==============================] - 8s 2ms/step - loss: 10.5030 - mean_absolute_error: 2.4620 - val_loss: 11.4979 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 4s 859us/step - loss: 10.5023 - mean_absolute_error: 2.4622 - val_loss: 11.4977 - val_mean_absolute_error: 2.5812
 Epoch 70/100
-4840/4840 [==============================] - 19s 4ms/step - loss: 10.5028 - mean_absolute_error: 2.4618 - val_loss: 11.4979 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 842us/step - loss: 10.5037 - mean_absolute_error: 2.4611 - val_loss: 11.5014 - val_mean_absolute_error: 2.5809
 Epoch 71/100
-4840/4840 [==============================] - 13s 3ms/step - loss: 10.5026 - mean_absolute_error: 2.4617 - val_loss: 11.4966 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 843us/step - loss: 10.5031 - mean_absolute_error: 2.4610 - val_loss: 11.5028 - val_mean_absolute_error: 2.5821
 Epoch 72/100
-4840/4840 [==============================] - 11s 2ms/step - loss: 10.5028 - mean_absolute_error: 2.4612 - val_loss: 11.4988 - val_mean_absolute_error: 2.5812
+4840/4840 [==============================] - 4s 849us/step - loss: 10.5028 - mean_absolute_error: 2.4621 - val_loss: 11.5017 - val_mean_absolute_error: 2.5814
 Epoch 73/100
-4840/4840 [==============================] - 16s 3ms/step - loss: 10.5028 - mean_absolute_error: 2.4613 - val_loss: 11.4957 - val_mean_absolute_error: 2.5814
+4840/4840 [==============================] - 4s 900us/step - loss: 10.5031 - mean_absolute_error: 2.4611 - val_loss: 11.5013 - val_mean_absolute_error: 2.5818
 Epoch 74/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5028 - mean_absolute_error: 2.4613 - val_loss: 11.4969 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 4s 866us/step - loss: 10.5026 - mean_absolute_error: 2.4615 - val_loss: 11.5020 - val_mean_absolute_error: 2.5815
 Epoch 75/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5025 - mean_absolute_error: 2.4622 - val_loss: 11.4947 - val_mean_absolute_error: 2.5804
+4840/4840 [==============================] - 4s 861us/step - loss: 10.5030 - mean_absolute_error: 2.4612 - val_loss: 11.5049 - val_mean_absolute_error: 2.5816
 Epoch 76/100
-4840/4840 [==============================] - 18s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4615 - val_loss: 11.4961 - val_mean_absolute_error: 2.5804
+4840/4840 [==============================] - 4s 860us/step - loss: 10.5027 - mean_absolute_error: 2.4607 - val_loss: 11.5004 - val_mean_absolute_error: 2.5812
 Epoch 77/100
-4840/4840 [==============================] - 21s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4612 - val_loss: 11.4964 - val_mean_absolute_error: 2.5811
+4840/4840 [==============================] - 4s 855us/step - loss: 10.5027 - mean_absolute_error: 2.4611 - val_loss: 11.4994 - val_mean_absolute_error: 2.5817
 Epoch 78/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4617 - val_loss: 11.4925 - val_mean_absolute_error: 2.5802
+4840/4840 [==============================] - 4s 837us/step - loss: 10.5023 - mean_absolute_error: 2.4621 - val_loss: 11.4996 - val_mean_absolute_error: 2.5810
 Epoch 79/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5033 - mean_absolute_error: 2.4613 - val_loss: 11.4949 - val_mean_absolute_error: 2.5807
+4840/4840 [==============================] - 4s 849us/step - loss: 10.5034 - mean_absolute_error: 2.4609 - val_loss: 11.5012 - val_mean_absolute_error: 2.5813
 Epoch 80/100
-4840/4840 [==============================] - 19s 4ms/step - loss: 10.5031 - mean_absolute_error: 2.4617 - val_loss: 11.4970 - val_mean_absolute_error: 2.5807
+4840/4840 [==============================] - 4s 850us/step - loss: 10.5035 - mean_absolute_error: 2.4608 - val_loss: 11.4983 - val_mean_absolute_error: 2.5810
 Epoch 81/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5026 - mean_absolute_error: 2.4619 - val_loss: 11.4956 - val_mean_absolute_error: 2.5805
+4840/4840 [==============================] - 4s 855us/step - loss: 10.5029 - mean_absolute_error: 2.4613 - val_loss: 11.4967 - val_mean_absolute_error: 2.5798
 Epoch 82/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5026 - mean_absolute_error: 2.4617 - val_loss: 11.4944 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 4s 846us/step - loss: 10.5035 - mean_absolute_error: 2.4605 - val_loss: 11.4962 - val_mean_absolute_error: 2.5805
 Epoch 83/100
-4840/4840 [==============================] - 12s 2ms/step - loss: 10.5033 - mean_absolute_error: 2.4615 - val_loss: 11.4938 - val_mean_absolute_error: 2.5800
+4840/4840 [==============================] - 4s 854us/step - loss: 10.5036 - mean_absolute_error: 2.4606 - val_loss: 11.4963 - val_mean_absolute_error: 2.5808
 Epoch 84/100
-4840/4840 [==============================] - 17s 4ms/step - loss: 10.5033 - mean_absolute_error: 2.4611 - val_loss: 11.4948 - val_mean_absolute_error: 2.5802
+4840/4840 [==============================] - 4s 856us/step - loss: 10.5029 - mean_absolute_error: 2.4611 - val_loss: 11.4974 - val_mean_absolute_error: 2.5813
 Epoch 85/100
-4840/4840 [==============================] - 21s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4609 - val_loss: 11.4947 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 4s 916us/step - loss: 10.5030 - mean_absolute_error: 2.4608 - val_loss: 11.4988 - val_mean_absolute_error: 2.5812
 Epoch 86/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5036 - mean_absolute_error: 2.4611 - val_loss: 11.4933 - val_mean_absolute_error: 2.5803
+4840/4840 [==============================] - 5s 950us/step - loss: 10.5034 - mean_absolute_error: 2.4608 - val_loss: 11.4985 - val_mean_absolute_error: 2.5813
 Epoch 87/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5032 - mean_absolute_error: 2.4610 - val_loss: 11.4922 - val_mean_absolute_error: 2.5805
+4840/4840 [==============================] - 5s 943us/step - loss: 10.5032 - mean_absolute_error: 2.4614 - val_loss: 11.4987 - val_mean_absolute_error: 2.5819
 Epoch 88/100
-4840/4840 [==============================] - 17s 3ms/step - loss: 10.5036 - mean_absolute_error: 2.4607 - val_loss: 11.4971 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5032 - mean_absolute_error: 2.4613 - val_loss: 11.4963 - val_mean_absolute_error: 2.5811
 Epoch 89/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4615 - val_loss: 11.4988 - val_mean_absolute_error: 2.5811
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5026 - mean_absolute_error: 2.4613 - val_loss: 11.4957 - val_mean_absolute_error: 2.5811
 Epoch 90/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5036 - mean_absolute_error: 2.4606 - val_loss: 11.4951 - val_mean_absolute_error: 2.5802
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5023 - mean_absolute_error: 2.4628 - val_loss: 11.4939 - val_mean_absolute_error: 2.5801
 Epoch 91/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5034 - mean_absolute_error: 2.4605 - val_loss: 11.4964 - val_mean_absolute_error: 2.5811
+4840/4840 [==============================] - 6s 1ms/step - loss: 10.5029 - mean_absolute_error: 2.4605 - val_loss: 11.4966 - val_mean_absolute_error: 2.5812
 Epoch 92/100
-4840/4840 [==============================] - 18s 4ms/step - loss: 10.5029 - mean_absolute_error: 2.4618 - val_loss: 11.4968 - val_mean_absolute_error: 2.5813
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5032 - mean_absolute_error: 2.4605 - val_loss: 11.4962 - val_mean_absolute_error: 2.5821
 Epoch 93/100
-4840/4840 [==============================] - 14s 3ms/step - loss: 10.5034 - mean_absolute_error: 2.4612 - val_loss: 11.4989 - val_mean_absolute_error: 2.5809
+4840/4840 [==============================] - 5s 1ms/step - loss: 10.5025 - mean_absolute_error: 2.4612 - val_loss: 11.4979 - val_mean_absolute_error: 2.5820
 Epoch 94/100
-4840/4840 [==============================] - 19s 4ms/step - loss: 10.5033 - mean_absolute_error: 2.4613 - val_loss: 11.4981 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 873us/step - loss: 10.5032 - mean_absolute_error: 2.4614 - val_loss: 11.4987 - val_mean_absolute_error: 2.5815
 Epoch 95/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5032 - mean_absolute_error: 2.4613 - val_loss: 11.4971 - val_mean_absolute_error: 2.5808
+4840/4840 [==============================] - 4s 861us/step - loss: 10.5024 - mean_absolute_error: 2.4627 - val_loss: 11.5001 - val_mean_absolute_error: 2.5811
 Epoch 96/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5028 - mean_absolute_error: 2.4607 - val_loss: 11.4959 - val_mean_absolute_error: 2.5816
+4840/4840 [==============================] - 4s 863us/step - loss: 10.5023 - mean_absolute_error: 2.4626 - val_loss: 11.4993 - val_mean_absolute_error: 2.5802
 Epoch 97/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5035 - mean_absolute_error: 2.4622 - val_loss: 11.4934 - val_mean_absolute_error: 2.5805
+4840/4840 [==============================] - 4s 855us/step - loss: 10.5026 - mean_absolute_error: 2.4609 - val_loss: 11.4981 - val_mean_absolute_error: 2.5810
 Epoch 98/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5027 - mean_absolute_error: 2.4619 - val_loss: 11.4938 - val_mean_absolute_error: 2.5810
+4840/4840 [==============================] - 4s 878us/step - loss: 10.5026 - mean_absolute_error: 2.4603 - val_loss: 11.4996 - val_mean_absolute_error: 2.5814
 Epoch 99/100
-4840/4840 [==============================] - 15s 3ms/step - loss: 10.5025 - mean_absolute_error: 2.4619 - val_loss: 11.4962 - val_mean_absolute_error: 2.5804
+4840/4840 [==============================] - 4s 866us/step - loss: 10.5022 - mean_absolute_error: 2.4615 - val_loss: 11.4975 - val_mean_absolute_error: 2.5810
 Epoch 100/100
-4840/4840 [==============================] - 20s 4ms/step - loss: 10.5030 - mean_absolute_error: 2.4611 - val_loss: 11.4978 - val_mean_absolute_error: 2.5811</code></pre>
+4840/4840 [==============================] - 4s 855us/step - loss: 10.5031 - mean_absolute_error: 2.4611 - val_loss: 11.5004 - val_mean_absolute_error: 2.5810</code></pre>
 </div>
 </div>
 <p>To measure the change in the <code>mean_absolute_error</code> statistic within my epochs (or run through the datasets) during the attempt to fit the Machine Learning model above as they were being completed, I made a line-graph visualization to see the fluctuation in the error as shown below.</p>
@@ -1716,7 +1723,7 @@ Epoch 100/100
 <p><img src="index_files/figure-html/cell-36-output-1.png" class="img-fluid"></p>
 </div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Minimum MSE: 11.463703155517578</code></pre>
+<pre><code>Minimum MSE: 11.465737342834473</code></pre>
 </div>
 </div>
 <p>With the Machine Learning model fitted, it would be a good time to evaluate the effectiveness of my model. Thus, I will calculate metrics (as shown below) such as <code>Precision Score</code>, <code>ROC-AUC (Receiver Operating Characteristic (Curve) - Area Under the Curve) Score</code>, <code>F1 Score</code>, <code>Recall Score</code>, and the <code>Confusion Matrix</code>. For the classification metrics, I applied a threshold rating of 5.0 or above to indicate as an acceptable rating to recommend a book, based on the logic that there would be more positive than negative reviews for that book-title, on average. All of the calcuations are shown in the following code snippet as well as its corresponding visualizations.</p>
@@ -1731,70 +1738,79 @@ Epoch 100/100
 <span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>predicted_labels_bin_classify <span class="op">=</span> (predicted_ratings.copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
 <span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>actual_labels_bin_classify <span class="op">=</span> (X_test[<span class="st">"Book-Rating"</span>].copy() <span class="op">&gt;=</span> threshold).astype(<span class="bu">int</span>)</span>
 <span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>actual_ratings_str <span class="op">=</span> predicted_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
-<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>predicted_ratings_str <span class="op">=</span> actual_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
-<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>actual_ratings_str, y_pred<span class="op">=</span>predicted_ratings_str, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>actual_ratings_int <span class="op">=</span> predicted_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>predicted_ratings_int <span class="op">=</span> actual_labels_bin_classify.copy().astype(<span class="bu">int</span>)</span>
+<span id="cb61-13"><a href="#cb61-13" aria-hidden="true" tabindex="-1"></a>clf_report <span class="op">=</span> pd.DataFrame(classification_report(y_true<span class="op">=</span>actual_ratings_int, y_pred<span class="op">=</span>predicted_ratings_int, output_dict<span class="op">=</span><span class="va">True</span>, zero_division<span class="op">=</span><span class="dv">0</span>))</span>
 <span id="cb61-14"><a href="#cb61-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb61-15"><a href="#cb61-15" aria-hidden="true" tabindex="-1"></a>y_test_book_rating <span class="op">=</span> predicted_labels_bin_classify</span>
 <span id="cb61-16"><a href="#cb61-16" aria-hidden="true" tabindex="-1"></a>y_pred_book_rating <span class="op">=</span> actual_labels_bin_classify</span>
 <span id="cb61-17"><a href="#cb61-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb61-18"><a href="#cb61-18" aria-hidden="true" tabindex="-1"></a>avg_precision_score <span class="op">=</span> average_precision_score(y_true<span class="op">=</span>actual_labels_bin_classify, y_score<span class="op">=</span>predicted_labels_bin_classify)</span>
 <span id="cb61-19"><a href="#cb61-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Output statistics for Average Precision, Accuracy, and ROC AUC scores as well as the classifcation &amp; confusion matrix reports</span></span>
-<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test Results:</span><span class="ch">\n</span><span class="st">================================================"</span>)</span>
-<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Average Precision Score (When Compared to Test Set): </span><span class="sc">{</span>avg_precision_score <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_accuracy <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
-<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test_book_rating, y_pred_book_rating) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
-<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
-<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Confusion Matrix: </span><span class="ch">\n</span><span class="sc">{</span>confusion_matrix(y_test_book_rating, y_pred_book_rating)<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate Precision, Recall, and F1-score</span></span>
-<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a>precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>actual_labels_bin_classify, y_pred<span class="op">=</span>predicted_labels_bin_classify, average<span class="op">=</span><span class="st">'binary'</span>)</span>
-<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a>model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
-<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a>model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
-<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a>plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">'blue'</span>, <span class="st">'green'</span>, <span class="st">'orange'</span>])</span>
-<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Metrics'</span>)</span>
-<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Score'</span>)</span>
-<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Recommendation Model Evaluation Metrics'</span>)</span>
-<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the confusion matrix</span></span>
-<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="op">=</span> confusion_matrix(y_test_book_rating, y_pred_book_rating)</span>
-<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the confusion matrix</span></span>
-<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a>sns.heatmap(conf_matrix, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
-<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Predicted Label'</span>)</span>
-<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Actual Label'</span>)</span>
-<span id="cb61-52"><a href="#cb61-52" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Confusion Matrix'</span>)</span>
-<span id="cb61-53"><a href="#cb61-53" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb61-20"><a href="#cb61-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute and output statistics for Average Precision, Accuracy, and ROC AUC Scores as well as the Classifcation Report</span></span>
+<span id="cb61-21"><a href="#cb61-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Average Precision Score (When Compared to Test Set): </span><span class="sc">{</span>avg_precision_score <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-22"><a href="#cb61-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-23"><a href="#cb61-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Accuracy Score (When Compared to Test Set): </span><span class="sc">{</span>book_rec_history_model_accuracy <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%)"</span>)</span>
+<span id="cb61-24"><a href="#cb61-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-25"><a href="#cb61-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"ROC AUC Score: </span><span class="sc">{</span>roc_auc_score(y_test_book_rating, y_pred_book_rating) <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-26"><a href="#cb61-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-27"><a href="#cb61-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"CLASSIFICATION REPORT:</span><span class="ch">\n</span><span class="sc">{</span>clf_report<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-28"><a href="#cb61-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-29"><a href="#cb61-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate and output Precision, Recall, F1-Score, and Confusion Matrix</span></span>
+<span id="cb61-30"><a href="#cb61-30" aria-hidden="true" tabindex="-1"></a>precision, recall, f1_score, _ <span class="op">=</span> precision_recall_fscore_support(y_true<span class="op">=</span>actual_labels_bin_classify, y_pred<span class="op">=</span>predicted_labels_bin_classify, average<span class="op">=</span><span class="st">'binary'</span>)</span>
+<span id="cb61-31"><a href="#cb61-31" aria-hidden="true" tabindex="-1"></a>model_performance_metrics: [<span class="bu">str</span>] <span class="op">=</span> [<span class="st">"Precision"</span>, <span class="st">"Recall"</span>, <span class="st">"F1_Score"</span>]</span>
+<span id="cb61-32"><a href="#cb61-32" aria-hidden="true" tabindex="-1"></a>model_performance_metrics_values: [<span class="bu">float</span>] <span class="op">=</span> [precision, recall, f1_score]</span>
+<span id="cb61-33"><a href="#cb61-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-34"><a href="#cb61-34" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Precision Score: </span><span class="sc">{</span>precision <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-35"><a href="#cb61-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-36"><a href="#cb61-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Recall Score: </span><span class="sc">{</span>recall <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-37"><a href="#cb61-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-38"><a href="#cb61-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"F1 Score: </span><span class="sc">{</span>f1_score <span class="op">*</span> <span class="dv">100</span><span class="sc">:.2f}</span><span class="ss">%"</span>)</span>
+<span id="cb61-39"><a href="#cb61-39" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"_______________________________________________"</span>)</span>
+<span id="cb61-40"><a href="#cb61-40" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Confusion Matrix:</span><span class="ch">\n</span><span class="sc">{</span>confusion_matrix(y_test_book_rating, y_pred_book_rating)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb61-41"><a href="#cb61-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-42"><a href="#cb61-42" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb61-43"><a href="#cb61-43" aria-hidden="true" tabindex="-1"></a>plt.bar(model_performance_metrics, model_performance_metrics_values, color<span class="op">=</span>[<span class="st">"blue"</span>, <span class="st">"green"</span>, <span class="st">"orange"</span>])</span>
+<span id="cb61-44"><a href="#cb61-44" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Metrics"</span>)</span>
+<span id="cb61-45"><a href="#cb61-45" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Score"</span>)</span>
+<span id="cb61-46"><a href="#cb61-46" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Recommendation Model Evaluation Metrics"</span>)</span>
+<span id="cb61-47"><a href="#cb61-47" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb61-48"><a href="#cb61-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-49"><a href="#cb61-49" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the confusion matrix</span></span>
+<span id="cb61-50"><a href="#cb61-50" aria-hidden="true" tabindex="-1"></a>conf_matrix <span class="op">=</span> confusion_matrix(y_test_book_rating, y_pred_book_rating)</span>
+<span id="cb61-51"><a href="#cb61-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb61-52"><a href="#cb61-52" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the confusion matrix</span></span>
+<span id="cb61-53"><a href="#cb61-53" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb61-54"><a href="#cb61-54" aria-hidden="true" tabindex="-1"></a>sns.heatmap(conf_matrix, annot<span class="op">=</span><span class="va">True</span>, fmt<span class="op">=</span><span class="st">'d'</span>, cmap<span class="op">=</span><span class="st">'Blues'</span>)</span>
+<span id="cb61-55"><a href="#cb61-55" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Predicted Label'</span>)</span>
+<span id="cb61-56"><a href="#cb61-56" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Actual Label'</span>)</span>
+<span id="cb61-57"><a href="#cb61-57" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Confusion Matrix'</span>)</span>
+<span id="cb61-58"><a href="#cb61-58" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>269/269 [==============================] - 0s 936us/step
-269/269 [==============================] - 0s 1ms/step - loss: 11.4806 - mean_absolute_error: 2.5759
-Test Results:
-================================================
-Average Precision Score (When Compared to Test Set): 39.60%
+<pre><code>269/269 [==============================] - 0s 689us/step
+269/269 [==============================] - 0s 735us/step - loss: 11.4689 - mean_absolute_error: 2.5748
+Average Precision Score (When Compared to Test Set): 39.62%
 _______________________________________________
-Accuracy Score (When Compared to Test Set): 25.76%)
+Accuracy Score (When Compared to Test Set): 25.75%)
 _______________________________________________
-ROC AUC Score: 72.25%
+ROC AUC Score: 72.18%
 _______________________________________________
 CLASSIFICATION REPORT:
                      0           1  accuracy    macro avg  weighted avg
-precision     0.952672    0.253937  0.746397     0.603304      0.876983
-recall        0.752998    0.692060  0.746397     0.722529      0.746397
-f1-score      0.841147    0.371544  0.746397     0.606346      0.790279
-support    7672.000000  932.000000  0.746397  8604.000000   8604.000000
+precision     0.952012    0.255512  0.746397     0.603762      0.875918
+recall        0.753262    0.690426  0.746397     0.721844      0.746397
+f1-score      0.841055    0.372989  0.746397     0.607022      0.789918
+support    7664.000000  940.000000  0.746397  8604.000000   8604.000000
 _______________________________________________
-Confusion Matrix: 
-[[5777 1895]
- [ 287  645]]</code></pre>
+Precision Score: 69.04%
+_______________________________________________
+Recall Score: 25.55%
+_______________________________________________
+F1 Score: 37.30%
+_______________________________________________
+Confusion Matrix:
+[[5773 1891]
+ [ 291  649]]</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <p><img src="index_files/figure-html/cell-37-output-2.png" class="img-fluid"></p>
@@ -1807,15 +1823,8 @@ Confusion Matrix:
 <section id="conclusions" class="level2">
 <h2 class="anchored" data-anchor-id="conclusions">Conclusions</h2>
 <ul>
-<li><ol type="1">
-<li></li>
-</ol></li>
-<li><ol start="2" type="1">
-<li></li>
-</ol></li>
-<li><ol start="3" type="1">
-<li></li>
-</ol></li>
+<li><p>Based on the <code>Accuracy Score</code> at <code>25.75%</code>, <code>Precision Score</code> at <code>68.86%</code>, and Recall Score at <code>25.51%</code>, I found that my simple Book Recommendation Machine Learning model was not as good as I hoped in utilzing the train and validation datasets to fit my model in order to evaluate with my testing dataset. Looking at back my steps / approach, I realize that I may have overfitted by a great amount by training my Machine Learning model above approximately 10-15 epochs. When looking closely at the <code>Change in Validation Mean Absolute Error Across Epochs</code> Visualization, the validation error (i.e.&nbsp;the validation loss) was at its lowest in this duration and only went up from there in subsequent epoch training iterations. I would most likely re-train the model if I did this blog post project again.</p></li>
+<li><p>Utimately, I learned a great deal from this blog post as I now better understand how basic Input/Embeddings/Output from <code>Tensorflow</code> works in the topic of neural networks in Machine Learning. Of course, seeing the real life implications of recommendation systems like this (but scaled up on a much higher, economic level) makes me appreciate the complexity of this disclipine and ML-subfield because reaching the end of this blog post was nonetheless difficult for my basic implementation. I cannot imagine what it must be like to have to maintain larger, production-critical systems that tackle these problems on a daily basis.</p></li>
 </ul>
 </section>
 <section id="reference-sources-and-citations-ieee-format" class="level2">
