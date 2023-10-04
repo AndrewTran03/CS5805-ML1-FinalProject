@@ -1,7 +1,28 @@
 ---
-title: International US Foreign Currency Exchange Rates Predictor
+execute:
+  echo: fenced
+title: "Auctioning Used-Car Classifier"
+toc: true
+toc-title: "Table of contents"
+format:
+  html:
+    embed-resources: true
+    code-copy: true
+    code-link: true
+    code-tools: true
+    theme:
+      dark: darkly
+      light: flatly
+  docx: default
+  ipynb: default
+  gfm: default
 jupyter: python3
 ---
+<!-- title: "Auctioning Used-Car Classifier"
+format:
+  html:
+    code-fold: true
+jupyter: python3 -->
 
 
 #### Author: Andrew Tran
