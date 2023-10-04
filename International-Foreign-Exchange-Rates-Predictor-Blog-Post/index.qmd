@@ -1,7 +1,7 @@
 ---
 execute:
   echo: fenced
-title: "Auctioning Used-Car Classifier"
+title: "International US Foreign Currency Exchange Rates Predictor"
 toc: true
 toc-title: "Table of Contents"
 format:
@@ -17,7 +17,7 @@ format:
   gfm: default
 jupyter: python3
 ---
-<!-- title: "Auctioning Used-Car Classifier"
+<!-- title: "International US Foreign Currency Exchange Rates Predictor"
 format:
   html:
     code-fold: true
