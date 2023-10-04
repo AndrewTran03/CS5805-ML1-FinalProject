@@ -1,7 +1,27 @@
 ---
-title: Auctioning Used-Car Classifier
+execute:
+  echo: fenced
+title: "Auctioning Used-Car Classifier"
+toc: true
+toc-title: "Table of Contents"
+format:
+  html:
+    embed-resources: true
+    code-copy: true
+    code-link: true
+    code-tools: true
+    theme:
+      dark: darkly
+      light: flatly
+  docx: default
+  gfm: default
 jupyter: python3
 ---
+<!-- title: "Auctioning Used-Car Classifier"
+format:
+  html:
+    code-fold: true
+jupyter: python3 -->
 
 
 #### Author: Andrew Tran
@@ -35,7 +55,7 @@ First, we will read and display the initial dataset in our file system for this 
 
 ```{python}
 # Reading and displaying the initial dataset (ignoring any warnings or errors)
-df = pd.read_csv("datasets/car_prices.csv", error_bad_lines=False, warn_bad_lines=False)
+df = pd.read_csv("datasets/car_prices.csv", on_bad_lines="skip")
 df
 ```
 
