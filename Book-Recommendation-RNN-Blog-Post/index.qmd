@@ -1,7 +1,27 @@
 ---
-title: Book Recommender System
+execute:
+  echo: fenced
+title: "Book Recommender System"
+toc: true
+toc-title: "Table of Contents"
+format:
+  html:
+    embed-resources: true
+    code-copy: true
+    code-link: true
+    code-tools: true
+    theme:
+      dark: darkly
+      light: flatly
+  docx: default
+  gfm: default
 jupyter: python3
 ---
+<!-- title: "Book Recommender System"
+format:
+  html:
+    code-fold: true
+jupyter: python3 -->
 
 
 #### Author: Andrew Tran
