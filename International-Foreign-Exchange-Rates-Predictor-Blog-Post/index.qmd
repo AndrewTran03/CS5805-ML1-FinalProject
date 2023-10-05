@@ -29,7 +29,7 @@ jupyter: python3 -->
 
 ## Blog Post Inspiration and Objectives
 
-In this blog post, I was hoping to look into using Machine Learning to make a prediction system. In particular, I was hoping to imitate ones used for stock prediction. However, since there were too many tutorials on this topic, I decided to investigate into another global, financial factor that governs trade internationally: international currency rates. In the news recently, I have heard rumors of how the international standard of utilizing the US dollar could be compromised with other global powers such as China and India rise in global dominance. Thus, I focused my efforts on analyzing the US currency conversion rates to other countries. With that said, let's try to analyze this topic with some Machine Learning:
+In this blog post, I was hoping to investigate using Machine Learning to make a financial prediction system. Initially, I was hoping to imitate the ones used for stock prediction. However, since there were too many tutorials on this topic, I decided to investigate another global, financial factor that governs trade internationally: international currency rates. In the news recently, I have heard rumors of how the international standard of utilizing the US dollar could be compromised with other global powers such as China and India rise in global dominance. Thus, I focused my efforts on analyzing the US currency conversion rates to other countries. With that said, let's try to analyze this topic with some Machine Learning:
 
 ## Data Preprocessing - Cleaning and Analytics
 
