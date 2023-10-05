@@ -29,7 +29,7 @@ jupyter: python3 -->
 
 ## Blog Post Inspiration and Objectives
 
-In this blog post, I was hoping to take on the classic beginner/intermediate challenge of creating a simple Machine Learning recommendation system, imitating ones used at Big-Tech companies such as Netflix. Additionally, with so many examples online about Machine Learning movie recommendation systems, I decided to look to establish this system on another area which has always piqued my interest: books. With that said, let's try to analyze and create this system with some Machine Learning:
+In this blog post, I was hoping to take on the classic beginner/intermediate challenge of creating a simple Machine Learning recommendation system, imitating ones used at Big-Tech companies such as Netflix. Additionally, with so many examples online about Machine Learning movie recommendation systems, I decided to look to establish this system on another area which has always piqued my interest: books. This time I would try to make my own customized RNN if possible, using TensorFlow. With that said, let's try to analyze and create this system with some Machine Learning:
 
 ## Data Preprocessing - Cleaning and Analytics
 
