@@ -30,7 +30,7 @@ jobs:
       run: npm install
     
     - name: Build GitHub Pages Angular Site
-      run: npm run build -- --base-href ${{github.actor}}.github.io/${{github.event.repository.name}}/
+      run: npm run deploy
 
     - name: Deploy
       if: github.ref == 'refs/heads/main'
