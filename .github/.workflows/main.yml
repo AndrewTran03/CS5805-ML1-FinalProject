@@ -4,6 +4,7 @@ on:
   pages:
     branches:
       main
+      angular
 
 jobs:
   deploy:
