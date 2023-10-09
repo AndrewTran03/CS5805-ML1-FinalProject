@@ -1,0 +1,42 @@
+name: GitHub Pages
+
+on:
+  pages:
+    branches:
+      main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+        working-directory: ./cs-5805-final-project-blog-posts
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Build GitHub Pages Angular Site
+      run: npm run build -- --base-href "https://andrewtran03.github.io/cs5805-ML1-FinalProject/"
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        # Upload dist repository
+        path: './dist/cs-5805-final-project-blog-posts'
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1

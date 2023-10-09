@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@angular/animations": "^16.2.8",
+    "@angular/platform-browser": "^16.2.8"
+  }
+}
