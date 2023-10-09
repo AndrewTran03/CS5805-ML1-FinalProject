@@ -39,3 +39,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./cs-5805-final-project-blog-posts/dist/cs-5805-final-project-blog-posts/
         allow_empty_commit: true
+        keep_files: true
