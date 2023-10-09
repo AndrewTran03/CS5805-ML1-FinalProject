@@ -11,11 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
-    defaults:
-      run:
-        shell: bash
-        working-directory: ./cs-5805-final-project-blog-posts/
     
     steps:
     - name: Checkout
@@ -30,7 +25,7 @@ jobs:
       run: npm install
     
     - name: Build GitHub Pages Angular Site
-      run: npm run build -- --base-href https://${{github.actor}}.github.io/${{github.event.repository.name}}/
+      run: npm run build -- --base-href --base-href=/cs-5805-final-project-blog-posts/
 
     - name: Deploy
       if: success()
