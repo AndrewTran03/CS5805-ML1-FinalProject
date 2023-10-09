@@ -6,7 +6,8 @@
         "start": "ng serve",
         "build": "ng build",
         "watch": "ng build --watch --configuration development",
-        "test": "ng test"
+        "test": "ng test",
+        "deploy": "ng build --configuration=production --base-href /cs-5805-final-project-blog-posts/ && ngh --dir dist/cs-5805-final-project-blog-posts"
     },
     "private": true,
     "dependencies": {
