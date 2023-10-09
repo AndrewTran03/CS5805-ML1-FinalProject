@@ -39,3 +39,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dist/cs-5805-final-project-blog-posts/
         enable_jekyll: true
+        allow_empty_commit: true
