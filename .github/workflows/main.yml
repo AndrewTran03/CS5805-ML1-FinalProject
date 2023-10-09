@@ -30,7 +30,7 @@ jobs:
       run: npm install
     
     - name: Build GitHub Pages Angular Site
-      run: npm run build -- --base-href --base-href=../
+      run: ng build --prod --base-href=/cs-5805-final-project-blog-posts/
 
     - name: Deploy
       if: success()
