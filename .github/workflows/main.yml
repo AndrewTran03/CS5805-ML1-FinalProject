@@ -1,7 +1,7 @@
 name: GitHub Pages
 
 on:
-  pages:
+  push:
     branches:
       main
       angular
