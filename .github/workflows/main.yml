@@ -36,6 +36,7 @@ jobs:
       if: success()
       uses: peaceiris/actions-gh-pages@v3
       with:  
-        github_token: ${{ secrets.GITHUB_TOKEN }} 
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: main
         publish_dir: ./dist/cs-5805-final-project-blog-posts/
         enable_jekyll: true
