@@ -15,7 +15,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./cs-5805-final-project-blog-posts
+        working-directory: ./cs-5805-final-project-blog-posts/
     
     steps:
     - name: Checkout
@@ -30,12 +30,12 @@ jobs:
       run: npm install
     
     - name: Build GitHub Pages Angular Site
-      run: npm run build -- --base-href https://andrewtran03.github.io/CS5805-ML1-FinalProject/
+      run: npm run build -- --base-href https://${{github.actor}}.github.io/${{github.event.repository.name}}/
 
     - name: Deploy
       if: success()
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }} 
-        publish_dir: ./dist/cs-5805-final-project-blog-posts
+        publish_dir: ./dist/${{github.event.repository.name}}
         enable_jekyll: true
