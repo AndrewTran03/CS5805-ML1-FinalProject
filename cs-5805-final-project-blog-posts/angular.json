@@ -44,7 +44,8 @@
                                     "maximumError": "4kb"
                                 }
                             ],
-                            "outputHashing": "all"
+                            "outputHashing": "all",
+                            "outputPath": "dist/cs-5805-final-project-blog-posts"
                         },
                         "development": {
                             "buildOptimizer": false,
