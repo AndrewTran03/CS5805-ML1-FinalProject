@@ -1,0 +1,25 @@
+.blog-post-card {
+    border-width: thick;
+}
+
+.container {
+    padding: 2.5% 10% 2.5%;
+}
+
+img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 1fr);
+    gap: 48px;
+}
+
+.card-content {
+    position: relative;
+    top: 10px;
+    bottom: 10px;
+}

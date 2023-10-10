@@ -1,0 +1,23 @@
+[
+    {
+        "name": "Auctioning Used Car Classification Blog Post",
+        "imgLink": "used_car.jpg",
+        "imgAltTag": "Used Car Sign Image",
+        "description": "In this blog post, I was hoping to apply my basic understanding of classification that was taught in this Machine Learning course early in the semester. Additionally, I was interested in the traditional question posed by those in the college and just graduating from it as most try to purchase their first car. Specifically, what factors lead to a mutually beneficial first starter car? In the general sense, this dataset is not directly a Machine Learning problem, but I thought I gave it a chance. Through seeing the profit made by selling the car compared to its market-valued price, determining the return-of-investment (ROI) made on the vehicle introduces the concept of binary classification here.",
+        "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/Auctioning-Used-Car-Classification-Blog-Post/"
+    },
+    {
+        "name": "Book-Recommendation Blog Post",
+        "imgLink": "books.jpeg",
+        "imgAltTag": "Book Image",
+        "description": "In this blog post, I was hoping to take on the classic beginner/intermediate challenge of creating a simple Machine Learning recommendation system, imitating ones used at Big-Tech companies such as Netflix. Additionally, with so many examples online about Machine Learning movie recommendation systems, I decided to look to establish this system on another area which has always piqued my interest: books. This time I would try to make my own customized RNN if possible, using TensorFlow.",
+        "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/Book-Recommendation-RNN-Blog-Post/"
+    },
+    {
+        "name": "International-Foreign-Exchange Currency Rates Predictor Blog Post",
+        "imgLink": "financial_rate_predict.jpeg",
+        "imgAltTag": "Financial Prediction Rate Visualization Image",
+        "description": "In this blog post, I was hoping to investigate using Machine Learning to make a financial prediction system. Initially, I was hoping to imitate the ones used for stock prediction. However, since there were too many tutorials on this topic, I decided to investigate another global, financial factor that governs trade internationally: international currency rates. In the news recently, I have heard rumors of how the international standard of utilizing the US dollar could be compromised with other global powers such as China and India rise in global dominance. Thus, I focused my efforts on analyzing the US currency conversion rates to other countries.",
+        "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/International-Foreign-Exchange-Rates-Predictor-Blog-Post/"
+    }
+]
