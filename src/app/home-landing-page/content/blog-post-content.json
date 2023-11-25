@@ -7,17 +7,38 @@
         "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/Auctioning-Used-Car-Classification-Blog-Post/"
     },
     {
-        "name": "Book-Recommendation Blog Post",
-        "imgLink": "books.jpeg",
-        "imgAltTag": "Book Image",
-        "description": "In this blog post, I was hoping to take on the classic beginner/intermediate challenge of creating a simple Machine Learning recommendation system, imitating ones used at Big-Tech companies such as Netflix. Additionally, with so many examples online about Machine Learning movie recommendation systems, I decided to look to establish this system on another area which has always piqued my interest: books. This time I would try to make my own customized RNN if possible, using TensorFlow.",
-        "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/Book-Recommendation-RNN-Blog-Post/"
-    },
-    {
         "name": "International-Foreign-Exchange Currency Rates Predictor Blog Post",
         "imgLink": "financial_rate_predict.jpeg",
         "imgAltTag": "Financial Prediction Rate Visualization Image",
         "description": "In this blog post, I was hoping to investigate using Machine Learning to make a financial prediction system. Initially, I was hoping to imitate the ones used for stock prediction. However, since there were too many tutorials on this topic, I decided to investigate another global, financial factor that governs trade internationally: international currency rates. In the news recently, I have heard rumors of how the international standard of utilizing the US dollar could be compromised with other global powers such as China and India rise in global dominance. Thus, I focused my efforts on analyzing the US currency conversion rates to other countries.",
         "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/International-Foreign-Exchange-Rates-Predictor-Blog-Post/"
+    },
+    {
+        "name": "Clustering of Chocolate Bar Ratings Blog Post",
+        "imgLink": "chocolate_bar.jfif",
+        "imgAltTag": "Chocolate Bar Image",
+        "description": "In this blog post, I am exploring basic methods of clustering in Machine Learning. One interesting topic that I came across included a dataset thousands of different types of chocolate bars found across the world globally, including all other documented factors such as the Company that made it, the origin of the cocoa bean used in it, the year of the chocolate bar review, the percentage of cocoa computed in the composition of the bar, etc. I thought that it would be interesting to see if I can determine if I can figure out any corrleation relationships between the features of the chocolate bar and its numerical rating through means of clustering. My logic is that similar-featured chocolate bars would be grouped in the same cluster. However, this may lead to concerns in determining which factors (if any) weigh more in terms of swaying the rating of that particular chocolate bar entry. Thus, I soon began my blog post, trying to find some way to resolve this question.",
+        "blogPostUrl": ""
+    },
+    {
+        "name": "Financial-Institution Fraud Detection Analysis Blog Post",
+        "imgLink": "bank.jfif",
+        "imgAltTag": "Bank Image",
+        "description": "In this blog post, I was hoping to detect anamolies in Machine Learning by investigating bank fraud. It's really hard to find real-life examples of bank transactions given the risk of compromising security protocols and user confidentality agreements. Thus, after a great deal of searching, I found the following dataset from BankSim, an agent-based simulator of bank payments based on a sample of aggregated transactional data provided by a bank in Spain, which is commonly used in financial fraud-detection research due to its highly-realistic nature.",
+        "blogPostUrl": ""
+    },
+    {
+        "name": "Spam-or-Ham Email Probability Theory and Random Variables Blog Post",
+        "imgLink": "email.png",
+        "imgAltTag": "Email Image",
+        "description": "In this blog post, I was hoping to quickly explore the `Naive-Bayes` classifier as discussed in class in more detail. A simple and classic example found everywhere in data science and Machine Learning examples was the classification of emails as `Spam` or `Not-Spam (i.e. Ham)`. The premise of this basic study is based on the document-model created around each email: we can use techniques of word-counting via vectorization as well as basic sentiment analysis of the connotation of words used in the text (done in a quantiative and methodical way) to determine if an email is considered Spam or Not-Spam (Ham). This example leans naturally to a `Naive-Bayes` classifcation problem given how the dataset is discrete and (almost completely) exhibits conditional independence (the determination of Spam vs. Ham emails is independent between different emails).",
+        "blogPostUrl": ""
+    },
+    {
+        "name": "Extra - Neural-Networks: Book-Recommendation Blog Post",
+        "imgLink": "books.jpeg",
+        "imgAltTag": "Book Image",
+        "description": "In this blog post, I was hoping to take on the classic beginner/intermediate challenge of creating a simple Machine Learning recommendation system, imitating ones used at Big-Tech companies such as Netflix. Additionally, with so many examples online about Machine Learning movie recommendation systems, I decided to look to establish this system on another area which has always piqued my interest: books. This time I would try to make my own customized RNN if possible, using TensorFlow.",
+        "blogPostUrl": "https://andrewtran03.github.io/CS5805-ML1-FinalProject/blog-posts/Book-Recommendation-RNN-Blog-Post/"
     }
 ]
