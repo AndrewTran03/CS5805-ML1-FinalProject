@@ -14,7 +14,9 @@ export class HomeLandingPageComponent {
 	private _blogItems: BlogItem[] = [];
 	@Input() public imgPath: string = "./app/home-landing-page/images/";
 
-	constructor() { }
+	constructor() { 
+		this.parseJSONData();
+	}
 
 	set blogItems(blogItems: BlogItem[]) {
 		this._blogItems = blogItems;
