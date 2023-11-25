@@ -16,6 +16,8 @@ export class HomeLandingPageComponent {
 
 	constructor() { 
 		this.parseJSONData();
+		console.log("Blog Items: ");
+		console.log(this._blogItems);
 	}
 
 	set blogItems(blogItems: BlogItem[]) {
