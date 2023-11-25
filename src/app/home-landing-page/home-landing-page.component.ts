@@ -26,7 +26,7 @@ export class HomeLandingPageComponent {
 		return this._blogItems;
 	}
 
-	parseJSONData() {
+	private parseJSONData() {
 		this._blogItems = parseBlogPostCardContent(content as any[]);
 	}
 
