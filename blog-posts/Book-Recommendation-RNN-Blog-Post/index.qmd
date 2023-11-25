@@ -16,6 +16,29 @@ format:
   docx: default
   gfm: default
 jupyter: python3
+license: 
+    text: >
+        MIT License
+
+        Copyright (c) [2023] [Andrew H. Tran]
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
 ---
 <!-- title: "Book Recommender System"
 format:
@@ -104,7 +127,7 @@ df = pd.merge(books_df, ratings_df, on="ISBN")
 df
 ```
 
-Additionally, before handing my combined Book dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN vales, fixing types of columns, filling invalid values with suitable alternatives, etc. Fortunately, the data inherited from Kaggle here is in a preferable format already, so there does not need to be extensive amount of data cleaning here.
+Additionally, before handing my combined Book dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN values, fixing types of columns, filling invalid values with suitable alternatives, etc. Fortunately, the data inherited from Kaggle here is in a preferable format already, so there does not need to be extensive amount of data cleaning here.
 
 ```{python}
 # Figuring out the number of duplicated elements in the dataset (could be 
@@ -491,17 +514,17 @@ To complete this blog post, I used the following online sources as references fo
 
 [1] Book Recommendation Dataset:
 
-Möbius, "Book Recommendation Dataset", Apr.-2023. [Online]. Available: https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset. [Accessed: 25-Sep.-2023].
+- Möbius, "Book Recommendation Dataset", Apr.-2023. [Online]. Available: https://www.kaggle.com/datasets/arashnic/book-recommendation-dataset. [Accessed: 25-Sep.-2023].
 
 [2] Tutorial on Basics of Machine Learning Recommendation Systems:
 
-M. Ahammad, "Movie Recommender Systems Using Neural Network," 2020. [Online]. Available: https://www.kaggle.com/code/mejbahahammad/movie-recommender-systems-using-neural-network. [Accessed: 25-Sep.-2023].
+- M. Ahammad, "Movie Recommender Systems Using Neural Network," 2020. [Online]. Available: https://www.kaggle.com/code/mejbahahammad/movie-recommender-systems-using-neural-network. [Accessed: 25-Sep.-2023].
 
 [3] Tutorial on Sample Visualizations for Machine Learning Recommendation Systems:
 
-Great Learning Team, "Excerpts From a Masterclass on Movie Recommendation System," 22-Aug.-2022. Available: https://www.mygreatlearning.com/blog/masterclass-on-movie-recommendation-system/. [Accessed: 26-Sep.2023].
+- Great Learning Team, "Excerpts From a Masterclass on Movie Recommendation System," 22-Aug.-2022. Available: https://www.mygreatlearning.com/blog/masterclass-on-movie-recommendation-system/. [Accessed: 26-Sep.2023].
 
 [4] Tutorial on Evaluating Machine Learning Recommendation Systems:
 
-A. Johannsdottir, "Implementing Your Own Recommmender Systems in Python", 28-Nov.-2019. Available: https://www.cambridgespark.com/info/recommender-systems-in-python. [Accessed: 27-Sep.2023].
+- A. Johannsdottir, "Implementing Your Own Recommmender Systems in Python", 28-Nov.-2019. Available: https://www.cambridgespark.com/info/recommender-systems-in-python. [Accessed: 27-Sep.2023].
 
