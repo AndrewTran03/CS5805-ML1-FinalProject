@@ -1,2 +1,10 @@
 // Alternative Formats Line for Quarto in index.html (copy):
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="index.docx"><i class="bi bi-file-word"></i>MS Word</a></li><li><a href="index.ipynb"><i class="bi bi-journal-code"></i>Jupyter Notebook</a></li><li><a href="index.md"><i class="bi bi-file-code"></i>Github (GFM)</a></li></ul></div></nav>
+
+Directions for Copying Quarto Blogs into Angular Application:
+
+$ cp <name of file>.ipynb index.ipynb
+$ quarto convert index.ipynb --output index.qmd
+$ (Copy Quarto Header from Another QMD file)
+$ (Ctrl+Shift+P > Quarto: Render Document > Render All Declared Formats)
+$ (Copy (Alternative Formats) Comment Above to the generated "index.html" file)
