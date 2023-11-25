@@ -21,7 +21,7 @@ export class NavbarComponent {
 		this.checkWindowWidthSize();
 	}
 
-	private checkWindowWidthSize(): void {
+	private checkWindowWidthSize() {
 		this.isSmallScreen = window.innerWidth <= 767;
 	
 		if (this.isSmallScreen) {
@@ -33,7 +33,7 @@ export class NavbarComponent {
 			this._gitHubButtonText = "GitHub";
 			this._linkedInButtonText = "LinkedIn";
 		}
-	  }
+	}
 
 	checkWindowWidthSizeIsSmall(): boolean {
 		return window.innerWidth <= 767;
