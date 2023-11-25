@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 // How to Import Static JSON into TypeScript -
 // Resource: https://reacthustle.com/blog/how-to-import-a-json-file-in-typescript
 import content from "./content/blog-post-content.json";
+import { parseBlogPostCardContent } from "./ParseBlogPostCardContent";
 import { BlogItem } from 'src/assets/types';
 
 @Component({
@@ -20,32 +21,16 @@ export class HomeLandingPageComponent {
 		console.log(this.blogItems);
 	}
 
+	set setBlogItems(blogItems: BlogItem[]) {
+		this.blogItems = blogItems;
+	}
+
 	get getBlogItems(): BlogItem[] {
 		return this.blogItems;
 	}
 
-	set setBlogItems(newVal: BlogItem[]) {
-		this.blogItems = newVal;
-	}
-
 	parseJSONData() {
-		content.forEach((data: any) => {
-			const currName = data.name as string;
-			const currImgLink = data.imgLink as string;
-			const currImgAltTag = data.imgAltTag as string;
-			const currDescription = data.description as string;
-			const currBlogPostUrl = data.blogPostUrl as string;
-
-			const currItem: BlogItem = { 
-				name: currName,
-				imgLink: currImgLink,
-				imgAltTag: currImgAltTag,
-				description: currDescription,
-				blogPostUrl: currBlogPostUrl
-			};
-
-			this.blogItems.push(currItem);
-		});
+		this.blogItems = parseBlogPostCardContent(content as any[]);
 	}
 
 	redirectToExternalBlogLink(blogLinkStr: string): void {
