@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { personalGitHubUrlLink, personalLinkedInUrlLink } from "src/assets/links";
 
 @Component({
@@ -7,59 +7,60 @@ import { personalGitHubUrlLink, personalLinkedInUrlLink } from "src/assets/links
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent {
-	private navTitleText = "CS 5805 (Machine Learning I) Blog Posts";
-	private gitHubButtonText = "GitHub";
-	private linkedInButtonText = "LinkedIn";
+	private _navTitleText = "CS 5805 (Machine Learning I) Blog Posts";
+	private _gitHubButtonText = "GitHub";
+	private _linkedInButtonText = "LinkedIn";
+	private isSmallScreen = false;
 
-	constructor() {}
+	constructor() {
+		this.checkWindowWidthSize();
+	}
 
-	// constructor() {
-	// 	this.navTitleText = (this.checkWindowWidthSizeIsSmall()) ? "CS 5805" : 
-	// 		"CS 5805 (Machine Learning I) Blog Posts";
-	// 	this.gitHubButtonText = (this.checkWindowWidthSizeIsSmall()) ? "" : "GitHub";
-	// 	this.linkedInButtonText = (this.checkWindowWidthSizeIsSmall()) ? "" : "LinkedIn";
-	// }
+	@HostListener('window:resize', ['$event'])
+	onResize(_: any) {
+		this.checkWindowWidthSize();
+	}
 
-	// ngOnInit() {
-	// 	this.navTitleText = (this.checkWindowWidthSizeIsSmall()) ? "CS 5805" : 
-	// 		"CS 5805 (Machine Learning I) Blog Posts";
-	// 	this.gitHubButtonText = (this.checkWindowWidthSizeIsSmall()) ? "" : "GitHub";
-	// 	this.linkedInButtonText = (this.checkWindowWidthSizeIsSmall()) ? "" : "LinkedIn";
-	// }
-
-	// ngOnChange() {
-	// 	this.navTitleText = (this.checkWindowWidthSizeIsSmall()) ? "CS 5805" : 
-	// 		"CS 5805 (Machine Learning I) Blog Posts";
-	// 	this.gitHubButtonText = (this.checkWindowWidthSizeIsSmall()) ? "" : "GitHub";
-	// 	this.linkedInButtonText = (this.checkWindowWidthSizeIsSmall()) ? "" : "LinkedIn";
-	// }
+	private checkWindowWidthSize(): void {
+		this.isSmallScreen = window.innerWidth <= 767;
+	
+		if (this.isSmallScreen) {
+			this._navTitleText = "CS 5805";
+			this._gitHubButtonText = "";
+			this._linkedInButtonText = "";
+		} else {
+			this._navTitleText = "CS 5805 (Machine Learning I) Blog Posts";
+			this._gitHubButtonText = "GitHub";
+			this._linkedInButtonText = "LinkedIn";
+		}
+	  }
 
 	checkWindowWidthSizeIsSmall(): boolean {
 		return window.innerWidth <= 767;
 	}
 
-	set setNavTitleText(navTitleText: string) {
-		this.navTitleText = navTitleText;
+	set navTitleText(navTitleText: string) {
+		this._navTitleText = navTitleText;
 	}
 
-	get getNavTitleText() {
-		return this.navTitleText;
+	get navTitleText() {
+		return this._navTitleText;
 	}
 
-	set setGitHubButtonText(gitHubButtonText: string) {
-		this.gitHubButtonText = gitHubButtonText;
+	set gitHubButtonText(gitHubButtonText: string) {
+		this._gitHubButtonText = gitHubButtonText;
 	}
 
-	get getGitHubButtonText() {
-		return this.gitHubButtonText;
+	get gitHubButtonText() {
+		return this._gitHubButtonText;
 	}
 
-	set setLinkedInButtonText(linkedInButtonText: string) {
-		this.linkedInButtonText = linkedInButtonText;
+	set linkedInButtonText(linkedInButtonText: string) {
+		this._linkedInButtonText = linkedInButtonText;
 	}
 
-	get getLinkedInButtonText() {
-		return this.linkedInButtonText;
+	get linkedInButtonText() {
+		return this._linkedInButtonText;
 	}
 
 	redirectToExternalGitHubLink() {
