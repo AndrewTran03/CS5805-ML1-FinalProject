@@ -12,10 +12,10 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeLandingPageComponent } from './home-landing-page/home-landing-page.component';
-import { NavbarComponentComponent } from './navbar-component/navbar-component.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
-    declarations: [AppComponent, HomeLandingPageComponent, NavbarComponentComponent],
+    declarations: [AppComponent, HomeLandingPageComponent, NavbarComponent],
     imports: [BrowserModule, AppRoutingModule, HttpClientModule, MatGridListModule, 
         MatCardModule, MatToolbarModule, MatButtonModule, MatIconModule, CommonModule,
         RouterModule],
