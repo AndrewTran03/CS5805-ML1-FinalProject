@@ -1,0 +1,473 @@
+---
+execute:
+  echo: fenced
+title: "Clustering on Chocolate Bar Ratings"
+toc: true
+toc-title: "Table of Contents"
+format:
+  html:
+    embed-resources: true
+    code-copy: true
+    code-link: true
+    code-tools: true
+    theme:
+      dark: darkly
+      light: flatly
+  docx: default
+  gfm: default
+jupyter: python3
+license: 
+    text: >
+        MIT License
+
+        Copyright (c) [2023] [Andrew H. Tran]
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+---
+<!-- title: "Clustering on Chocolate Bar Ratings"
+format:
+  html:
+    code-fold: true
+jupyter: python3 -->
+
+
+#### Author: Andrew Tran
+
+
+## Blog Post Inspiration and Objectives
+
+In this blog post, I am exploring basic methods of clustering in Machine Learning. One interesting topic that I came across included a dataset thousands of different types of chocolate bars found across the world globally, including all other documented factors such as the Company that made it, the origin of the cocoa bean used in it, the year of the chocolate bar review, the percentage of cocoa computed in the composition of the bar, etc. I thought that it would be interesting to see if I can determine if I can figure out any corrleation relationships between the features of the chocolate bar and its numerical rating through means of clustering. My logic is that similar-featured chocolate bars would be grouped in the same cluster. However, this may lead to concerns in determining which factors (if any) weigh more in terms of swaying the rating of that particular chocolate bar entry. Thus, I soon began my blog post, trying to find some way to resolve this question. With that said, let's try to analyze this topic with some Machine Learning:
+
+## Data Preprocessing - Cleaning and Analytics
+
+```{python}
+# Import needed libraries
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+from matplotlib.collections import LineCollection
+import seaborn as sns
+color = sns.color_palette()
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+from yellowbrick.cluster import KElbowVisualizer
+from sklearn.cluster import MiniBatchKMeans, KMeans, DBSCAN
+from sklearn.neighbors import NearestNeighbors
+import kneed
+from sklearn.decomposition import PCA
+from sklearn.metrics import average_precision_score, roc_auc_score, precision_recall_fscore_support, confusion_matrix, classification_report
+from sklearn.metrics import mean_squared_error, pairwise_distances
+plt.style.use("fivethirtyeight")
+```
+
+First, we will read and display the initial dataset in our file system for this blog post, downloaded from Kaggle. This dataset contains loads of valuable information such as all notable chocolate-bar quantiative statistics that you would typically document such as Company that created the bar being reviewed, REF number, Year of Review Date, Cocoa Percent in bar, Company Location of the bar being reviewed, Bean Type, and Cocoa Bean origin of the company that distributed the bar being reviewed.
+
+```{python}
+# Reading and displaying the initial dataset (ignoring any warnings or errors)
+df = pd.read_csv("datasets/flavors_of_cacao.csv")
+df
+```
+
+For clarity on the constraints and parameters of the working datasets, I went to find high-level exploratory statistics on all of the datasets: shape, information about all of the entries, etc.
+
+```{python}
+# Determining the shape of the initial dataset
+df.shape
+```
+
+```{python}
+# Getting a sample of the initial dataset through the seeing the first 10 entries
+# completely in the dataset
+df.head()
+```
+
+```{python}
+# Figuring out all of the columns (and their names) available for me to use in 
+# the dataset
+df.columns
+```
+
+```{python}
+# Getting basic information about the dataset
+df.info()
+```
+
+```{python}
+# Figuring out the number of duplicated elements in the dataset (could be 
+# problematic if not resolved)
+df.duplicated().sum()
+```
+
+Additionally, before handing my Financial-Institution Fraud dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN values, fixing types of columns, filling invalid values with suitable alternatives, etc.
+
+```{python}
+# Renaming the columns to be more readable 
+cols_rename_dict = {}
+for col in df.columns:
+    cols_rename_dict.update({col: col.replace("\n", " ")})
+df = df.rename(columns=cols_rename_dict)
+
+df.rename(columns={"REF": "Reference Number"}, inplace=True)
+
+cols_rename_dict = {}
+for col in df.columns:
+    cols_rename_dict.update({col: col.replace(" (Maker-if known)", "")})
+df = df.rename(columns=cols_rename_dict)
+df.columns = df.columns.str.strip()
+
+df
+```
+
+```{python}
+# Figuring out the number of 'null'/'NaN' elements in the dataset (i.e. if NaN 
+# filling is needed or not)
+print(df.isnull().sum())
+(df.isnull().sum() / df.shape[0]) * 100
+```
+
+```{python}
+for col in df.columns:
+    display(df[col].unique())
+```
+
+```{python}
+df.info()
+```
+
+```{python}
+# Fill unknown and unformatted values with proper ones for readability and to
+# improve data accuracy and relevance 
+df["Bean Type"].fillna("N/A", inplace=True)
+df["Bean Type"].replace("\xa0", "N/A", inplace=True)
+
+df["Broad Bean Origin"].fillna("N/A", inplace=True)
+df["Broad Bean Origin"].replace("\xa0", "N/A", inplace=True)
+
+df
+```
+
+```{python}
+df.info()
+```
+
+```{python}
+# Check to make sure if all NaN and also any unpreferred / unformatted values
+# are resolved now
+print(df.isnull().sum())
+(df.isnull().sum() / df.shape[0]) * 100
+```
+
+```{python}
+# Rename "Cocoa Percent" column entries to be parsable by being numerical now
+df["Cocoa Percent"] = df["Cocoa Percent"].str.replace("%", "")
+df["Cocoa Percent"] = df["Cocoa Percent"].apply("float64")
+print(df["Cocoa Percent"].dtype)
+df["Cocoa Percent"].unique()
+```
+
+```{python}
+df.info()
+```
+
+```{python}
+# Create bar graphs for descriptive statistics of the cars, figuring out how
+# many fall into which group within each qualitative cateogry
+def create_bar_graphs(attribute: str):
+    sns.countplot(x=attribute, data=df, palette=sns.color_palette("husl", 8))
+    plt.title(f"{attribute} Comparison Across Chocolate Bar Ratings")
+    plt.rcParams["font.size"] = 7
+    plt.show()
+
+categorical_columns = ["Company", "Specific Bean Origin or Bar Name", "Company Location", "Bean Type", "Broad Bean Origin", "Review Date"]
+
+for col in categorical_columns:
+    create_bar_graphs(col)
+```
+
+```{python}
+review_date_min_year_val = df["Review Date"].min()
+df["Review Date"] = df["Review Date"].map(lambda x: x - review_date_min_year_val)
+df["Review Date"].unique()
+```
+
+```{python}
+# Histogram plot illustrating the Cocoa Percent
+bin_width = 10
+df_cocoa_percent = df["Cocoa Percent"].round(0)
+df_cocoa_percent = df_cocoa_percent.apply(int)
+hist_low_range = (min(df_cocoa_percent) // 10) * 10
+hist_high_range = (max(df_cocoa_percent) // 10) * 10
+
+# # Set the style of seaborn
+# sns.set(style="whitegrid")
+
+sns.histplot(df["Cocoa Percent"], 
+            bins=range(hist_low_range, hist_high_range, bin_width),
+            kde=False,
+            palette=sns.color_palette("husl", 8))
+plt.rcParams["font.size"] = 7
+plt.title("Histogram Cocoa Percent Comparison Against All Chocolate Bar Ratings")
+plt.xlim(40, 100)
+plt.ylim(0, 1400)
+plt.show()
+```
+
+```{python}
+# Convert any needed categorical columns into numerical ones via factorizing (integer mapping)
+for col in df.columns:
+    if not pd.api.types.is_numeric_dtype(df[col]):
+        df[col] = pd.factorize(df[col])[0]
+```
+
+```{python}
+df
+```
+
+```{python}
+# Removed unnecessary columns not needed for heatmap comparison
+df = df.drop(["Reference Number"], axis=1)
+df
+```
+
+```{python}
+# Correlation heatmap to quantify relationships between chocolate-bar comparison
+# attributes
+plt.figure(figsize=(10, 8))
+plt.rcParams["font.size"] = 7
+sns.heatmap(df.corr(), annot=True, linewidths=0.5)
+plt.title("Correlation Heatmap Between All Chocolate-Bar Comparison Factors")
+plt.show()
+
+# Correlation bar graph between Rating and all other chocolate-bar comparison
+# attributes
+target_corr = df.corr()["Rating"].abs().sort_values(ascending=False)
+plt.figure(figsize=(10, 8))
+plt.rcParams["font.size"] = 7
+sns.barplot(x=target_corr.index[1:], y=target_corr.values[1:], palette=sns.color_palette("husl", 8))
+plt.xticks(rotation=45, ha="right")
+plt.xlabel("Auctioned Car Features")
+plt.ylabel("Correlation with Rating")
+plt.title("Correlation between Rating and Other Features When Comparing Across All Chocolate-Bars in the Dataset")
+plt.tight_layout()
+plt.show()
+```
+
+```{python}
+# Removed unnecessary columns not needed for Machine Learning analysis
+df = df.drop(columns=["Company", "Broad Bean Origin", "Company Location", "Specific Bean Origin or Bar Name"], axis=1)
+df
+```
+
+## Machine Learning - Model Training and Evaluation
+
+Great, now we are onto the Machine Learning part of the blog post!
+
+Since the dataframe is now properly cleaned, sorted, and integer-mapped by this point, I had split the respective dataframe into the train and test datasets for the Machine Learning model with 80% going to the training dataset and the last 20% going to the test dataset. Fortunately, because order of the data sequentially does not matter here, I was able to utilize the `train_test_split` function for shuffling and randomization, making the future-generated Machine Learning model more unpredictable but also more objective in its returned model results. 
+
+Note that here I also used a `Pipeline` object from the `scikit-learn` package as well as the `StandardScaler` classes. On one hand, the `MinMaxScaler` class is useful for scaling columns to a specific range, usually between [0, 1], to maintain consistency. On the other hand, the `StandardScaler` class is useful for apply Z-score normalization / transformation on the data to avoid sensivite-prone Machine Learning algorithms which require appropriate scaling of the features within its trained dataset. As I learned from online, this `Pipeline` object is necesary to ensure appropriate preprocessing just before the dataset is passed to the Machine Learning model for training and later evaluation.  
+
+```{python}
+X = df.drop(columns=["Rating"], axis=1)
+y = df["Rating"]
+
+print("X Shape:", X.shape)
+print("Y Shape:", y.shape)
+
+pipeline = Pipeline([
+    ("std_scaler", StandardScaler()),
+    ("min_max_scaler", MinMaxScaler())
+])
+
+X_scaled = pipeline.fit_transform(X)
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, shuffle=True, random_state=42)
+```
+
+Due to the higher-order dimensionality in the `X` columns, I had to utilze `PCA` to reduce the `X` columns in the dataset down to a manageable amount for humans (most accepted is `2` principal components).
+
+```{python}
+# Used PCA to lower the dimensionality of the dataset used later for Machine
+# Learning (training and testing)
+pca = PCA()
+principal_components = pca.fit_transform(X_test)
+plt.plot(np.cumsum(pca.explained_variance_ratio_))
+plt.title("Explained Variance by Principal Components")
+plt.xlabel("Number of Principal Components")
+plt.ylabel("Cumulative Explained Variance")
+plt.show()
+```
+
+```{python}
+# Created a new dataframe containing the 2 main principal components used in the
+# later Machine Learning section of this blog-post
+pca_df = pd.DataFrame(data=principal_components[:, :2], columns=["PC1", "PC2"])
+pca_df
+```
+
+```{python}
+y_test.value_counts()
+```
+
+Adding in the `y` column (`"Rating"`) to this modified dataframe containing two new `PCA` components, we are able to experimentally look at some basic labeling of the data prior to clustering. 
+
+*(Disclaimer: I realize that clustering is considered unsupervised Machine Learning. The experimental practices of labels here are merely for reference to anticipate future clustering patterns. In real clustering applications, I realize that I wouldn't really have the labels to cluster in the first place. As seen throughout this section, this practice doesn't intend to skew my Machine Learning methods.)*
+
+```{python}
+# Add the "Rating" column to the PCA DataFrame
+pca_df["Rating"] = y_test.values
+
+# Separate the data based on the "Rating" columns (my subjective cut-off on 
+# numerical ratings to label "good" vs. "bad" ratings - out of 5)
+good_ratings = pca_df[pca_df["Rating"] >= 3.5]
+not_good_ratings = pca_df[pca_df["Rating"] < 3.5]
+
+# Scatter plot with different colors for "Good" and "Bad"
+plt.scatter(not_good_ratings["PC1"], not_good_ratings["PC2"], c='blue', label='Good Ratings', alpha=0.5)
+plt.scatter(good_ratings["PC1"], good_ratings["PC2"], c='red', label='Bad (Not Good) Ratings', alpha=0.5)
+
+plt.title("PCA Plot of Good Rating vs. Bad (Not Good) Rating Data")
+plt.xlabel("PC1")
+plt.ylabel("PC2")
+plt.legend()
+plt.show()
+```
+
+```{python}
+# Match PCA dataframe with y_test data with "binary" classification of chocolate-bar
+# ratings
+y_test = y_test.map(lambda entry: 0 if entry < 3.5 else 1)
+y_test
+```
+
+Now, we will do an exploratory K-Means Clustering to see if we detect any patterns or correlations in the dataset between `Rating` and other categories that were reported with the existing chocolate-bar evaluations.
+
+```{python}
+# Using the KElbowVisualizer to determine the appropriate number of clusters
+# to use in the K-Means algorithm
+kmeans_model = KMeans()
+kmeans_elbow_visualizer = KElbowVisualizer(kmeans_model, k=(1, 11))
+kmeans_elbow_visualizer.fit(X_train)
+kmeans_elbow_visualizer.show()
+```
+
+```{python}
+# Complete K-Means Clustering to find any clustering relationships in dataset
+# Run the kmeans model on scaled data
+kmeans_model = KMeans(n_clusters=5, random_state=42).fit(X_train)
+
+# Get the cluster number for each datapoint
+X_clusters = kmeans_model.predict(X_test)
+
+# Save the cluster centroids
+X_clusters_centers = kmeans_model.cluster_centers_
+
+# Plot PCA and K-Means cluster centers
+X_test_principal_clusters_centers = pca.transform(X_clusters_centers)
+plt.scatter(principal_components[:, 0], principal_components[:, 1], c=X_clusters, cmap='viridis', s=50, alpha=0.5)
+plt.scatter(X_test_principal_clusters_centers[:, 0], X_test_principal_clusters_centers[:, 1], c='red', marker='X', s=200, label='Cluster Centers')
+
+# Set up a LineCollection (for creating lines from each data point to their 
+# respective cluster center)
+lines = [[(x1, y1), (x2, y2)] for x1, y1, x2, y2 in zip(principal_components[:, 0], principal_components[:, 1], X_test_principal_clusters_centers[X_clusters][:, 0], X_test_principal_clusters_centers[X_clusters][:, 1])]
+lc = LineCollection(lines, cmap='viridis', norm=plt.Normalize(vmin=np.min(X_clusters), vmax=np.max(X_clusters)), alpha=0.2)
+
+# Set the color values based on the distance from the cluster center
+lc.set_array(np.array(X_clusters))
+
+# Add the created LineCollection to the plot
+plt.gca().add_collection(lc)
+
+plt.title("Explained Variance by Principal Components")
+plt.xlabel("Number of Principal Components")
+plt.ylabel("Cumulative Explained Variance")
+plt.show()
+```
+
+```{python}
+# Obtain predictions and calculate distance from cluster centroid (using Euclidean Distance)
+kmeans_dist = [np.linalg.norm(x - y) for x, y in zip(principal_components, X_test_principal_clusters_centers[X_clusters])]
+
+y_pred = np.array(kmeans_dist)
+y_pred[kmeans_dist >= np.percentile(kmeans_dist, 95)] = 1
+y_pred[kmeans_dist < np.percentile(kmeans_dist, 95)] = 0
+y_pred
+```
+
+```{python}
+# Display the accuracy statistics and the confusion matrix of the K-Means algorithm 
+# cluster predictions
+clf_report = pd.DataFrame(classification_report(y_true=y_test, y_pred=y_pred, output_dict=True, zero_division=0))
+conf_matrix = confusion_matrix(y_true=y_test, y_pred=y_pred)
+
+print(f"ROC AUC Score: {roc_auc_score(y_true=y_test, y_score=y_pred) * 100:.2f}%")
+print("_______________________________________________")
+print(f"CLASSIFICATION REPORT:\n{clf_report}")
+print("_______________________________________________")
+print(f"Confusion Matrix:\n{conf_matrix}")
+
+# Plot the confusion matrix
+plt.figure(figsize=(10, 8))
+plt.rcParams["font.size"] = 7
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues')
+plt.xlabel('Predicted Label')
+plt.ylabel('Actual Label')
+plt.title('Confusion Matrix')
+plt.show()
+```
+
+Finally, in addition to the K-Means clustering, for each entry in the (PCA) dataset, I have computed the distance to its closest cluster center and provided its respective closest cluster-index in a provided dataframe below, leaving this as an exercise to the reader to further explore any potential relationships that may be present here in the evalation scores. 
+
+```{python}
+# Calculates distances from mean and group similar-distances (print table)
+df_kmeans_cluster_info = pd.DataFrame(data={"PC1": principal_components[:, 0], 'PC2': principal_components[:, 1]})
+
+# Find the index of the closest cluster center for each point
+closest_cluster_index = [np.argmin(np.linalg.norm(principal_components[i] - X_clusters_centers, axis=1)) for i in range(len(principal_components))]
+
+# Add the closest cluster center number and Euclidean distance to the DataFrame
+df_kmeans_cluster_info["Distance_to_Closest_Cluster"] = [np.linalg.norm(principal_components[i] - X_clusters_centers[X_clusters[i]]) for i in range(len(principal_components))]
+df_kmeans_cluster_info["Closest_Cluster"] = X_clusters[closest_cluster_index]
+df_kmeans_cluster_info
+```
+
+## Conclusions
+
+- Given that `(K-Means) Clustering` is considered as `Unsupervised Machine Learning`, I found that the 3 kept columns from the original dataset - `Cocoa Percent`, `Review Date`, and `Bean Type` - were excellent in providing insights about the factors that went into the final determination of the `Rating` of the overall set of chocolate-bar entries. Looking at the dataset more closely, chocolate bars that had a similar numerical percentages of chocolate in its composition, similar dates of review, and similar-tasting chocolate bean types seemingly were grouped in the same cluster. This is something I expected going into this blog-post because this seems reasonable. However, from basic observation, no one factor dominated the other as I could find any leading trends in the K-Means clustering completed above. 
+
+- In terms of expanding the scope of this blog-post, I would have taken this further by viewing chocolate-bar entries that are similar in the distance from the same cluster center must be "numerically" similar and perform further Machine Learning analyses into determining the factors that lead to them receiving that particular score among the consensus of chocolate-bar evaluators.
+
+- Ultimately, I learned a great deal from the blog post experience as I now better understand how to properly utilize `K-Means Classifiers`, an unsupervised classification method of Machine Learning, to find relationships between groups of data and infer conclusions about any potential trends, through applying it to a practical, every-day dilemma in our society. Even though the datasets in the real world are never this simple to analyze, I hope to utilize in future contexts as this was an interesting study to complete and creative question to answer. This does seem like a sub-field and problem space that I may try to pursue in the future. 
+
+## Reference Sources and Citations (IEEE Format)
+
+To complete this blog post, I used the following online sources as references for developing this:
+
+[1] Chocolate Car Ratings Dataset:
+
+- R. Tatman, "Chocolate Bar Ratings", 2017. [Online]. Available: https://www.kaggle.com/datasets/rtatman/chocolate-bar-ratings/data. [Accessed 15-Nov.-2023].
+
+[2] KMeans Elbow Reference: 
+
+- F. Javier Gallego, "Outliers+EDA+Clustering Tutorial", Jul.-2022. [Online]. Available: https://www.kaggle.com/code/javigallego/outliers-eda-clustering-tutorial. [Accessed 16-Nov.-2023].
+
+[3] KMeans Reference:
+
+- M. Isbaine, "Fraud Detection", 2021. [Online]. Available: https://www.kaggle.com/code/mohamedisbaine/fraud-detection. [Accessed 16-Nov.-2023].
+

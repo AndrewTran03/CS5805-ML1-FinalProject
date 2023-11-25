@@ -16,6 +16,29 @@ format:
   docx: default
   gfm: default
 jupyter: python3
+license: 
+    text: >
+        MIT License
+
+        Copyright (c) [2023] [Andrew H. Tran]
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
 ---
 <!-- title: "Auctioning Used-Car Classifier"
 format:
@@ -83,7 +106,7 @@ df.columns
 df.info()
 ```
 
-Additionally, before handing my combined Book dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN vales, fixing types of columns, filling invalid values with suitable alternatives, etc.
+Additionally, before handing my Auctioned Used-Car dataset over for Machine Learning training and prediction, I need to clean the data prior to the analysis stage: removing duplicates, deleting null/NaN values, fixing types of columns, filling invalid values with suitable alternatives, etc.
 
 ```{python}
 # Figuring out the number of duplicated elements in the dataset (could be 
@@ -318,7 +341,7 @@ df["Body"] = df["Body"].map({"Sedan": 0, "Suv": 1, "Minivan": 2, "Hatchback": 3,
 df
 ```
 
-As all of the data in the working dataframe are now numerical, I wanted to preliminary-wise see the quantifiable correlation between the `ROI` columns and the rest in the dataset. Thus, using the `corr` function for dataframes with the `ROI` column, I created a heatmap and bar-graph visualizing the constrast between each car entries' attribute columns and its ROI value.
+As all of the data in the working dataframe is now numerical, I wanted to preliminary-wise see the quantifiable correlation between the `ROI` columns and the rest in the dataset. Thus, using the `corr` function for dataframes with the `ROI` column, I created a heatmap and bar-graph visualizing the constrast between each car entries' attribute columns and its ROI value.
 
 ```{python}
 # Correlation heatmap to quantify relationships between auctioning used-car
@@ -343,7 +366,7 @@ plt.show()
 
 Since the dataframe is now properly cleaned, sorted, and integer-mapped by this point, I had split the respective dataframe into the train and test datasets for the Machine Learning model with 80% going to the training dataset and the last 20% going to the test dataset. Fortunately, because order of the data sequentially does not matter here, I was able to utilize the `train_test_split` function for shuffling and randomization, making the future-generated Machine Learning model more unpredictable but also more objective in its returned model results. 
 
-Note that here I also used a `Pipeline` object from the `scikit-learn` package as well as the `MinMaxScaler` and the `StandardScaler` classes. On on hand, the `MinMaxScaler` class is useful for scaling columns to a specific range, usually between [0, 1], to maintain consistency. On the other hand, the `StandardScaler` class is useful for apply Z-score normaization/transformation on the data to avoid sensivite-prone Machine Learning algorithms which require appropriate scaling of the features within its trained dataset. As I learned from online, this `Pipeline` object is necesary to ensure appropriate preprocessing just before the dataset is passed to the Machine Learning model for training and later evaluation. 
+Note that here I also used a `Pipeline` object from the `scikit-learn` package as well as the `MinMaxScaler` and the `StandardScaler` classes. On one hand, the `MinMaxScaler` class is useful for scaling columns to a specific range, usually between [0, 1], to maintain consistency. On the other hand, the `StandardScaler` class is useful for apply Z-score normalization / transformation on the data to avoid sensivite-prone Machine Learning algorithms which require appropriate scaling of the features within its trained dataset. As I learned from online, this `Pipeline` object is necesary to ensure appropriate preprocessing just before the dataset is passed to the Machine Learning model for training and later evaluation. 
 
 ```{python}
 # Configuring the Machine Learning Tensorflow Model by placing all other columns into the x
@@ -546,13 +569,13 @@ To complete this blog post, I used the following online sources as references fo
 
 [1] Car Auctions Dataset (Only Used Dataset Not Kaggle Notebook):
 
-G.S. Deepak Kumar, "Car Auctions - What influences the selling price?", 2021. [Online]. Available: https://www.kaggle.com/code/gsdeepakkumar/car-auctions-what-influences-the-selling-price/input?select=car_prices.csv. [Accessed: 07-Sep.-2023].
+- G.S. Deepak Kumar, "Car Auctions - What influences the selling price?", 2021. [Online]. Available: https://www.kaggle.com/code/gsdeepakkumar/car-auctions-what-influences-the-selling-price/input?select=car_prices.csv. [Accessed: 07-Sep.-2023].
 
 [2] Tutorial on Calculating Basic Machine Learning Model Evaluation Statistics:
 
-A. Essam, "Titanic Supervised Learning Classification", Jul.-2023. [Online]. Available: https://www.kaggle.com/code/aliessamali/titanic-supervised-learning-classification. [Accessed: 08-Sep.-2023].
+- A. Essam, "Titanic Supervised Learning Classification", Jul.-2023. [Online]. Available: https://www.kaggle.com/code/aliessamali/titanic-supervised-learning-classification. [Accessed: 08-Sep.-2023].
 
 [3] Tutorial on Random Forest Classifiers:
 
-P. Banerjee, "Random Forest Classifer Tutorial", 2019. [Online.] Available: https://www.kaggle.com/code/prashant111/random-forest-classifier-tutorial. [Accessed: 07-Sep.-2023].
+- P. Banerjee, "Random Forest Classifer Tutorial", 2019. [Online.] Available: https://www.kaggle.com/code/prashant111/random-forest-classifier-tutorial. [Accessed: 07-Sep.-2023].
 
