@@ -1,10 +1,10 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener } from "@angular/core";
 import { personalGitHubUrlLink, personalLinkedInUrlLink } from "src/assets/links";
 
 @Component({
-  selector: 'app-navbar',
-  templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  selector: "app-navbar",
+  templateUrl: "./navbar.component.html",
+  styleUrls: ["./navbar.component.css"]
 })
 export class NavbarComponent {
 	private _navTitleText = "CS 5805 (Machine Learning I) Blog Posts";
@@ -16,13 +16,13 @@ export class NavbarComponent {
 		this.checkWindowWidthSize();
 	}
 
-	@HostListener('window:resize', ['$event'])
+	@HostListener("window:resize", ["$event"])
 	onResize(_: any) {
 		this.checkWindowWidthSize();
 	}
 
 	private checkWindowWidthSize() {
-		this.isSmallScreen = window.innerWidth <= 767;
+		this.isSmallScreen = this.checkWindowWidthSizeIsSmall();
 	
 		if (this.isSmallScreen) {
 			this._navTitleText = "CS 5805";
@@ -35,7 +35,7 @@ export class NavbarComponent {
 		}
 	}
 
-	checkWindowWidthSizeIsSmall(): boolean {
+	private checkWindowWidthSizeIsSmall() {
 		return window.innerWidth <= 767;
 	}
 

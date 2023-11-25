@@ -11,29 +11,24 @@ import { BlogItem } from 'src/assets/types';
     styleUrls: ['./home-landing-page.component.css'],
 })
 export class HomeLandingPageComponent {
-	private blogItems: BlogItem[] = [];
-	@Input() public imgPath: string = "./app/home-landing-page/images/"
+	private _blogItems: BlogItem[] = [];
+	@Input() public imgPath: string = "./app/home-landing-page/images/";
 
 	constructor() { }
 
-	ngOnInit() {
-		this.parseJSONData();
-		console.log(this.blogItems);
+	set blogItems(blogItems: BlogItem[]) {
+		this._blogItems = blogItems;
 	}
 
-	set setBlogItems(blogItems: BlogItem[]) {
-		this.blogItems = blogItems;
-	}
-
-	get getBlogItems(): BlogItem[] {
-		return this.blogItems;
+	get blogItems(): BlogItem[] {
+		return this._blogItems;
 	}
 
 	parseJSONData() {
-		this.blogItems = parseBlogPostCardContent(content as any[]);
+		this._blogItems = parseBlogPostCardContent(content as any[]);
 	}
 
-	redirectToExternalBlogLink(blogLinkStr: string): void {
+	redirectToExternalBlogLink(blogLinkStr: string) {
 		window.open(blogLinkStr, "_blank _noopener _noreferrer");
 	}
 }

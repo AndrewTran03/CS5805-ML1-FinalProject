@@ -1,5 +1,5 @@
 
-<div class="container responsive-grid" *ngFor="let blogItem of getBlogItems">
+<div class="container responsive-grid" *ngFor="let blogItem of blogItems">
     <mat-card class="blog-post-card mat-mdc-card col-md-3 shadow-lg" (click)="redirectToExternalBlogLink(blogItem.blogPostUrl)">
         <mat-card-header>
             <mat-card-title>{{ blogItem.name }}</mat-card-title>   
