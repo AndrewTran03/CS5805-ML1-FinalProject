@@ -1,3 +1,12 @@
+Updated -- Final Machine Learning Project Ideas (11/24/2023):
+
+(1) Auction Used-Car (Binary) Classification
+(2) International Foreign Exchange Rates Predictor
+(3) Financial Institution (Bank) Fraud Detection
+(4) Chocolate Bar Rating Clustering
+(5) Spam or Ham Email Analysis
+(Extra) Book Recommendation System
+
 Final Machine Learning Project Ideas (9/26/2023):
 
 (1) Auction Used-Car (Binary) Classification
